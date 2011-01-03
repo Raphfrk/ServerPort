@@ -221,8 +221,8 @@ public class ServerPortListener extends PluginListener {
 			newFrom.x += 0.5;
 			newFrom.z += 0.5;
 			player.teleportTo(newFrom);
-		} else if( portalManager.testPortalBlock(to)) {
-			
+		} else if( portalManager.testPortalBlock(to) && !portalManager.testPortalBlock(from) ) {
+						
 			IntLocation intLoc = new IntLocation( to );
 			
 			String gateType = portalManager.getPortalType( intLoc );

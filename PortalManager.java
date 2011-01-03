@@ -142,8 +142,7 @@ public class PortalManager {
 						Boolean.class,
 						new Boolean(true),
 						new String[] {
-							"If this parameter is true, then the plugin will " +
-							"list all custom gates when started"
+							"If this parameter is true, then the plugin will list all custom gates when started"
 						},
 						"enables/disables listing of custom gates"
 				)
