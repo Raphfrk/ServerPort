@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+./safecopy ${1}162 $2
+rm $3.updatr
+echo name=$3> ${3}.updatr
+echo version=162>> ${3}.updatr
+echo url=www.prydwen.net/minec/latest${1}/${3}.updatr>> ${3}.updatr
+echo file=www.prydwen.net/minec/latest${1}/${3}.jar>> ${3}.updatr
+echo notes=>> ${3}.updatr
+./safecopy ${1}162  ${3}.updatr

@@ -1,0 +1,14 @@
+/cygdrive/c/Program\ Files/Java/jdk1.6.0_22/bin/javac.exe -cp "C:\Users\Ivan\Desktop\server\hey0\bin\Minecraft_Mod.jar;C:\Users\Ivan\Desktop\server\hey0\bin\minecraft_server.jar" ../*.java -d out
+
+cd out
+
+jar cvf ../ServerPort.jar *
+
+cd ..
+
+zip -r ServerPort.jar . -i src/*.java
+
+cp *.jar /cygdrive/c/Users/Ivan/Desktop/server/hey0/bin/plugins
+cp *.jar /cygdrive/c/Users/Ivan/Desktop/server/hey0_nether/bin/plugins
+cp *.jar /cygdrive/c/Users/Ivan/Desktop/server/hey0_third/bin/plugins
+
