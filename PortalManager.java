@@ -128,7 +128,7 @@ public class PortalManager {
 						new Integer(2000),
 						new String[] {
 							"This parameter sets the minimum delay between" + 
-							"button presses on a gate in ms.  Button presses faster than that will be ignored"
+							"button presses on a gate in ms.  Button presses faster than that will be ignored.  The default is 2 seconds (2000)."
 						},
 						"sets the button repeat rate"
 				)
