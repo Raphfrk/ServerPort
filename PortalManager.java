@@ -1101,8 +1101,11 @@ public class PortalManager {
 					return;
 				}
 
+				boolean automaticTarget = false;
+				
 				if( line3.length() == 0 ) {
 					line3 = line1;
+					automaticTarget = true;
 				} else if( !MiscUtils.checkText(line3) ) {
 
 					MiscUtils.safeMessage(player, MiscUtils.checkRules("[ServerPort] Target gate name "));
@@ -1115,7 +1118,7 @@ public class PortalManager {
 
 						line1 = line1 + "_";
 
-					} else {
+					} else if( automaticTarget ){
 						line3 = line3 + "_";
 					}
 				}
