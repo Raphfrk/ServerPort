@@ -349,6 +349,8 @@ public class TeleportCommand implements Runnable {
 		
 		if( targetServer.equals("none")) {
 			
+			player.setHealth(0);
+			
 			return;
 			
 		} 
