@@ -48,6 +48,7 @@ public class ServerPortCommon {
 		parameterManager.setCommunicationManager(communicationManager);
 		portalManager.setCommunicationManager(communicationManager);
 		communicationManager.setPortalManager(portalManager);
+		serverPortListenerCommon.setParameterManager(parameterManager);
 		
 		registerParameters();
 		
@@ -58,6 +59,7 @@ public class ServerPortCommon {
 		
 		serverPortListenerCommon.setPortalManager( portalManager );
 		serverPortListenerCommon.setCommunicationManager(communicationManager);
+		
 	
 	}
 

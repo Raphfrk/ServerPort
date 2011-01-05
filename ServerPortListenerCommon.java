@@ -13,6 +13,12 @@ public class ServerPortListenerCommon {
 	PortalManager portalManager = null;
 	ParameterManager parameterManager = null;
 	CommunicationManager communicationManager = null;
+	
+	synchronized public void setParameterManager( ParameterManager parameterManager ) {
+		
+		this.parameterManager = parameterManager;
+		
+	}
 
 	synchronized public void setPortalManager( PortalManager portalManager ) {
 		this.portalManager = portalManager;
@@ -279,7 +285,7 @@ public class ServerPortListenerCommon {
 		
 		//MiscUtils.safeMessage(player, "Your dir is: " + m );
 		
-		if( split[0].equals("/release") && player.canUseCommand("/release") ) {
+		if( split[0].equals("/release") && player.canUseCommand("/release") && player.getHealth() > 0 ) {
 			
 			MiscUtils.safeLogging("[ServerPort] " + player.getName() + " is releasing");
 			
