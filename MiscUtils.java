@@ -42,7 +42,7 @@ public class MiscUtils {
 		synchronized( logSync ) {
 			log.info( message );
 		}
-		
+	
 	}
 	
 
@@ -324,10 +324,14 @@ public class MiscUtils {
 			server.loadChunk(x, y, z);
 		}
 		
-		server.setBlockAt(68, x, y, z);
-		
-		server.setBlockData(x, y, z, d);
-		
+		if( y > 126 || y < 1 ) {
+			return;
+		} else {		
+			server.setBlockAt(68, x, y, z);
+
+			server.setBlockData(x, y, z, d);
+		}
+
 		//Sign sign = (Sign)server.getComplexBlock(x,y,z);
 		
 		//if( text.length <= 4 ) {
@@ -351,7 +355,9 @@ public class MiscUtils {
 		}
 		
 		if( isChunkLoaded(x, y, z)) {
-			server.setBlockAt(id, x, y, z);
+			if( y > 0 && y < 127 ) {
+				server.setBlockAt(id, x, y, z);
+			}
 		}
 		
 	}

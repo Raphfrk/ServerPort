@@ -95,6 +95,7 @@ public class ForwardCommand implements Runnable {
 			String[] split = command.split(":");
 			String[] params = split[1].split(",",-1);
 			//MiscUtils.safeMessage(playerName, "[ServerPort] Forwarding complete : " + command );
+			MiscUtils.safeLogging("[ServerPort] Forwarding " + playerName + " to " + lastGoodServerHostname + " in order to reach " + targetServer );
 			TeleportCommand.teleport(playerName, playerIP, params, lastGoodServerHostname );
 		} else {
 			unlockPlayer();
