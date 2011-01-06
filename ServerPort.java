@@ -11,6 +11,8 @@ public class ServerPort extends Plugin {
 	
 	synchronized public void enable() { 
 		
+		MyServer.setHmodServer(etc.getServer());
+		
 		serverPortCommon.init(serverPortListenerCommon);
 		
 	}

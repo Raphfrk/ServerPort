@@ -5,7 +5,7 @@ public class CommandFIFO {
 	
 	protected static final Logger log = Logger.getLogger("Minecraft");
 
-	final static Server server = etc.getServer();
+	MyServer server = MyServer.getServer();	
 	
 	CommunicationManager communicationManager = null;
 	PortalManager portalManager = null;

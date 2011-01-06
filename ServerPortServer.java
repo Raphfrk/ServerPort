@@ -111,13 +111,9 @@ public class ServerPortServer {
 		if( properties == null ) {
 			gamePortString = "unknown";
 		} else {
-			PropertiesFile pf = new PropertiesFile( properties.getPath() );
+			MyPropertiesFile pf = new MyPropertiesFile( properties.getPath() );
 
-			try {
-				pf.load();
-			} catch (IOException e) {
-				MiscUtils.safeLogging("[ServerPort] Unable to open server.PROPERTIES");
-			}
+			pf.load();
 
 			if( pf.containsKey( "server-port")) {
 				gamePortString = pf.getString("server-port");

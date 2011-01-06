@@ -2,7 +2,7 @@ import java.util.HashMap;
 
 public class ServerPortListenerCommon {
 
-	final Server server = etc.getServer();
+	static MyServer server = MyServer.getServer();
 
 	public String commandName = "/serverport";
 
@@ -28,7 +28,7 @@ public class ServerPortListenerCommon {
 		this.communicationManager = communicationManager;
 	}
 	
-	synchronized public boolean onBlockPlace(Player player, Block blockPlaced, Block blockClicked, Item itemInHand) {
+	synchronized public boolean onBlockPlace(MyPlayer player, MyBlock blockPlaced, MyBlock blockClicked, MyItem itemInHand) {
 
 		if( portalManager.testSignBlock( blockPlaced ) || portalManager.testProtectedBlock( blockPlaced ) ) {
 
@@ -55,14 +55,14 @@ public class ServerPortListenerCommon {
 
 
 
-	synchronized public void onLogin(Player player) {
+	synchronized public void onLogin(MyPlayer player) {
 		
 		String playerName = new String( player.getName());
 		
 		communicationManager.limboStore.unLockPlayer(playerName);
 		
 		String limboInventory = communicationManager.limboStore.removePlayerStore(player);
-
+		
 		String blockedItems = LimboStore.addToPlayerInv( "STORE:" + player.getName() + ";" + limboInventory);
 
 		communicationManager.limboStore.processTransfer("STORE:playername=" + player.getName() + ";" + blockedItems);
@@ -120,10 +120,10 @@ public class ServerPortListenerCommon {
 
 				IntLocation exitPoint = portalInfo.getExitPoint();
 
-				Location loc = exitPoint.toLocation();
+				MyLocation loc = exitPoint.toLocation();
 				
-				loc.rotX = (float)limboInfo.getRotX() + 180;
-				loc.rotY = (float)limboInfo.getRotY();
+				loc.setRotX( (float)limboInfo.getRotX() + 180);
+				loc.setRotY( (float)limboInfo.getRotY() );
 
 				player.teleportTo(loc);
 				player.setHealth(playerHealth);
@@ -140,12 +140,11 @@ public class ServerPortListenerCommon {
 	}
 	
 
-	synchronized public boolean onHealthChange(Player player, int oldValue, int newValue) {
+	synchronized public boolean onHealthChange(MyPlayer player, int oldValue, int newValue) {
         if( newValue <= 0 ) {
         	
         	MiscUtils.safeLogging(player.getName() + " has died, attempting to teleport to bind");
         	
-        	player.setHealth(20);
         	TeleportCommand.teleportToBind(communicationManager, player);
         	return false;
         }
@@ -154,7 +153,7 @@ public class ServerPortListenerCommon {
     }
 
 
-	synchronized public void onPlayerMove(Player player, Location from, Location to) {
+	synchronized public void onPlayerMove(MyPlayer player, MyLocation from, MyLocation to) {
 		
 		LimboStore limboStore = communicationManager.limboStore;
 		
@@ -199,9 +198,9 @@ public class ServerPortListenerCommon {
 		}
 		
 		if( communicationManager.limboStore.isLocked( player.getName() )) {
-			Location newFrom = new Location(from.x,from.y,from.z,from.rotX,from.rotY);
-			newFrom.x += 0.5;
-			newFrom.z += 0.5;
+			MyLocation newFrom = new MyLocation(from.getX(),from.getY(),from.getZ(),from.getRotX(),from.getRotY());
+			newFrom.setX( newFrom.getX() + 0.5);
+			newFrom.setZ( newFrom.getZ() + 0.5);
 			player.teleportTo(newFrom);
 		} else if( portalManager.testPortalBlock(to) && !portalManager.testPortalBlock(from) ) {
 						
@@ -220,7 +219,7 @@ public class ServerPortListenerCommon {
 
 	}
 
-	synchronized public boolean onBlockDestroy(Player player, Block block) {
+	synchronized public boolean onBlockDestroy(MyPlayer player, MyBlock block) {
 
 
 		if( portalManager.testProtectedBlock( block ) ) {
@@ -237,9 +236,9 @@ public class ServerPortListenerCommon {
 			
 			if( block.getType() == SIGN ) {
 
-				Sign sign = (Sign)server.getComplexBlock(block.getX(), block.getY(), block.getZ());
+				MySign sign = (MySign)server.getComplexBlock(block.getX(), block.getY(), block.getZ());
 
-				if( sign != null ) {
+				if( !sign.isNull() ) {
 					portalManager.refreshSign( player , sign );
 				}
 				
@@ -270,7 +269,7 @@ public class ServerPortListenerCommon {
 	}
 
 
-	synchronized public boolean onChat(Player player, String message) {
+	synchronized public boolean onChat(MyPlayer player, String message) {
 
 		communicationManager.chatManager.sendChat(player, message);
 
@@ -278,9 +277,9 @@ public class ServerPortListenerCommon {
 	}
 
 
-	synchronized public boolean onCommand(Player player, String[] split) {
+	synchronized public boolean onCommand(MyPlayer player, String[] split) {
 		
-		double m = player.getLocation().rotX % 360;
+		double m = player.getLocation().getRotX() % 360;
 		m = m < 0 ? m+360 : m;
 		
 		//MiscUtils.safeMessage(player, "Your dir is: " + m );
@@ -386,7 +385,7 @@ public class ServerPortListenerCommon {
 	}
 
 
-	synchronized public boolean onSignChange(Player player, Sign sign) {
+	synchronized public boolean onSignChange(MyPlayer player, MySign sign) {
 		
 		portalManager.signPlaced( player, sign );
 
@@ -455,7 +454,7 @@ public class ServerPortListenerCommon {
 	// Preventing portal "mist" from updating
 
 
-    synchronized public boolean onBlockPhysics(Block block, boolean placed) {
+    synchronized public boolean onBlockPhysics(MyBlock block, boolean placed) {
 
 		if( block.getType() == MIST ) {
 			if( portalManager.testPortalBlock(block, false) ) {
@@ -467,7 +466,7 @@ public class ServerPortListenerCommon {
 	}
 
 
-    synchronized public boolean onFlow(Block blockFrom, Block blockTo) {
+    synchronized public boolean onFlow(MyBlock blockFrom, MyBlock blockTo) {
 
 		if( portalManager.testPortalBlock(blockFrom, false) || portalManager.testPortalBlock(blockTo, false)) {
 			return true;

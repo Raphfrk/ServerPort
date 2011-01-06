@@ -11,7 +11,7 @@ public class PortalInfo {
 	final int SIGN = 68;
 	final int BUTTON = 77;
 
-	final Server server = etc.getServer();
+	MyServer server = MyServer.getServer();
 
 	String[] portalString = null;
 
@@ -474,7 +474,7 @@ public class PortalInfo {
 		return portalActive;
 	}
 
-	boolean testMatch( Block block , HashMap<IntLocation,Integer> otherPortals ) {
+	boolean testMatch( MyBlock block , HashMap<IntLocation,Integer> otherPortals ) {
 
 		int r;
 
@@ -488,7 +488,7 @@ public class PortalInfo {
 
 	}
 
-	boolean testMatch( Sign sign , HashMap<IntLocation,Integer> otherPortals ) {
+	boolean testMatch( MySign sign , HashMap<IntLocation,Integer> otherPortals ) {
 
 		if( sign == null ) {
 			return false;
@@ -496,11 +496,11 @@ public class PortalInfo {
 
 		int d = server.getBlockData(sign.getX(),sign.getY(),sign.getZ());
 
-		return testMatch( new Block( SIGN , sign.getX(),sign.getY(),sign.getZ() ) , rotToDX(d) , rotToDZ(d) , otherPortals );
+		return testMatch( new MyBlock( SIGN , sign.getX(),sign.getY(),sign.getZ() ) , rotToDX(d) , rotToDZ(d) , otherPortals );
 
 	}
 
-	boolean testMatch( Block block , int dx , int dz , HashMap<IntLocation,Integer> otherPortals ) {
+	boolean testMatch( MyBlock block , int dx , int dz , HashMap<IntLocation,Integer> otherPortals ) {
 
 		IntLocation loc = new IntLocation( block );
 
@@ -697,7 +697,7 @@ public class PortalInfo {
 
 			}
 
-			int currentId = etc.getServer().getBlockIdAt(current.getX(), current.getY(), current.getZ());
+			int currentId = server.getBlockIdAt(current.getX(), current.getY(), current.getZ());
 
 			if( currentId == SIGN && (loc == null || !loc.equals(current) ) ) {
 				otherSign = true;

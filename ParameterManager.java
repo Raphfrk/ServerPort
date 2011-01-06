@@ -13,11 +13,13 @@ public class ParameterManager {
 	
 	protected static final Logger log = Logger.getLogger("Minecraft");
 	
+	MyServer server = MyServer.getServer();
+	
 	String propertiesFilename;
 	
 	public FakeParamClass fakeHelp = new FakeParamClass();
 	
-	PropertiesFile pfLocal = null;
+	MyPropertiesFile pfLocal = null;
 	
 	ArrayList<ParameterInfo> parameters = new ArrayList<ParameterInfo>();
 	
@@ -58,7 +60,7 @@ public class ParameterManager {
 		this.communicationManager = communicationManager;
 	}
 	
-	synchronized boolean processCommand( Player player , String[] split ) {
+	synchronized boolean processCommand( MyPlayer player , String[] split ) {
 		
 		if( split.length > 2 && split[1].equals("invite") ) {
 
@@ -114,7 +116,7 @@ public class ParameterManager {
 			if( MiscUtils.isInt(split[2])) {
 				
 				MiscUtils.safeMessage(player, "");
-				MiscUtils.safeMessage(player, Colors.Green + "ServerPort Command List Page " + MiscUtils.getInt(split[2]));
+				MiscUtils.safeMessage(player, server.getColor("Green") + "ServerPort Command List Page " + MiscUtils.getInt(split[2]));
 				MiscUtils.safeMessage(player, "");
 				int cnt=0;
 				int target = 8*MiscUtils.getInt(split[2])-8;
@@ -124,8 +126,8 @@ public class ParameterManager {
 					ParameterInfo current = itr.next();
 					if( cnt>=target ) {
 						MiscUtils.safeMessage(player, 
-								Colors.LightBlue + current.commandName + 
-								Colors.White + ": " + current.shortHelp );
+								server.getColor("LightBlue") + current.commandName + 
+								server.getColor("White") + ": " + current.shortHelp );
 					}
 					cnt++;
 				}
@@ -202,14 +204,9 @@ public class ParameterManager {
 	
 	synchronized void loadParameters() {
 		
-		PropertiesFile pf = new PropertiesFile( propertiesFilename );
+		MyPropertiesFile pf = new MyPropertiesFile( propertiesFilename );
 		
-		try {
-			pf.load();
-		} catch (IOException ioe) {
-			MiscUtils.safeLogging(log, "[ServerPort] Unable to open properties file: " + propertiesFilename );
-			return;
-		}
+		pf.load();
 		
 		Iterator<ParameterInfo> itr = parameters.iterator();
 		
@@ -219,7 +216,7 @@ public class ParameterManager {
 		
 	}
 	
-	synchronized void loadParameter( PropertiesFile pf , ParameterInfo parameterInfo ) {
+	synchronized void loadParameter( MyPropertiesFile pf , ParameterInfo parameterInfo ) {
 		
 		pfLocal = pf;
 		

@@ -10,8 +10,8 @@ public class LimboStore {
 
 	private static final String slash = System.getProperty("file.separator");
 
-	private final static Server server = etc.getServer();
-
+	static MyServer server = MyServer.getServer();
+	
 	public StringList bannedItems = new StringList();
 	public Boolean banExcept = false;
 
@@ -370,7 +370,7 @@ public class LimboStore {
 
 	}
 
-	synchronized String removePlayerStore( Player player ) {
+	synchronized String removePlayerStore( MyPlayer player ) {
 
 		String playerName = player.getName();
 
@@ -384,9 +384,9 @@ public class LimboStore {
 
 	}
 
-	synchronized static String removePlayerInv( Player player ) {
+	synchronized static String removePlayerInv( MyPlayer player ) {
 
-		Inventory inv = player.getInventory();
+		MyInventory inv = player.getInventory();
 
 		if( inv == null ) {
 			return "";
@@ -394,11 +394,11 @@ public class LimboStore {
 
 		StringBuilder sb = new StringBuilder();
 
-		Item[] contents = inv.getContents();
+		MyItem[] contents = inv.getContents();
 
 		boolean first = true;
-		for( Item item : contents ) {
-			if( item != null ) {
+		for( MyItem item : contents ) {
+			if( !item.isNull() ) {
 				if( !first ) {
 					sb.append(";");
 				}
@@ -417,11 +417,11 @@ public class LimboStore {
 
 	int counter = 77;
 
-	synchronized static void dropItems( Player player ) {
+	synchronized static void dropItems( MyPlayer player ) {
 
 		final String playerData = new String( LimboStore.removePlayerInv( player ) );
-		final Location loc = player.getLocation();
-		loc.y += 5;
+		final MyLocation loc = player.getLocation();
+		loc.setY( loc.getY() + 5 );
 
 		String[] items = playerData.split(";");
 
@@ -437,8 +437,6 @@ public class LimboStore {
 						int id = MiscUtils.getInt(vars[0]);
 						int damage = MiscUtils.getInt(vars[1]);
 						int quantity = MiscUtils.getInt(vars[2]);
-
-						System.out.println( "Data to restore: " + quantity + " of "+ id  + " at " + new IntLocation( loc ));
 
 						server.dropItem(loc, id, quantity );
 
@@ -469,7 +467,7 @@ public class LimboStore {
 
 		boolean first = true;
 
-		Player player = null;
+		MyPlayer player = null;
 
 		for( String item : strings ) {
 
@@ -495,7 +493,7 @@ public class LimboStore {
 
 	}
 
-	synchronized static String addToPlayerInvSingle( Player player , String itemString ) {
+	synchronized static String addToPlayerInvSingle( MyPlayer player , String itemString ) {
 
 		if( itemString == null ) {
 			return null;
@@ -524,12 +522,12 @@ public class LimboStore {
 			int damage = MiscUtils.getInt(vars[1]);
 			int id = MiscUtils.getInt(vars[0]);
 			int amount = MiscUtils.getInt(vars[2]);
+			
+			MyInventory inv = player.getInventory();
 
-			Inventory inv = player.getInventory();
+			MyItem itm = inv.getItemFromSlot(slot);
 
-			Item itm = inv.getItemFromSlot(slot);
-
-			if( itm == null ) {
+			if( itm.isNull() ) {
 				inv.setSlot(id, amount, damage, slot);
 				return null;
 			} else {

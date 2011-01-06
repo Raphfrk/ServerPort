@@ -1,6 +1,7 @@
 
 public class ReconnectCommand implements Runnable {
-
+	
+	final static MyServer server = MyServer.getServer();
 
 	CommunicationManager communicationManager = null;
 	String playerName = null;
@@ -62,13 +63,11 @@ public class ReconnectCommand implements Runnable {
 			
 			final String finalPlayerName = new String( playerName );
 			
-			final Server server = etc.getServer();
-			
 			server.addToServerQueue( new Runnable() {
 				
 				public void run() {
 					
-					Player player = server.getPlayer(finalPlayerName);
+					MyPlayer player = server.getPlayer(finalPlayerName);
 					
 					player.kick("[ServerPort] New players cannot connect to this server directly.");
 					
@@ -176,7 +175,7 @@ public class ReconnectCommand implements Runnable {
 		
 		final String finalPlayerName = new String( playerName );
 
-		etc.getServer().addToServerQueue(new Runnable() {
+		server.addToServerQueue(new Runnable() {
 
 			public void run() {
 				communicationManager.limboStore.unLockPlayer(finalPlayerName);

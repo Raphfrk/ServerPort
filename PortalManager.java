@@ -36,11 +36,11 @@ public class PortalManager {
 
 	public Double expansionFactor = 100.0;
 	public Boolean autoCreate = true;
-	
+
 	public Boolean newChunks = false;
 
 	public String worldName = "world";
-	
+
 	public Boolean safeExit = false;
 	public StringList softBlocks = new StringList();
 
@@ -87,24 +87,22 @@ public class PortalManager {
 		listBuiltGates(listBuiltGates);
 
 		File properties = MiscUtils.dirScan( "." , "server.PROPERTIES");
-		
+
 		if( properties == null ) {
 			worldName = "world";
 		} else {
-			PropertiesFile pf = new PropertiesFile( properties.getPath() );
+			MyPropertiesFile pf = new MyPropertiesFile( properties.getPath() );
 
-			try {
-				pf.load();
-			} catch (IOException e) {}
+			pf.load();
 
 			if( pf.containsKey("level-name")) {
 				worldName = pf.getString("level-name");
 			} else {
 				worldName = "world";
 			}
-			
+
 			if( pf.containsKey("hellworld") && pf.getBoolean("hellworld")) {
-				
+
 				worldName = worldName + slash + "DIM-1";
 			} 
 		}
@@ -146,7 +144,7 @@ public class PortalManager {
 						"enables/disables listing of custom gates"
 				)
 		);
-		
+
 		parameterManager.registerParameter( 
 				new ParameterInfo( 
 						this, 
@@ -161,7 +159,7 @@ public class PortalManager {
 						"moves exit portals to safe(r) locations"
 				)
 		);
-		
+
 		parameterManager.registerParameter( 
 				new ParameterInfo( 
 						this, 
@@ -175,7 +173,7 @@ public class PortalManager {
 						"sets soft blocks for safe exit portal placement"
 				)
 		);
-		
+
 		parameterManager.registerParameter( 
 				new ParameterInfo( 
 						this, 
@@ -255,27 +253,27 @@ public class PortalManager {
 
 	}
 
-	boolean testProtectedBlock( Block block ) {
+	boolean testProtectedBlock( MyBlock block ) {
 		IntLocation loc = new IntLocation( block );
 
 		return blockBlocks.containsKey(loc);
 
 	}
 
-	boolean testSignBlock( Block block ) {
+	boolean testSignBlock( MyBlock block ) {
 		IntLocation loc = new IntLocation( block );
 
 		return signBlocks.containsKey(loc);
 
 	}
-	
+
 	boolean testPortalBlock( IntLocation loc ) {
-	
-		return testPortalBlock( new Location( loc.x , loc.y , loc.z ));
-		
+
+		return testPortalBlock( new MyLocation( loc.getX() , loc.getY() , loc.getZ() ));
+
 	}
 
-	boolean testPortalBlock( Location loc ) {
+	boolean testPortalBlock( MyLocation loc ) {
 		IntLocation intLoc = new IntLocation( loc );
 
 		if( portalBlocks.containsKey(intLoc) ) {
@@ -288,7 +286,7 @@ public class PortalManager {
 
 	}
 
-	boolean testPortalBlock( Block block ) {
+	boolean testPortalBlock( MyBlock block ) {
 
 		IntLocation loc = new IntLocation( block );
 
@@ -296,7 +294,7 @@ public class PortalManager {
 
 	}
 
-	String getPortalType( Block block ) {
+	String getPortalType( MyBlock block ) {
 
 		IntLocation loc = new IntLocation( block );
 
@@ -322,7 +320,7 @@ public class PortalManager {
 	}
 
 
-	boolean destroyPortal( Block block ) {
+	boolean destroyPortal( MyBlock block ) {
 
 		if( !testSignBlock(block) ) {
 			return false;
@@ -350,10 +348,10 @@ public class PortalManager {
 
 	}
 
-	boolean testPortalBlock( Block block , boolean checkActive ) {
+	boolean testPortalBlock( MyBlock block , boolean checkActive ) {
 
 		IntLocation loc = new IntLocation( block );
-
+		
 		if( !portalBlocks.containsKey(loc) ) {
 			return false;
 		}
@@ -368,7 +366,7 @@ public class PortalManager {
 
 	long lastPress = -1;
 
-	void buttonPress( Block block , Player player ) {
+	void buttonPress( MyBlock block , MyPlayer player ) {
 
 		long currentTime = System.currentTimeMillis();
 
@@ -449,8 +447,8 @@ public class PortalManager {
 		}
 
 	}
-	
-	void enteredPortal( BaseVehicle vehicle, IntLocation loc ) {
+
+/*	void enteredPortal( BaseVehicle vehicle, IntLocation loc ) {
 
 		Player player = vehicle.getPassenger();
 
@@ -462,21 +460,23 @@ public class PortalManager {
 
 	}
 
+	
 	void enteredPortal( Player player , Location loc ) {
 
 		enteredPortal( player , loc , null );
 
 	}
-	
-	HashMap<Integer,Location> delayedMotions = new HashMap<Integer,Location>();
-	
-	HashMap<Integer,Location> getDelayedMotions() {
-		
-		return delayedMotions;
-		
-	}
 
-	void enteredPortal( Player player , Location loc , BaseVehicle vehicle ) {
+	HashMap<Integer,Location> delayedMotions = new HashMap<Integer,Location>();
+
+	HashMap<Integer,Location> getDelayedMotions() {
+
+		return delayedMotions;
+
+	}
+*/
+	
+	void enteredPortal( MyPlayer player , MyLocation loc /*, BaseVehicle vehicle */ ) {
 
 		IntLocation intLoc = new IntLocation( loc );
 
@@ -501,26 +501,25 @@ public class PortalManager {
 				MiscUtils.safeMessage(player, "[ServerPort] Unable to find target gate");
 				return;
 			} 
-			
+
 			if( portalInfo.bindStone ) {
 				return;
 			}
 
 			if( targetPortal.isActive() ) {
 				IntLocation target = targetPortal.getExitPoint();
-				Location newLoc = new Location();
+				MyLocation newLoc = new MyLocation();
 
-				newLoc.x = target.x + 0.5;
-				newLoc.y = target.y + 0.0;
-				newLoc.z = target.z + 0.5;
+				newLoc.setX( target.x + 0.5 );
+				newLoc.setY( target.y + 0.0 );
+				newLoc.setZ( target.z + 0.5 );
 
-				newLoc.rotX = (float)(loc.rotX + 180 + targetPortal.getDir() - portalInfo.getDir()) % 360;
-				newLoc.rotY = loc.rotY;
+				newLoc.setRotX( (float)(loc.getRotX() + 180 + targetPortal.getDir() - portalInfo.getDir()) % 360 );
+				newLoc.setRotY( loc.getRotY() );
 
-				if( vehicle == null ) {
-					System.out.println( "Teleporting player");
-					player.teleportTo(newLoc);
-				} else {
+//				if( vehicle == null ) {
+				player.teleportTo(newLoc);
+/*				} else {
 					System.out.println( "Teleporting vehicle");
 					newLoc.y++;
 
@@ -547,18 +546,18 @@ public class PortalManager {
 					System.out.println( "old loc: " + loc.x + "," + loc.y + "," + loc.z );
 
 					MiscUtils.gridLoad((int)Math.floor(newLoc.x), (int)Math.floor(newLoc.y), (int)Math.floor(newLoc.z));
-					
+
 					vehicle.setMotion(newsx*0.000001,0,newsz*0.00001);
 					//vehicle.teleportTo(newLoc);
 					//vehicle.setY(newLoc.y);
-					
+
 					final double finalx = newLoc.x;
 					final double finaly = newLoc.y;
 					final double finalz = newLoc.z;
-					
+
 					final double finalRotX = newLoc.rotX;
 					final double finalRotY = newLoc.rotY;
-					
+
 					final double finalsx = newsx;
 					final double finalsy = sy;
 					final double finalsz = newsz;
@@ -566,20 +565,21 @@ public class PortalManager {
 					final int id = vehicle.getId();
 
 					delayedMotions.put(id, finalLoc);
-					
+
 					targetPortal.deactivate();
-					
+
 					etc.getServer().addToServerQueue(new Runnable() {
-						
+
 						public void run() {
-							
+
 							processDelayedMotions( delayedMotions, id , finalx, finaly , finalz, finalRotX , finalRotY, finalsx, finalsy, finalsz );
-							
+
 						}
-						
+
 					}, 500 );
-					
+
 				}
+				*/
 
 			} else {
 				MiscUtils.safeMessage(player, "[ServerPort] Target gate is not open");
@@ -704,7 +704,7 @@ public class PortalManager {
 			portalCustom.dz = 0;
 			return "BADBUILD";
 		}
-		
+
 		if( !newChunks && !MiscUtils.fileCheck(worldName, portalCustom.getBlocks(-1))) {
 			portalCustom.x = 0;
 			portalCustom.y = 0;
@@ -712,7 +712,7 @@ public class PortalManager {
 			portalCustom.dx = 1;
 			portalCustom.dz = 0;
 			return "CHUNKGENBAN";
-			
+
 		}
 
 		if( !MiscUtils.generatedTest( worldName , portalCustom.getBlocks(-1))) {
@@ -729,10 +729,10 @@ public class PortalManager {
 		portalCustom.portalName = targetGate.toLowerCase();
 		portalCustom.portalActualName = targetGate;
 		portalCustom.targetServer = peerServerName;
-		
+
 		IntLocation loc = portalCustom.getExitPoint();
 		int shift = 0;
-		
+
 		if( safeExit ) {
 			shift = MiscUtils.getSafeExit( loc , softBlocks.getValues() );
 			portalCustom.y += shift;
@@ -741,8 +741,8 @@ public class PortalManager {
 				portalCustom.y -= shift;
 			}
 		}
-		
-		
+
+
 		portalCustom.fullDraw();
 		portalCustom.fullDraw();
 
@@ -885,7 +885,7 @@ public class PortalManager {
 			TempleGate.save();
 
 		}
-		
+
 		File bindFile = new File( directory + slash + "BindStone.gat");
 
 		if( createDefaultGates ) {
@@ -930,7 +930,7 @@ public class PortalManager {
 
 	}
 
-	boolean drawGate( Player player , String gate ) {
+	boolean drawGate( MyPlayer player , String gate ) {
 
 		if( player == null ) {
 			return false;
@@ -944,7 +944,7 @@ public class PortalManager {
 
 		IntLocation loc = new IntLocation( player.getLocation() );
 
-		double dir = player.getLocation().rotX + 180;
+		double dir = player.getLocation().getRotX() + 180;
 
 		int rot = PortalInfo.dirToRot(dir);
 
@@ -985,7 +985,7 @@ public class PortalManager {
 
 	}
 
-	void regenGates( Player player , int d ) {
+	void regenGates( MyPlayer player , int d ) {
 
 		if( player != null ) {
 			regenGates( player.getLocation() , d );
@@ -993,7 +993,7 @@ public class PortalManager {
 
 	}
 
-	void regenGates( Location loc , int d ) {
+	void regenGates( MyLocation loc , int d ) {
 
 		if( loc != null ) {
 
@@ -1025,17 +1025,13 @@ public class PortalManager {
 
 	}
 
-	void refreshSign( Player player , Sign sign ) {
-
-		//System.out.println( "checking for sign match");
+	void refreshSign( MyPlayer player , MySign sign ) {
 
 		int id = signBlocks.get(new IntLocation( sign.getBlock() ));
 
 		PortalInfo portalInfo = portalList.get(id);
 
 		if( portalInfo == null ) return;
-
-		//System.out.println( "updating sign");
 
 		String name = portalInfo.portalName.replace("_", "");
 		String target = portalInfo.targetGate.replace("_","");
@@ -1046,12 +1042,12 @@ public class PortalManager {
 		sign.setText(3, target.equalsIgnoreCase(name)?"":target);
 
 		sign.update();
-		
+
 		if( portalInfo.bindStone ) {
 			if( player != null ) {
 				LimboInfo limboInfo = communicationManager.limboStore.getLimboInfo(player.getName());
 				if( limboInfo != null ) {
-					
+
 					if( !limboInfo.getHomeGate().equals(portalInfo.portalName) || !limboInfo.getHomeServer().equals("here") ) {
 
 						MiscUtils.safeMessage(player, "[ServerPort] You have bound to this location");
@@ -1063,10 +1059,10 @@ public class PortalManager {
 				}
 			}
 		}
-		
+
 	}
 
-	void signPlaced( Player player , Sign sign ) {
+	void signPlaced( MyPlayer player , MySign sign ) {
 
 		if( sign.getText(0).length() > 0 ) {
 			return;
@@ -1102,7 +1098,7 @@ public class PortalManager {
 				}
 
 				boolean automaticTarget = false;
-				
+
 				if( line3.length() == 0 ) {
 					line3 = line1;
 					automaticTarget = true;
@@ -1256,46 +1252,46 @@ public class PortalManager {
 
 		return waterCurtain;
 	}
-	
+
 	PortalInfo bindStone() {
-		
-		
+
+
 		PortalInfo bindStone = new PortalInfo();
-		
+
 		bindStone.portalName = "BindStone";
-		
+
 		bindStone.mistID = 0;
-		
+
 		bindStone.blockLookup.put( 'X', 4 );
 		bindStone.blockLookup.put( '-', 4 );
 		bindStone.blockLookup.put( '*', 0 );
 		bindStone.blockLookup.put( '.', 0 );
-		
+
 		bindStone.blockTypes.put( new IntLocation( 1 , 0 , 1 ), 4 );
 		bindStone.blockTypes.put( new IntLocation( 1 , -1 , 1 ), 4 );
 		bindStone.blockTypes.put( new IntLocation( 1 , -2 , 1 ), 4 );
-		
+
 		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 1 ), 4 );
 		bindStone.blockTypes.put( new IntLocation( 0 , -3 , 1 ), 4 );
 		bindStone.blockTypes.put( new IntLocation( 2 , -3 , 1 ), 4 );
 		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 2 ), 4 );
 		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 0 ), 4 );
-		
+
 		bindStone.signBlocks.put( new IntLocation( 1 , -1, 2), 43);
-		
+
 		bindStone.portalBlocks.put(new IntLocation( 1 , -2 , 3 ) , 0 );
 		bindStone.portalBlocks.put(new IntLocation( 1 , -1 , 3 ) , 0 );
-		
+
 		bindStone.blockTypes.putAll(bindStone.portalBlocks);
-		
+
 		bindStone.exitPoint = new IntLocation( 1 , -2 , 3 );
 
 		bindStone.portalDuration = -1;
-		
+
 		bindStone.bindStone = true;
-		
+
 		return bindStone;
-		
+
 	}
 
 	PortalInfo templeGate() {
@@ -1380,23 +1376,23 @@ public class PortalManager {
 		}
 
 	}
-	
-	static void processDelayedMotions( HashMap<Integer,Location> delayedMotions, int id , double finalx, double finaly , double finalz, double finalRotX, double finalRotY,  double finalsx, double finalsy, double finalsz ) {
+
+/*	static void processDelayedMotions( HashMap<Integer,Location> delayedMotions, int id , double finalx, double finaly , double finalz, double finalRotX, double finalRotY,  double finalsx, double finalsy, double finalsz ) {
 
 		System.out.println( "Attempting delayed action");
-		
+
 		if( !delayedMotions.containsKey(id)) return;
-		
+
 		List<BaseVehicle> vehicles = etc.getServer().getVehicleEntityList();
-		
+
 		for( BaseVehicle current : vehicles ) {
 
 			if( current.getId() == id ) {
 
 				current.getPassenger().teleportTo(finalx, finaly, finalz, (float)finalRotX, (float)finalRotY);
-				
+
 				current.teleportTo(finalx, finaly, finalz, (float)finalRotX, (float)finalRotY);
-				
+
 				current.setMotion( finalsx , finalsy , finalsz );
 
 			}
@@ -1406,6 +1402,7 @@ public class PortalManager {
 		delayedMotions.remove(id);
 
 	}
+	*/
 
 
 }

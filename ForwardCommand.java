@@ -190,7 +190,7 @@ public class ForwardCommand implements Runnable {
 		
 		final String finalPlayerName = new String( playerName );
 
-		etc.getServer().addToServerQueue(new Runnable() {
+		MyServer.getServer().addToServerQueue(new Runnable() {
 
 			public void run() {
 				communicationManager.limboStore.unLockPlayer(finalPlayerName);

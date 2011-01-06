@@ -1,7 +1,8 @@
 
 public class TeleportCommand implements Runnable {
 
-
+	final static MyServer server = MyServer.getServer();
+	
 	CommunicationManager communicationManager = null;
 	String playerName = null;
 	int playerHealth = 20;
@@ -230,7 +231,7 @@ public class TeleportCommand implements Runnable {
 		final String finalPlayerName = new String(playerName);
 		final String finalPlayerData = new String(playerData);
 
-		etc.getServer().addToServerQueue(new Runnable() {
+		server.addToServerQueue(new Runnable() {
 
 			public void run() {
 				LimboStore.addToPlayerInv( "STORE:" + finalPlayerName + ";" + finalPlayerData );
@@ -245,7 +246,7 @@ public class TeleportCommand implements Runnable {
 
 		final String finalPlayerName = new String( playerName );
 
-		etc.getServer().addToServerQueue(new Runnable() {
+		server.addToServerQueue(new Runnable() {
 
 			public void run() {
 				communicationManager.limboStore.unLockPlayer(finalPlayerName);
@@ -322,11 +323,11 @@ public class TeleportCommand implements Runnable {
 		final String finalKickString = new String(kickString);
 		final String finalPlayerName = new String(playerName);
 
-		etc.getServer().addToServerQueue(new Runnable() {
+		server.addToServerQueue(new Runnable() {
 
 			public void run() {
 
-				Player player = etc.getServer().getPlayer(finalPlayerName);
+				MyPlayer player = server.getPlayer(finalPlayerName);
 				if( player != null ) {
 					player.kick( finalKickString );
 				}
@@ -335,7 +336,7 @@ public class TeleportCommand implements Runnable {
 		});
 	}
 	
-	static void teleportToBind( CommunicationManager communicationManager , Player player  ) {
+	static void teleportToBind( CommunicationManager communicationManager , MyPlayer player  ) {
 		
 		LimboInfo limboInfo = communicationManager.limboStore.getLimboInfo(player.getName());
 		
@@ -347,19 +348,24 @@ public class TeleportCommand implements Runnable {
 			targetGate = limboInfo.getHomeGate();
 		}
 		
-		if( targetServer.equals("none")) {
+		if( targetServer.equals("none") || targetGate.equals("none")) {
 			
 			player.setHealth(0);
 			
 			return;
 			
-		} 
+		}  else {
+			
+			player.setHealth(20);
+			teleport( communicationManager , player , targetServer, targetGate );
+			
+		}
 		
-		teleport( communicationManager , player , targetServer, targetGate );
+		
 		
 	}
 	
-	static void teleport( CommunicationManager communicationManager , Player player , String targetServer , String targetGate ) {
+	static void teleport( CommunicationManager communicationManager , MyPlayer player , String targetServer , String targetGate ) {
 		
 		PortalInfo portalInfo = new PortalInfo();
 		
@@ -378,7 +384,7 @@ public class TeleportCommand implements Runnable {
 				
 				IntLocation locInt = portalInfo.getExitPoint();
 				
-				Location loc = new Location( 0.5+(double)locInt.getX() , (double)locInt.getY() , 0.5+(double)locInt.getZ() , (float)portalInfo.getDir() , (float)0 );
+				MyLocation loc = new MyLocation( 0.5+(double)locInt.getX() , (double)locInt.getY() , 0.5+(double)locInt.getZ() , (float)portalInfo.getDir() , (float)0 );
 				
 				player.teleportTo(loc);
 				
@@ -390,7 +396,7 @@ public class TeleportCommand implements Runnable {
 		
 	}
 	
-	static void teleport( CommunicationManager communicationManager , Player player , PortalInfo portalInfo ) {
+	static void teleport( CommunicationManager communicationManager , MyPlayer player , PortalInfo portalInfo ) {
 		
 		communicationManager.limboStore.lockPlayer(player.getName(), 5000);
 

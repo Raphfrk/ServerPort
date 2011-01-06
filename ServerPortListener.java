@@ -20,51 +20,51 @@ public class ServerPortListener extends PluginListener {
 
 	public boolean onBlockPlace(Player player, Block blockPlaced, Block blockClicked, Item itemInHand) {
 
-		return serverPortListenerCommon.onBlockPlace(player, blockPlaced, blockClicked, itemInHand);
+		return serverPortListenerCommon.onBlockPlace(new MyPlayer(player), new MyBlock(blockPlaced), new MyBlock(blockClicked), new MyItem(itemInHand));
 		
 	}
 
 	public void onLogin(Player player) {
 		
-		serverPortListenerCommon.onLogin(player);
+		serverPortListenerCommon.onLogin(new MyPlayer(player));
 
 	}
 	
 
     public boolean onHealthChange(Player player, int oldValue, int newValue) {
 
-    	return serverPortListenerCommon.onHealthChange(player, oldValue, newValue);
+    	return serverPortListenerCommon.onHealthChange(new MyPlayer(player), oldValue, newValue);
     }
 
 
 	public void onPlayerMove(Player player, Location from, Location to) {
 		
-		serverPortListenerCommon.onPlayerMove(player, from, to);
+		serverPortListenerCommon.onPlayerMove(new MyPlayer(player), new MyLocation(from), new MyLocation(to));
 
 	}
 
 	public boolean onBlockDestroy(Player player, Block block) {
 
-		return serverPortListenerCommon.onBlockDestroy(player, block);
+		return serverPortListenerCommon.onBlockDestroy(new MyPlayer(player), new MyBlock(block));
 	}
 
 
 	public boolean onChat(Player player, String message) {
 
-		return serverPortListenerCommon.onChat(player, message);
+		return serverPortListenerCommon.onChat(new MyPlayer(player), message);
 	}
 
 
 	public boolean onCommand(Player player, String[] split) {
 		
-		return serverPortListenerCommon.onCommand(player, split);
+		return serverPortListenerCommon.onCommand(new MyPlayer(player), split);
 
 	}
 
 
 	public boolean onSignChange(Player player, Sign sign) {
 		
-		return serverPortListenerCommon.onSignChange(player, sign);
+		return serverPortListenerCommon.onSignChange(new MyPlayer(player), new MySign(sign));
 	}
 	
     	
@@ -73,13 +73,13 @@ public class ServerPortListener extends PluginListener {
 
 	public boolean onBlockPhysics(Block block, boolean placed) {
 
-		return serverPortListenerCommon.onBlockPhysics(block, placed);
+		return serverPortListenerCommon.onBlockPhysics(new MyBlock(block), placed);
 	}
 
 
 	public boolean onFlow(Block blockFrom, Block blockTo) {
 
-		return serverPortListenerCommon.onFlow(blockFrom, blockTo);
+		return serverPortListenerCommon.onFlow(new MyBlock(blockFrom), new MyBlock(blockTo));
 	}
 
 }

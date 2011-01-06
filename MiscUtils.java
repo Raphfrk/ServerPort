@@ -31,7 +31,7 @@ public class MiscUtils {
 	protected static final Logger log = Logger.getLogger("Minecraft");
 	static Object logSync = new Object();
 	
-	static Server server = etc.getServer();
+	static MyServer server = MyServer.getServer();
 	
 	static void safeLogging( String message ) {
 		safeLogging( log , message );
@@ -46,12 +46,12 @@ public class MiscUtils {
 	}
 	
 
-	static void safeMessage( Player player , String message ) {
+	static void safeMessage( MyPlayer player , String message ) {
 		
 		final String finalMessage = message;
-		final Player finalPlayer = player;
+		final MyPlayer finalPlayer = player;
 		
-		server.addToServerQueue( new Runnable() {
+		/*server.addToServerQueue( new Runnable() {
 			
 			public void run() {
 				
@@ -59,7 +59,10 @@ public class MiscUtils {
 				
 			}
 			
-		});
+		});*/
+		
+		safeMessage( player.getName(), message );
+		
 		
 	}
 	
@@ -72,10 +75,10 @@ public class MiscUtils {
 			
 			public void run() {
 				
-				Player player = null;
+				MyPlayer player = null;
 				
 				if( finalPlayer != null ) {
-					player = etc.getServer().getPlayer(finalPlayer);
+					player = server.getPlayer(finalPlayer);
 				}
 				
 				if( player != null ) {
@@ -386,7 +389,7 @@ public class MiscUtils {
 			int blockType = blocks.get(loc);
 			
 			if( loc.getY() < 127 && loc.getY() > 0 ) {
-				if( loc != null ) {
+				if( loc != null && server != null ) {
 					server.setBlockAt(blockType, loc.getX(), loc.getY(), loc.getZ() );
 				}
 			}
@@ -642,7 +645,7 @@ public class MiscUtils {
 	}
 		
 	
-	static String blockString( Block block ) {
+	static String blockString( MyBlock block ) {
 		return block.getX() + ", " + block.getY() + ", " + block.getZ();
 	}
 	

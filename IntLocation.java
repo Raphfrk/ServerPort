@@ -63,16 +63,16 @@ public class IntLocation implements Comparable<IntLocation> {
 		this.z = z;
 	}
 	
-	IntLocation( Block block ) {
+	IntLocation( MyBlock block ) {
 		this.x = block.getX();
 		this.y = block.getY();
 		this.z = block.getZ();
 	}
 	
-	IntLocation( Location loc ) {
-		this.x = (int)Math.floor(loc.x);
-		this.y = (int)Math.floor(loc.y);
-		this.z = (int)Math.floor(loc.z);
+	IntLocation( MyLocation loc ) {
+		this.x = (int)Math.floor(loc.getX());
+		this.y = (int)Math.floor(loc.getY());
+		this.z = (int)Math.floor(loc.getZ());
 	}
 	
 	int getX() {
@@ -150,13 +150,13 @@ public class IntLocation implements Comparable<IntLocation> {
 		return x + ", " + y + ", " + z;
 	}
 	
-	Location toLocation() {
+	MyLocation toLocation() {
 		
-		Location loc = new Location();
+		MyLocation loc = new MyLocation();
 		
-		loc.x = this.x + 0.5;
-		loc.y = this.y;
-		loc.z = this.z + 0.5;
+		loc.setX( this.x + 0.5 );
+		loc.setY( this.y );
+		loc.setZ( this.z + 0.5 );
 		
 		return loc;
 		

@@ -7,8 +7,7 @@ import java.util.TreeMap;
 
 public class ChatManager {
 	
-	
-	final static Server server = etc.getServer();
+	MyServer server = MyServer.getServer();
 	
 	public StringList targetServers = new StringList();
 	public StringList allowedServers = new StringList();
@@ -84,11 +83,11 @@ public class ChatManager {
 	HashSet<String> hashSetCache = null;
 	long lastUpdate = -1;
 	
-	void sendChat( Player player , String message ) {
+	void sendChat( MyPlayer player , String message ) {
 				
 		String colour = player.getColor();
 		
-		String fullMessage = "<" + colour + player.getName() + Colors.White + "> " + message;
+		String fullMessage = "<" + colour + player.getName() + server.getColor("White") + "> " + message;
 		
 		fullMessage = ChatCommand.encodeString(fullMessage);
 	
@@ -146,7 +145,7 @@ public class ChatManager {
 			
 			String prefix = communicationManager.showServerName ? "[" + peerServerName + "] " :"";
 			
-			if( !server.getPlayerList().isEmpty() ) {
+			if( !server.isPlayerListEmpty() ) {
 				server.messageAll( prefix + ChatCommand.decodeString(split2[0]));
 			}
 			
