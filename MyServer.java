@@ -1,6 +1,7 @@
 public class MyServer {
 	
 	public static org.bukkit.Server bukkitServer;
+	public static org.bukkit.World bukkitWorld;
 	
 	public static Server hmodServer;
 	
@@ -16,9 +17,10 @@ public class MyServer {
 	}
 	
 
-	static void setBukkitServer( org.bukkit.Server server ) {
+	static void setBukkitServer( org.bukkit.World world, org.bukkit.Server server ) {
 		
-		myServer.bukkitServer = server;
+		MyServer.bukkitWorld = world;
+		MyServer.bukkitServer = server;
 		myServer.hmod = false;
 		
 	}
@@ -27,6 +29,12 @@ public class MyServer {
 	public static MyServer getServer() {
 		
 		return myServer;
+		
+	}
+	
+	public org.bukkit.World getBukkitWorld() {
+		
+		return bukkitWorld;
 		
 	}
 	

@@ -30,6 +30,8 @@ public class MyLocation {
 		
 		if( hmod ) {
 			hmodLocation = new Location( x, y, z, rotX, rotY );
+		} else {
+			bukkitLocation = new org.bukkit.Location( MyServer.getServer().getBukkitWorld(), x, y, z, rotX, rotY );
 		}
 	}
 	
@@ -47,15 +49,23 @@ public class MyLocation {
 		this.hmodLocation = loc;
 	}
 	
+	void setBukkitLocation( org.bukkit.Location loc ) {
+		this.bukkitLocation = loc;
+	}
+	
 	Location getHmodLocation() {
 		return hmodLocation;
+	}
+	
+	org.bukkit.Location getBukkitLocation() {
+		return bukkitLocation;
 	}
 	
 	double getX() {
 		if( hmod ) {
 			return hmodLocation.x;
 		} else {
-			return 0;
+			return bukkitLocation.getX();
 		}
 	}
 	
@@ -63,7 +73,7 @@ public class MyLocation {
 		if( hmod ) {
 			return hmodLocation.y;
 		} else {
-			return 0;
+			return bukkitLocation.getY();
 		}
 	}
 	
@@ -71,7 +81,7 @@ public class MyLocation {
 		if( hmod ) {
 			return hmodLocation.z;
 		} else {
-			return 0;
+			return bukkitLocation.getZ();
 		}
 	}
 	
@@ -79,7 +89,7 @@ public class MyLocation {
 		if( hmod ) {
 			return hmodLocation.rotX;
 		} else {
-			return 0;
+			return bukkitLocation.getYaw();
 		}
 	}
 	
@@ -87,7 +97,7 @@ public class MyLocation {
 		if( hmod ) {
 			return hmodLocation.rotY;
 		} else {
-			return 0;
+			return bukkitLocation.getPitch();
 		}
 	}
 	
@@ -95,7 +105,7 @@ public class MyLocation {
 		if( hmod ) {
 			hmodLocation.x=x;
 		} else {
-			
+			bukkitLocation.setX(x);
 		}
 	}
 	
@@ -103,7 +113,7 @@ public class MyLocation {
 		if( hmod ) {
 			hmodLocation.y=y;
 		} else {
-			
+			bukkitLocation.setY(y);
 		}
 	}
 	
@@ -111,7 +121,7 @@ public class MyLocation {
 		if( hmod ) {
 			hmodLocation.z=z;
 		} else {
-			
+			bukkitLocation.setZ(z);
 		}
 	}
 	
@@ -119,15 +129,15 @@ public class MyLocation {
 		if( hmod ) {
 			hmodLocation.rotX=rotX;
 		} else {
-			
+			bukkitLocation.setYaw(rotX);
 		}
 	}
 	
-	void setRotY(float y) {
+	void setRotY(float rotY) {
 		if( hmod ) {
-			hmodLocation.rotY=y;
+			hmodLocation.rotY=rotY;
 		} else {
-			
+			bukkitLocation.setPitch(rotY);
 		}
 	}
 
