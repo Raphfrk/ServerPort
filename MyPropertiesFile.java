@@ -40,6 +40,10 @@ public class MyPropertiesFile {
 		String[] lines = MiscUtils.fileToString(prefix + tableName);
 
 		addTable();
+		
+		if( lines == null ) {
+			return;
+		}
 
 		for( String line : lines ) {
 						
