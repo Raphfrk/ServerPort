@@ -473,7 +473,7 @@ public class LimboStore {
 
 			if( player == null ) {
 
-				if( (player = server.getPlayer(item)) == null ) {
+				if( (player = server.getPlayer(item)).isNull() ) {
 					return "";
 				}
 			} else {

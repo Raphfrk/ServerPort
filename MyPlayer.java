@@ -178,4 +178,12 @@ public class MyPlayer {
 		}
 	}
 	
+	boolean isNull() {
+		if( hmod ) {
+			return hmodPlayer == null;
+		} else {
+			return bukkitPlayer == null;
+		}
+	}
+	
 }
