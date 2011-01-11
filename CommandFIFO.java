@@ -75,6 +75,14 @@ public class CommandFIFO {
 			String rejectedItems = limboStore.processTransfer( command );
 			
 			if( rejectedItems != null ) {
+				/*try {
+					Object x = new Object();
+					synchronized(x) {
+						x.wait();
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}*/
 				return "REJECTEDITEMS:" + rejectedItems;
 			}
 		} else if( split[0].equals("REJECTEDITEMS")) {

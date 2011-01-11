@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class VersionNumbering {
-	final static String version = "179";
+	final static String version = "180";
 
 	static String name = "default";
 	static final String slash = System.getProperty("file.separator");
