@@ -83,6 +83,7 @@ public class CommandFIFO {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}*/
+				
 				return "REJECTEDITEMS:" + rejectedItems;
 			}
 		} else if( split[0].equals("REJECTEDITEMS")) {

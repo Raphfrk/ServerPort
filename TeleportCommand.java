@@ -163,10 +163,14 @@ public class TeleportCommand implements Runnable {
 				return;
 			} else if( !gateExists.equals("OK") ) {
 
-				MiscUtils.safeMessage(playerName, "[ServerPort] Target gate is not activated");
-				serverPortClient.close(peerServerInfoFromConnection);
+				if( MiscUtils.errorCheck(gateExists) != null ) {
+					MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(gateExists)  );
+				} else {
+					MiscUtils.safeMessage(playerName, "[ServerPort] Target gate is not activated");
+				}
 				restoreInventory();
 				unlockPlayer();
+				serverPortClient.close(peerServerInfoFromConnection);
 				return;
 			}
 
@@ -174,8 +178,8 @@ public class TeleportCommand implements Runnable {
 
 			if( MiscUtils.errorCheck(reply) != null ) {
 				MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
-				serverPortClient.close(peerServerInfoFromConnection);
 				restoreInventory();
+				serverPortClient.close(peerServerInfoFromConnection);
 				return;
 			} 
 
@@ -186,8 +190,8 @@ public class TeleportCommand implements Runnable {
 
 				if( MiscUtils.errorCheck(reply) != null ) {
 					MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
-					serverPortClient.close(peerServerInfoFromConnection);
 					restoreInventory();
+					serverPortClient.close(peerServerInfoFromConnection);
 					return;
 				} 
 
@@ -197,8 +201,8 @@ public class TeleportCommand implements Runnable {
 
 					if( okSplit.length != 2 ) {
 						MiscUtils.safeMessage(playerName, "[ServerPort] Reply from server did not have the correct number of parts");
-						serverPortClient.close(peerServerInfoFromConnection);
 						restoreInventory();
+						serverPortClient.close(peerServerInfoFromConnection);
 						return;
 					}
 
