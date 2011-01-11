@@ -932,7 +932,7 @@ public class PortalManager {
 
 	boolean drawGate( MyPlayer player , String gate ) {
 
-		if( player == null ) {
+		if( player == null || player.isNull() ) {
 			return false;
 		}
 
@@ -987,7 +987,7 @@ public class PortalManager {
 
 	void regenGates( MyPlayer player , int d ) {
 
-		if( player != null ) {
+		if( player != null && !player.isNull() ) {
 			regenGates( player.getLocation() , d );
 		}
 
@@ -995,7 +995,7 @@ public class PortalManager {
 
 	void regenGates( MyLocation loc , int d ) {
 
-		if( loc != null ) {
+		if( loc != null && !loc.isNull() ) {
 
 			regenGates( new IntLocation( loc ) , d );
 
@@ -1044,7 +1044,7 @@ public class PortalManager {
 		sign.update();
 
 		if( portalInfo.bindStone ) {
-			if( player != null ) {
+			if( player != null && !player.isNull() ) {
 				LimboInfo limboInfo = communicationManager.limboStore.getLimboInfo(player.getName());
 				if( limboInfo != null ) {
 

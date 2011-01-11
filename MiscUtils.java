@@ -81,7 +81,7 @@ public class MiscUtils {
 					player = server.getPlayer(finalPlayer);
 				}
 				
-				if( player != null ) {
+				if( player != null && !player.isNull() ) {
 					player.sendMessage(finalMessage);
 				}
 				
@@ -389,7 +389,7 @@ public class MiscUtils {
 			int blockType = blocks.get(loc);
 			
 			if( loc.getY() < 127 && loc.getY() > 0 ) {
-				if( loc != null && server != null ) {
+				if( loc != null && server != null && !server.isNull() ) {
 					server.setBlockAt(blockType, loc.getX(), loc.getY(), loc.getZ() );
 				}
 			}

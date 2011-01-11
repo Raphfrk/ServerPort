@@ -328,7 +328,7 @@ public class TeleportCommand implements Runnable {
 			public void run() {
 
 				MyPlayer player = server.getPlayer(finalPlayerName);
-				if( player != null ) {
+				if( player != null && !player.isNull() ) {
 					player.kick( finalKickString );
 				}
 			}

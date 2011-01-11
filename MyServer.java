@@ -168,4 +168,12 @@ public class MyServer {
 		}
 	}
 	
+	boolean isNull() {
+		if( hmod ) {
+			return hmodServer == null;
+		} else {
+			return bukkitWorld == null || bukkitServer == null;
+		}
+	}
+	
 }

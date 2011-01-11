@@ -388,7 +388,7 @@ public class LimboStore {
 
 		MyInventory inv = player.getInventory();
 
-		if( inv == null ) {
+		if( inv == null || inv.isNull() ) {
 			return "";
 		}
 
@@ -471,7 +471,7 @@ public class LimboStore {
 
 		for( String item : strings ) {
 
-			if( player == null ) {
+			if( player == null || player.isNull() ) {
 
 				if( (player = server.getPlayer(item)).isNull() ) {
 					return "";

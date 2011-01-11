@@ -81,4 +81,12 @@ public class MyInventory {
 		
 	}
 	
+	boolean isNull() {
+		if( hmod ) {
+			return hmodInventory == null;
+		} else {
+			return true;
+		}
+	}
+	
 }

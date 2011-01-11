@@ -140,6 +140,14 @@ public class MyLocation {
 			bukkitLocation.setPitch(rotY);
 		}
 	}
+	
+	boolean isNull() {
+		if( hmod ) {
+			return hmodLocation == null;
+		} else {
+			return bukkitLocation == null;
+		}
+	}
 
 
 }
