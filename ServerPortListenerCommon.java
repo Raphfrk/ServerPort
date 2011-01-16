@@ -1,4 +1,3 @@
-import java.util.HashMap;
 
 public class ServerPortListenerCommon {
 
@@ -225,9 +224,9 @@ public class ServerPortListenerCommon {
 		if( portalManager.testProtectedBlock( block ) ) {
 			return true;
 		}
-		
+				
 		if( portalManager.testSignBlock( block ) ) {
-			
+						
 			String gateType = portalManager.getPortalType( block );
 			
 			if( gateType == null ) {
@@ -236,7 +235,7 @@ public class ServerPortListenerCommon {
 			
 			if( block.getType() == SIGN ) {
 
-				MySign sign = (MySign)server.getComplexBlock(block.getX(), block.getY(), block.getZ());
+				MySign sign = (MySign)server.getComplexBlock(block.getX(), block.getY(), block.getZ(), block.getStatus());
 
 				if( !sign.isNull() ) {
 					portalManager.refreshSign( player , sign );
@@ -282,7 +281,7 @@ public class ServerPortListenerCommon {
 		double m = player.getLocation().getRotX() % 360;
 		m = m < 0 ? m+360 : m;
 		
-		//MiscUtils.safeMessage(player, "Your dir is: " + m );
+		MiscUtils.safeMessage(player, "Your dir is: " + m );
 		
 		if( split[0].equals("/release") && player.canUseCommand("/release") && player.getHealth() > 0 ) {
 			
@@ -295,6 +294,8 @@ public class ServerPortListenerCommon {
 		}
 
 		if( split[0].equals("/drawgate") && split.length == 2 && ( player.canUseCommand("/drawgate") || player.canUseCommand("/drawgate" + split[1]))) {
+			
+			server.dropItem( player.getLocation(), 68, 1 );
 			
 			if( portalManager.drawGate(player, split[1])) {
 				MiscUtils.safeMessage(player.getName(), "[ServerPort] Gate Auto-generation success");
@@ -428,10 +429,7 @@ public class ServerPortListenerCommon {
     	
     synchronized public void onVehiclePositionChange( BaseVehicle vehicle, IntLocation from , IntLocation to ) {
 
-    	System.out.println( "From: " + from + " -> " + to );
-    	
-
-    	if( portalManager.testPortalBlock(to)) {
+   	if( portalManager.testPortalBlock(to)) {
 
     		Player player = vehicle.getPassenger();
 

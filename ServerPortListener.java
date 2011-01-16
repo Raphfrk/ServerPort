@@ -1,6 +1,6 @@
 
-public class ServerPortListener extends PluginListener {
-
+public class ServerPortListener /*extends PluginListener*/ {
+/*
 	Plugin serverPort = null;
 	
 	ServerPortListenerCommon serverPortListenerCommon;
@@ -81,5 +81,6 @@ public class ServerPortListener extends PluginListener {
 
 		return serverPortListenerCommon.onFlow(new MyBlock(blockFrom), new MyBlock(blockTo));
 	}
+	*/
 
 }

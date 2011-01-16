@@ -1,6 +1,9 @@
 public class MyBlock {
 	
-	private org.bukkit.Block bukkitBlock;
+	private org.bukkit.block.Block bukkitBlock;
+	private int bukkitStatus;
+	// 0: start
+	// 3: broken
 	
 	private Block hmodBlock;
 	
@@ -15,30 +18,27 @@ public class MyBlock {
 		hmod = true;
 	}
 	
-	public MyBlock( org.bukkit.Block block ) {
+	public MyBlock( org.bukkit.block.Block block, int status ) {
 		bukkitBlock = block;
 		hmod = false;
 	}
 	
-	MyBlock( int id, int x, int y, int z) {
-		
-		hmod = MyServer.getServer().getHmod();
-		
-		if( hmod ) {
-			hmodBlock = new Block( id, x, y, z );
-		}
-		
+	void setHmodBlock(Block block) {
+		hmod = true;
+		hmodBlock = block;
 	}
 	
-	void setHmodBlock(Block block) {
-		hmodBlock = block;
+	void setBukkitBlock(org.bukkit.block.Block block, int status) {
+		bukkitBlock = block;
+		bukkitStatus = status;
+		hmod = false;
 	}
 	
 	int getType() {
 		if( hmod ) {
 			return hmodBlock.getType();
 		} else {
-			return 0;
+			return bukkitBlock.getTypeId();
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class MyBlock {
 		if( hmod ) {
 			return hmodBlock.getStatus();
 		} else {
-			return 0;
+			return bukkitStatus;
 		}
 	}
 
@@ -54,7 +54,7 @@ public class MyBlock {
 		if( hmod ) {
 			return hmodBlock.getX();
 		} else {
-			return 0;
+			return bukkitBlock.getX();
 		}
 	}
 	
@@ -62,7 +62,7 @@ public class MyBlock {
 		if( hmod ) {
 			return hmodBlock.getY();
 		} else {
-			return 0;
+			return bukkitBlock.getY();
 		}
 	}
 	
@@ -70,31 +70,7 @@ public class MyBlock {
 		if( hmod ) {
 			return hmodBlock.getZ();
 		} else {
-			return 0;
-		}
-	}
-	
-	void setX(int x) {
-		if( hmod ) {
-			hmodBlock.setX(x);
-		} else {
-
-		}
-	}
-	
-	void setY(int y) {
-		if( hmod ) {
-			hmodBlock.setY(y);
-		} else {
-			
-		}
-	}
-	
-	void setZ(int z) {
-		if( hmod ) {
-			hmodBlock.setZ(z);
-		} else {
-
+			return bukkitBlock.getZ();
 		}
 	}
 	

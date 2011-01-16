@@ -1,7 +1,9 @@
 
 public class MyPlayer {
 
-	private org.bukkit.Player bukkitPlayer;
+	private org.bukkit.entity.Player bukkitPlayer;
+	
+	private org.bukkit.Location teleportTo = null;
 
 	private Player hmodPlayer;
 
@@ -16,7 +18,7 @@ public class MyPlayer {
 		hmod = true;
 	}
 
-	public MyPlayer( org.bukkit.Player player ) {
+	public MyPlayer( org.bukkit.entity.Player player ) {
 		bukkitPlayer = player;
 		hmod = false;
 	}
@@ -26,7 +28,7 @@ public class MyPlayer {
 		this.hmodPlayer = player;
 	}
 	
-	void setBukkitPlayer( org.bukkit.Player player ) {
+	void setBukkitPlayer( org.bukkit.entity.Player player ) {
 		this.bukkitPlayer = player;
 		hmod = false;
 	}
@@ -36,10 +38,19 @@ public class MyPlayer {
 		if( hmod ) {
 			return hmodPlayer.getColor();
 		} else {
-			// TODO
+			
+			String displayName = bukkitPlayer.getDisplayName();
+			if( displayName.indexOf("\u00A7") == 0 ) {
+				return displayName.substring(0,2);
+			}
+			
 			return "";
 		}
 		
+	}
+	
+	org.bukkit.Location getTeleportTo() {
+		return teleportTo;
 	}
 
 	String getName() {
@@ -56,8 +67,8 @@ public class MyPlayer {
 		if( hmod ) {
 			return hmodPlayer.getIP();
 		} else {
-			// TODO: 
-			return "127.0.0.1";
+			byte[] ip = bukkitPlayer.getAddress().getAddress().getAddress();
+			return ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
 		}
 	}
 	
@@ -72,8 +83,9 @@ public class MyPlayer {
 			return inv;
 			
 		} else {
-			// TODO
-			return null;
+	
+			inv.setBukkitInventory( bukkitPlayer.getInventory() );
+			return inv;
 		}
 		
 	}
@@ -131,6 +143,7 @@ public class MyPlayer {
 			hmodPlayer.teleportTo(loc.getHmodLocation());
 		} else {
 			bukkitPlayer.teleportTo(loc.getBukkitLocation());
+			teleportTo = loc.getBukkitLocation();
 		}
 	}
 	
@@ -174,7 +187,9 @@ public class MyPlayer {
 				hmodPlayer.kick(message);
 			}
 		} else {
-			// TODO
+			if( bukkitPlayer != null && message != null ) {
+				bukkitPlayer.kickPlayer(message);
+			}
 		}
 	}
 	

@@ -3,7 +3,8 @@ public class MyItem {
 	
 	Item hmodItem;
 	
-//	org.bukkit bukkitItem;
+	org.bukkit.inventory.ItemStack bukkitItem;
+	int bukkitSlot = 0;
 	
 	boolean hmod = false;
 	
@@ -20,21 +21,32 @@ public class MyItem {
 		hmodItem = item;
 	}
 	
+	void setBukkitItem( org.bukkit.inventory.ItemStack item, int slot ) {
+		bukkitItem = item;
+		bukkitSlot = slot;
+	}
+	
 	void setItemId(int id) {
 		if( hmod ) {
 			hmodItem.setItemId(id);
-		}	
+		} else {
+			bukkitItem.setTypeId(id);
+		}
 	}
 	
 	void setAmount(int amount) {
 		if( hmod ) {
 			hmodItem.setAmount(amount);
+		} else {
+			bukkitItem.setAmount(amount);
 		}
 	}
 
 	void setDamage(int damage) {
 		if(hmod) {
 			hmodItem.setDamage(damage);
+		} else {
+			bukkitItem.setDamage((byte)damage);
 		}
 	}
 	
@@ -42,7 +54,7 @@ public class MyItem {
 		if( hmod ) {
 			return hmodItem==null;
 		} else {
-			return false;
+			return !(bukkitItem!=null && bukkitItem.getTypeId()!=0);
 		}
 	}
 	
@@ -50,7 +62,7 @@ public class MyItem {
 		if(hmod) {
 			return hmodItem.getSlot();
 		} else {
-			return 0;
+			return bukkitSlot;
 		}
 	}
 	
@@ -58,7 +70,7 @@ public class MyItem {
 		if(hmod) {
 			return hmodItem.getItemId();
 		} else {
-			return 0;
+			return bukkitItem.getTypeId();
 		}
 	}
 	
@@ -66,7 +78,7 @@ public class MyItem {
 		if(hmod) {
 			return hmodItem.getDamage();
 		} else {
-			return 0;
+			return (int)bukkitItem.getDamage();
 		}
 	}
 	
@@ -74,7 +86,7 @@ public class MyItem {
 		if(hmod) {
 			return hmodItem.getAmount();
 		} else {
-			return 0;
+			return bukkitItem.getAmount();
 		}
 	}
 	

@@ -200,9 +200,12 @@ public class ServerPortClient {
 		
 		try {
 			String line = command + ":" + vars;
+			String toHash = peerServerInfo.passcode + line + peerSession + session;
+			String hash = MiscUtils.sha1Hash(toHash);
+			
 			out.write(line);
 			out.newLine();
-			out.write(MiscUtils.sha1Hash(peerServerInfo.passcode + line + peerSession + session));
+			out.write(hash);
 			out.newLine();
 			out.flush();
 			

@@ -13,6 +13,8 @@ public class MyLocation {
 		
 		if( hmod ) {
 			hmodLocation = new Location();	
+		} else {
+			bukkitLocation = new org.bukkit.Location(MyServer.getServer().getBukkitWorld(), 0, 0, 0);
 		}
 		
 	}

@@ -1,9 +1,7 @@
-import java.io.File;
-import java.util.logging.Logger;
 
-public class ServerPort extends Plugin {
+public class ServerPort /*extends Plugin */{
 
-	ServerPortListenerCommon serverPortListenerCommon = new ServerPortListenerCommon();
+/*	ServerPortListenerCommon serverPortListenerCommon = new ServerPortListenerCommon();
 	
 	private ServerPortListener serverPortListener = new ServerPortListener(this);
 	
@@ -48,5 +46,5 @@ public class ServerPort extends Plugin {
 		
 	}
 	
-
+*/
 }

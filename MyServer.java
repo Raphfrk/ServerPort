@@ -1,3 +1,4 @@
+
 public class MyServer {
 	
 	public static org.bukkit.Server bukkitServer;
@@ -46,14 +47,20 @@ public class MyServer {
 		if( hmod ) {
 			return hmodServer.getPlayerList().isEmpty();
 		} else {
-			return false;
+			return bukkitServer.getOnlinePlayers().length == 0;
 		}
 	}
 	
 	void messageAll( String message ) {
 		
+		if( message == null ) return;
+		
 		if( hmod ) {
 			hmodServer.messageAll( message );
+		} else {
+			for( org.bukkit.entity.Player player : bukkitServer.getOnlinePlayers() ) {
+				player.sendMessage(message);
+			}
 		}
 	}
 	
@@ -63,7 +70,12 @@ public class MyServer {
 			
 			hmodServer.addToServerQueue( runnable , delay );
 			
-		} 
+		} else {
+			
+			RunnableEvent runnableEvent = new RunnableEvent(runnable);
+			bukkitServer.getPluginManager().callAsyncEvent(runnableEvent,delay);
+			
+		}
 		
 	}
 
@@ -73,7 +85,10 @@ public class MyServer {
 			
 			hmodServer.addToServerQueue( runnable );
 			
-		} 
+		} else {
+			RunnableEvent runnableEvent = new RunnableEvent(runnable);
+			bukkitServer.getPluginManager().callAsyncEvent(runnableEvent);
+		}
 		
 	}
 	
@@ -83,23 +98,29 @@ public class MyServer {
 			
 			hmodServer.dropItem(loc.getHmodLocation(), id, quantity);
 			
+		} else {
+			bukkitWorld.dropItem(loc.getBukkitLocation(), new org.bukkit.inventory.ItemStack( id, quantity ));
 		}
 		
 	}
 	
 	MyPlayer getPlayer( String name ) {
 		
+		MyPlayer player = new MyPlayer();
+		
+		if( name == null ) return player;
+		
 		if( hmod ) {
-			
-			MyPlayer player = new MyPlayer();
 			
 			player.setHmodPlayer(hmodServer.getPlayer(name));
 			
-			return player;
 			
 		} else {
-			return null;
+			player.setBukkitPlayer(bukkitServer.getPlayer(name));
 		}
+		
+		return player;
+
 		
 	}
 	
@@ -108,7 +129,7 @@ public class MyServer {
 		if( hmod ) {
 			return hmodServer.getBlockIdAt(x, y, z);
 		} else {
-			return 0;
+			return bukkitWorld.getBlockAt(x, y, z).getTypeId();
 		}
 	}
 	
@@ -116,6 +137,8 @@ public class MyServer {
 		
 		if( hmod ) {	
 			hmodServer.loadChunk(x, y, z);
+		} else {
+//			bukkitServer.ge
 		}
 		
 	}
@@ -124,6 +147,9 @@ public class MyServer {
 		
 		if( hmod ) {
 			hmodServer.setBlockAt(id, x, y, z);
+		} else {
+			org.bukkit.block.Block block = bukkitWorld.getBlockAt(x,y,z);
+			block.setTypeId(id);
 		}
 	}
 	
@@ -131,6 +157,9 @@ public class MyServer {
 		
 		if( hmod ) {
 			hmodServer.setBlockData(x, y, z, d);
+		} else {
+			org.bukkit.block.Block block = bukkitWorld.getBlockAt(x,y,z);
+			block.setData((byte)d);
 		}
 	}
 
@@ -140,32 +169,41 @@ public class MyServer {
 			if( color.equals("Green")) return Colors.Green;
 			if( color.equals("LightBlue")) return Colors.LightBlue;
 			if( color.equals("White")) return Colors.White;
-			if( color.equals("Green")) return Colors.Green;
-			if( color.equals("Green")) return Colors.Green;
 			return "";
 		} else {
+			if( color.equals("Green"))     return org.bukkit.ChatColor.GREEN.toString();
+			if( color.equals("LightBlue")) return org.bukkit.ChatColor.AQUA.toString();
+			if( color.equals("White"))     return org.bukkit.ChatColor.WHITE.toString();
 			return "";
 		}
 	}
 	
 	int getBlockData(int x, int y, int z) {
-		
+				
 		if( hmod ) {
 			return hmodServer.getBlockData(x, y, z);
 		} else {
-			return 0;
+			org.bukkit.block.Block block = bukkitWorld.getBlockAt(x,y,z);
+			return block.getData()&0xFF;
 		}
 		
 	}
 	
-	MySign getComplexBlock( int x, int y, int z) {
+	MySign getComplexBlock( int x, int y, int z, int status ) {
+		MySign sign = new MySign();
+
 		if( hmod ) {
-			MySign sign = new MySign();
 			sign.hmodSign = (Sign)hmodServer.getComplexBlock( x, y, z );
-			return sign;
 		} else {
-			return null;
+			org.bukkit.block.BlockState blockState = bukkitWorld.getBlockAt(x,y,z).getState();
+			if( !blockState.getType().equals(org.bukkit.Material.WALL_SIGN) ) {
+				sign.bukkitSign = null;
+			} else {
+				sign.bukkitSign = (org.bukkit.block.Sign)blockState;
+				sign.status = status;
+			}
 		}
+		return sign;
 	}
 	
 	boolean isNull() {

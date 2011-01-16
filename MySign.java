@@ -3,6 +3,9 @@ public class MySign {
 	
 	Sign hmodSign;
 	
+	org.bukkit.block.Sign bukkitSign;
+	int status;
+	
 	boolean hmod = false;
 	
 	MySign() {
@@ -18,11 +21,16 @@ public class MySign {
 		hmodSign = sign;
 	}
 	
+	void setBukkitSign( org.bukkit.block.Sign sign, int status ) {
+		bukkitSign = sign;
+		this.status = status;
+	}
+	
 	int getX() {
 		if( hmod ) {
 			return hmodSign.getX();
 		} else {
-			return 0;
+			return bukkitSign.getX();
 		}
 	}
 	
@@ -30,7 +38,7 @@ public class MySign {
 		if( hmod ) {
 			return hmodSign.getY();
 		} else {
-			return 0;
+			return bukkitSign.getY();
 		}
 	}
 	
@@ -38,13 +46,15 @@ public class MySign {
 		if( hmod ) {
 			return hmodSign.getZ();
 		} else {
-			return 0;
+			return bukkitSign.getZ();
 		}
 	}
 	
 	void setText(int line, String text) {
 		if( hmod ) {
 			hmodSign.setText(line, text);
+		} else {
+			bukkitSign.setLine(line, text);
 		}
 	}
 	
@@ -52,26 +62,33 @@ public class MySign {
 		if( hmod ) {
 			return hmodSign.getText(line);
 		} else {
-			return "";
+			return bukkitSign.getLine(line);
 		}
 	}
 	
 	void update() {
 		if( hmod ) {
 			hmodSign.update();
+		} else {
+			bukkitSign.update();
 		}
 	}
 	
 	MyBlock getBlock() {
+
+		MyBlock block = new MyBlock();
 		
 		if( hmod ) {
-			MyBlock block = new MyBlock();
 			
 			block.setHmodBlock(hmodSign.getBlock());
-			return block;
+
 		} else {
-			return null;
+
+			block.setBukkitBlock(bukkitSign.getBlock(), status);
+			
 		}
+		
+		return block;
 		
 	}
 	
@@ -79,7 +96,7 @@ public class MySign {
 		if( hmod ) {
 			return hmodSign == null;
 		} else {
-			return false;
+			return bukkitSign == null;
 		}
 	}
 	

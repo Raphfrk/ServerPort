@@ -48,19 +48,6 @@ public class MiscUtils {
 
 	static void safeMessage( MyPlayer player , String message ) {
 		
-		final String finalMessage = message;
-		final MyPlayer finalPlayer = player;
-		
-		/*server.addToServerQueue( new Runnable() {
-			
-			public void run() {
-				
-				finalPlayer.sendMessage(finalMessage);
-				
-			}
-			
-		});*/
-		
 		safeMessage( player.getName(), message );
 		
 		

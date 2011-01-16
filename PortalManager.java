@@ -1,8 +1,6 @@
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class PortalManager {
@@ -255,7 +253,7 @@ public class PortalManager {
 
 	boolean testProtectedBlock( MyBlock block ) {
 		IntLocation loc = new IntLocation( block );
-
+		
 		return blockBlocks.containsKey(loc);
 
 	}
@@ -509,7 +507,7 @@ public class PortalManager {
 			if( targetPortal.isActive() ) {
 				IntLocation target = targetPortal.getExitPoint();
 				MyLocation newLoc = new MyLocation();
-
+			
 				newLoc.setX( target.x + 0.5 );
 				newLoc.setY( target.y + 0.0 );
 				newLoc.setZ( target.z + 0.5 );
@@ -1067,26 +1065,36 @@ public class PortalManager {
 		if( sign.getText(0).length() > 0 ) {
 			return;
 		}
+		
+		IntLocation loc = new IntLocation( sign.getX(), sign.getY(), sign.getZ() );
+
+		if( blockBlocks.containsKey(loc) || signBlocks.containsKey(loc) ) {
+			return;
+		}
+		
+		String actualName = sign.getText(1);
+		String line1 = actualName.toLowerCase();
+		String line2 = sign.getText(2);
+		String line3 = sign.getText(3);
+		
+		if( line1.length() + line2.length() + line3.length() == 0 ) {
+			return;
+		}
 
 		for( PortalInfo portalInfo : portalCustom ) {
 
 			String gateType = portalInfo.portalType;
-
+			
 			boolean allowed = player.canUseCommand("/serverportcreate") ||
 			player.canUseCommand("/serverportcreate"+gateType) ||
 			player.isAdmin();
-
+			
 			if( allowed && portalInfo.testMatch(sign, blockBlocks) ) {
 
 				MiscUtils.safeMessage(player, "[ServerPort] Gate Match detected");
 
-				String actualName = sign.getText(1);
-				String line1 = actualName.toLowerCase();
-				String line2 = sign.getText(2);
-				String line3 = sign.getText(3);
-
 				if( !MiscUtils.checkText(line1) ) {
-					MiscUtils.safeMessage(player, MiscUtils.checkRules("[ServerPort] Gate name "));
+					MiscUtils.safeMessage(player, MiscUtils.checkRules("[ServerPort] Gate name (" + line1 + ") "));
 					return;
 				}
 

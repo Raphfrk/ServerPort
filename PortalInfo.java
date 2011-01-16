@@ -479,7 +479,7 @@ public class PortalInfo {
 		int r;
 
 		for( r=2;r<6;r++ ) {
-			if( testMatch( block , rotToDX(r) , rotToDZ(r) , otherPortals ) ) {
+			if( testMatch( new IntLocation(block) , rotToDX(r) , rotToDZ(r) , otherPortals ) ) {
 				return true;
 			}
 		}
@@ -496,11 +496,11 @@ public class PortalInfo {
 
 		int d = server.getBlockData(sign.getX(),sign.getY(),sign.getZ());
 
-		return testMatch( new MyBlock( SIGN , sign.getX(),sign.getY(),sign.getZ() ) , rotToDX(d) , rotToDZ(d) , otherPortals );
+		return testMatch( new IntLocation( sign.getX(),sign.getY(),sign.getZ() ) , rotToDX(d) , rotToDZ(d) , otherPortals );
 
 	}
 
-	boolean testMatch( MyBlock block , int dx , int dz , HashMap<IntLocation,Integer> otherPortals ) {
+	boolean testMatch( IntLocation block , int dx , int dz , HashMap<IntLocation,Integer> otherPortals ) {
 
 		IntLocation loc = new IntLocation( block );
 

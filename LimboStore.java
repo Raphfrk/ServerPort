@@ -526,7 +526,7 @@ public class LimboStore {
 			MyInventory inv = player.getInventory();
 
 			MyItem itm = inv.getItemFromSlot(slot);
-
+			
 			if( itm.isNull() ) {
 				inv.setSlot(id, amount, damage, slot);
 				return null;
