@@ -281,8 +281,6 @@ public class ServerPortListenerCommon {
 		double m = player.getLocation().getRotX() % 360;
 		m = m < 0 ? m+360 : m;
 		
-		MiscUtils.safeMessage(player, "Your dir is: " + m );
-		
 		if( split[0].equals("/release") && player.canUseCommand("/release") && player.getHealth() > 0 ) {
 			
 			MiscUtils.safeLogging("[ServerPort] " + player.getName() + " is releasing");

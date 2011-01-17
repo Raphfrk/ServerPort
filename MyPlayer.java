@@ -1,3 +1,5 @@
+import java.util.HashSet;
+
 
 public class MyPlayer {
 
@@ -68,7 +70,7 @@ public class MyPlayer {
 			return hmodPlayer.getIP();
 		} else {
 			byte[] ip = bukkitPlayer.getAddress().getAddress().getAddress();
-			return ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
+			return (ip[0]&0xFF) + "." + (ip[1]&0xFF) + "." + (ip[2]&0xFF) + "." + (ip[3]&0xFF);
 		}
 	}
 	
@@ -147,10 +149,37 @@ public class MyPlayer {
 		}
 	}
 	
+	static HashSet<String> admins = null;
+	static HashSet<String> create = null;
+	static HashSet<String> use = null;	
+	
+	boolean canUse(String player) {
+		if( use == null ) {
+			use = MiscUtils.fileToSet("use_list.txt");
+		}
+		return use.contains(player);
+	}
+	
+	boolean admin(String player) {
+		if( admins == null ) {
+			admins = MiscUtils.fileToSet("admin_list.txt");
+		}
+		return admins.contains(player);
+	}
+	
+	boolean canCreate(String player) {
+		if( create == null ) {
+			create = MiscUtils.fileToSet("create_list.txt");
+		}
+		return create.contains(player);
+	}
+	
 	boolean canUseCommand( String command ) {
 		if( hmod ) {
 			return hmodPlayer.canUseCommand(command);
 		} else {
+			if( command.indexOf("serverportuse") == 0 ) return use.contains(getName());
+			if( command.indexOf("serverportcreate") == 0 ) return create.contains(getName());
 			// TODO
 			return true;
 		}
@@ -160,8 +189,7 @@ public class MyPlayer {
 		if( hmod ) {
 			return hmodPlayer.isAdmin();
 		} else {
-			//TODO
-			return true;
+			return admins.contains(getName());
 		}
 	}
 	

@@ -16,7 +16,9 @@ import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -75,6 +77,26 @@ public class MiscUtils {
 			}
 			
 		});
+		
+	}
+	
+	static HashSet<String> fileToSet( String filename ) {
+		
+		String filePath = "serverport" + slash + filename;
+		
+		try {
+			(new File( filePath )).createNewFile();
+		} catch (IOException e) {}
+		
+		String[] list = fileToString( filePath );
+		
+		HashSet<String> set = new HashSet<String>();
+		
+		for( String current : list ) {
+			set.add(current);
+		}
+		
+		return set;
 		
 	}
 	
