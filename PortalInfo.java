@@ -16,6 +16,7 @@ public class PortalInfo {
 	String[] portalString = null;
 
 	int x=0, y=0, z=0;
+	int x2=0, y2=0, z2=0;
 
 	int dx=1, dz=0;
 
@@ -45,7 +46,7 @@ public class PortalInfo {
 	String owner = "";
 	String targetServer = "";
 	String targetGate = "";
-
+	
 	HashMap<IntLocation,Integer> blockTypes = new HashMap<IntLocation,Integer>();
 	HashMap<IntLocation,Integer> portalBlocks = new HashMap<IntLocation,Integer>();
 	HashMap<IntLocation,Integer> signBlocks = new HashMap<IntLocation,Integer>();
@@ -54,6 +55,9 @@ public class PortalInfo {
 
 	IntLocation exitPoint = new IntLocation(0,0,0);
 	boolean exitPointSet = false;
+	
+	boolean linearGate = false;
+	boolean innerZone     = false;
 
 	private boolean portalActive = false;
 
@@ -74,6 +78,9 @@ public class PortalInfo {
 		if( x!=0 )                             portalString.add( "posx=" + x );
 		if( y!=0 )                             portalString.add( "posy=" + y );
 		if( z!=0 )                             portalString.add( "posz=" + z );
+		if( x2!=0 )                            portalString.add( "posx2=" + x2 );
+		if( y2!=0 )                            portalString.add( "posy2=" + y2 );
+		if( z2!=0 )                            portalString.add( "posz2=" + z2 );
 		if( dx!=1 )                            portalString.add( "dx=" + dx );
 		if( dz!=0 )                            portalString.add( "dz=" + dz );
 		portalString.add( "mist=" + mistID );
@@ -85,6 +92,11 @@ public class PortalInfo {
 		if( portalDuration != 30000 )          portalString.add( "duration=" + portalDuration );
 		if( autoCreate )                       portalString.add( "autocreate=" + autoCreate );
 		if( bindStone )                        portalString.add( "bind=" + bindStone );
+		if( linearGate )                       portalString.add( "lineargate=" + linearGate );
+		if( innerZone )                        portalString.add( "innerzone=" + innerZone );
+		
+		// 4 linear gates should be created for the outer edges
+		// 1 "innerZone" for cities
 
 		HashMap<Integer,Character> reverseLookup = new HashMap<Integer,Character>();
 
@@ -231,6 +243,12 @@ public class PortalInfo {
 				y = MiscUtils.getInt( currentParameter[1] );
 			} else if( currentParameter[0].equalsIgnoreCase("posz")) {
 				z = MiscUtils.getInt( currentParameter[1] );
+			} else if( currentParameter[0].equalsIgnoreCase("posx2")) {
+				x2 = MiscUtils.getInt( currentParameter[1] );
+			} else if( currentParameter[0].equalsIgnoreCase("posy2")) {
+				y2 = MiscUtils.getInt( currentParameter[1] );
+			} else if( currentParameter[0].equalsIgnoreCase("posz2")) {
+				z2 = MiscUtils.getInt( currentParameter[1] );
 			} else if( currentParameter[0].equalsIgnoreCase("dx")) {
 				dx = MiscUtils.getInt( currentParameter[1] );
 			} else if( currentParameter[0].equalsIgnoreCase("dz")) {
@@ -259,6 +277,10 @@ public class PortalInfo {
 				autoCreate = MiscUtils.getBoolean( currentParameter[1] );
 			} else if( currentParameter[0].equalsIgnoreCase("bind")) {
 				bindStone = MiscUtils.getBoolean( currentParameter[1] );
+			} else if( currentParameter[0].equalsIgnoreCase("innerzone")) {
+				innerZone = MiscUtils.getBoolean( currentParameter[1] );
+			} else if( currentParameter[0].equalsIgnoreCase("lineargate")) {
+				linearGate = MiscUtils.getBoolean( currentParameter[1] );
 			} else if( currentParameter[0].length() == 1 ) {
 				blockLookup.put(
 						currentParameter[0].charAt(0), 
