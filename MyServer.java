@@ -138,7 +138,8 @@ public class MyServer {
 		if( hmod ) {	
 			hmodServer.loadChunk(x, y, z);
 		} else {
-//			bukkitServer.ge
+			org.bukkit.Chunk chunk = bukkitWorld.getChunkAt(x>>4, z>>4);
+			bukkitServer.getWorlds()[0].loadChunk(chunk);
 		}
 		
 	}
