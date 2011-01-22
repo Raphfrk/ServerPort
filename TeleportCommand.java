@@ -396,7 +396,7 @@ public class TeleportCommand implements Runnable {
 		}  else {
 			
 			boolean ret = teleport( communicationManager , player , targetServer, targetGate , true );
-			System.out.println( "ret = " + ret );
+			//System.out.println( "ret = " + ret );
 			return ret;
 			
 		}
