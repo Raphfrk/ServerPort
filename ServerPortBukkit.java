@@ -4,6 +4,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.event.entity.EntityListener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
@@ -26,7 +27,8 @@ public class ServerPortBukkit extends JavaPlugin {
 	private final ServerPortBlockListener blockListener = new ServerPortBlockListener(this);
 	
 	private final ServerPortCustomListener customListener = new ServerPortCustomListener();
-	
+
+	private final ServerPortEntityListener entityListener = new ServerPortEntityListener(this);
 	
     public ServerPortBukkit(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
         super(pluginLoader, instance, desc, folder, plugin, cLoader);
@@ -71,6 +73,8 @@ public class ServerPortBukkit extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.Normal, this);
         
         pm.registerEvent(Event.Type.CUSTOM_EVENT, customListener, Priority.Normal, this);
+        
+        pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this);
        		
 	}
 	

@@ -340,7 +340,7 @@ public class TeleportCommand implements Runnable {
 		});
 	}
 	
-	static void teleportToBind( CommunicationManager communicationManager , MyPlayer player  ) {
+	static boolean teleportToBind( CommunicationManager communicationManager , MyPlayer player  ) {
 		
 		LimboInfo limboInfo = communicationManager.limboStore.getLimboInfo(player.getName());
 		
@@ -354,14 +354,15 @@ public class TeleportCommand implements Runnable {
 		
 		if( targetServer.equals("none") || targetGate.equals("none")) {
 			
-			player.setHealth(0);
+			//player.setHealth(0);
 			
-			return;
+			return false;
 			
 		}  else {
 			
 			player.setHealth(20);
 			teleport( communicationManager , player , targetServer, targetGate );
+			return true;
 			
 		}
 		

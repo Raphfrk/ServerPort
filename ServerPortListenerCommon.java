@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 
 public class ServerPortListenerCommon {
 
@@ -138,14 +140,39 @@ public class ServerPortListenerCommon {
 
 	}
 	
+	HashMap<String,Long> spamShield = new HashMap<String,Long>();
+	
 
 	synchronized public boolean onHealthChange(MyPlayer player, int oldValue, int newValue) {
         if( newValue <= 0 ) {
         	
-        	MiscUtils.safeLogging(player.getName() + " has died, attempting to teleport to bind");
+        	Long lastCheck;
+    		long currentTime = System.currentTimeMillis();
+    		String playerName = player.getName();
+    		
+        	boolean notSpam = (lastCheck = spamShield.get(playerName)) == null || lastCheck < currentTime - 1000;
         	
-        	TeleportCommand.teleportToBind(communicationManager, player);
-        	return false;
+        	if( notSpam ) {
+        		MiscUtils.safeLogging(player.getName() + " has died, attempting to teleport to bind");
+        	}
+        	
+        	
+			LimboStore.dropItems(player);
+        	if( TeleportCommand.teleportToBind(communicationManager, player) ) {
+            	player.setHealth(20);
+            	player.sendMessage("You have died, restoring your position to bind");
+            	return true;
+        	} else {
+        		
+        		
+        		if( notSpam ) {
+        			player.sendMessage("You have died with no bind stone set");
+        		}
+        		
+        		spamShield.put(playerName, currentTime);
+        		
+        		return false;
+        	}
         }
         
         return false;
