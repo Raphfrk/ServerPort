@@ -12,6 +12,8 @@ public class TeleportCommand implements Runnable {
 	String homeServer = "";
 	String homeGate = "";
 	
+	boolean killOnFail = false;
+	
 	double rotX = 0;
 	double rotY = 0;
 
@@ -35,14 +37,25 @@ public class TeleportCommand implements Runnable {
 		} else {
 			isValid = false;
 			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
 			return;
 		}
 
 		String[] vars = params.split(",",-1);
+		
+		if( vars.length > 9 && MiscUtils.isBoolean(vars[9])) {
+			this.killOnFail = MiscUtils.getBoolean(vars[9]);
+		} else {
+			isValid = false;
+			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
+			return;
+		}
 
 		if( vars.length < 3 ) {
 			isValid = false;
 			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
 			return;
 		}
 
@@ -54,6 +67,7 @@ public class TeleportCommand implements Runnable {
 		} else {
 			isValid = false;
 			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
 			return;
 		}
 		if( vars.length > 4 ) {
@@ -61,6 +75,7 @@ public class TeleportCommand implements Runnable {
 		} else {
 			isValid = false;
 			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
 			return;
 		}
 		
@@ -72,6 +87,7 @@ public class TeleportCommand implements Runnable {
 		} else {
 			isValid = false;
 			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
 			return;
 		}
 		
@@ -84,6 +100,16 @@ public class TeleportCommand implements Runnable {
 		} else {
 			isValid = false;
 			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
+			return;
+		}
+		
+		if( vars.length > 9 && MiscUtils.isBoolean(vars[9])) {
+			this.killOnFail = MiscUtils.getBoolean(vars[9]);
+		} else {
+			isValid = false;
+			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
 			return;
 		}
 		
@@ -115,6 +141,7 @@ public class TeleportCommand implements Runnable {
 			MiscUtils.safeMessage(playerName, "[ServerPort] " + error);
 			restoreInventory();
 			unlockPlayer();
+			if( killOnFail ) killPlayer(playerName);
 			return;
 		}
 
@@ -130,6 +157,7 @@ public class TeleportCommand implements Runnable {
 				MiscUtils.safeMessage(playerName, "[ServerPort] " + error);
 				restoreInventory();
 				unlockPlayer();
+				if( killOnFail ) killPlayer(playerName);
 				return;
 			}
 
@@ -141,6 +169,7 @@ public class TeleportCommand implements Runnable {
 
 			MiscUtils.safeMessage(playerName, "[ServerPort] Server " + targetServer + " is not known" );
 			restoreInventory();
+			if( killOnFail ) killPlayer(playerName);
 
 		} else {
 
@@ -154,12 +183,14 @@ public class TeleportCommand implements Runnable {
 				serverPortClient.close(peerServerInfoFromConnection);
 				restoreInventory();
 				unlockPlayer();
+				if( killOnFail ) killPlayer(playerName);
 				return;
 			} else if( gateExists.equals("BADIP")) {
 				MiscUtils.safeMessage(playerName, "[ServerPort] The target server refused to connections from your IP");
 				serverPortClient.close(peerServerInfoFromConnection);
 				restoreInventory();
 				unlockPlayer();
+				if( killOnFail ) killPlayer(playerName);
 				return;
 			} else if( !gateExists.equals("OK") ) {
 
@@ -171,6 +202,7 @@ public class TeleportCommand implements Runnable {
 				restoreInventory();
 				unlockPlayer();
 				serverPortClient.close(peerServerInfoFromConnection);
+				if( killOnFail ) killPlayer(playerName);
 				return;
 			}
 
@@ -180,6 +212,7 @@ public class TeleportCommand implements Runnable {
 				MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
 				restoreInventory();
 				serverPortClient.close(peerServerInfoFromConnection);
+				if( killOnFail ) killPlayer(playerName);
 				return;
 			} 
 
@@ -192,6 +225,7 @@ public class TeleportCommand implements Runnable {
 					MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
 					restoreInventory();
 					serverPortClient.close(peerServerInfoFromConnection);
+					if( killOnFail ) killPlayer(playerName);
 					return;
 				} 
 
@@ -203,6 +237,7 @@ public class TeleportCommand implements Runnable {
 						MiscUtils.safeMessage(playerName, "[ServerPort] Reply from server did not have the correct number of parts");
 						restoreInventory();
 						serverPortClient.close(peerServerInfoFromConnection);
+						if( killOnFail ) killPlayer(playerName);
 						return;
 					}
 
@@ -360,9 +395,9 @@ public class TeleportCommand implements Runnable {
 			
 		}  else {
 			
-			player.setHealth(20);
-			teleport( communicationManager , player , targetServer, targetGate );
-			return true;
+			boolean ret = teleport( communicationManager , player , targetServer, targetGate , true );
+			System.out.println( "ret = " + ret );
+			return ret;
 			
 		}
 		
@@ -370,7 +405,7 @@ public class TeleportCommand implements Runnable {
 		
 	}
 	
-	static void teleport( CommunicationManager communicationManager , MyPlayer player , String targetServer , String targetGate ) {
+	static boolean teleport( CommunicationManager communicationManager , MyPlayer player , String targetServer , String targetGate , boolean killOnFail ) {
 		
 		PortalInfo portalInfo = new PortalInfo();
 		
@@ -385,6 +420,8 @@ public class TeleportCommand implements Runnable {
 				
 				MiscUtils.safeMessage(player, "[ServerPort] Unknown target gate " + targetGate );
 				
+				return false;
+				
 			} else {
 				
 				IntLocation locInt = portalInfo.getExitPoint();
@@ -393,15 +430,17 @@ public class TeleportCommand implements Runnable {
 				
 				player.teleportTo(loc);
 				
+				return true;
+				
 			}
 			
 		} else {
-			teleport( communicationManager , player , portalInfo );
+			return teleport( communicationManager , player , portalInfo , killOnFail );
 		}
 		
 	}
 	
-	static void teleport( CommunicationManager communicationManager , MyPlayer player , PortalInfo portalInfo ) {
+	static boolean teleport( CommunicationManager communicationManager , MyPlayer player , PortalInfo portalInfo , boolean killOnFail ) {
 		
 		communicationManager.limboStore.lockPlayer(player.getName(), 5000);
 
@@ -432,7 +471,8 @@ public class TeleportCommand implements Runnable {
 				( player.getRotation() - portalDir ) + "," +
 				player.getPitch() + "," +
 				homeServer + "," + 
-				homeGate, 
+				homeGate + "," + 
+				killOnFail , 
 				playerData );
 
 		if( teleportCommand.isValid ) {
@@ -441,6 +481,28 @@ public class TeleportCommand implements Runnable {
 		} else {
 			MiscUtils.safeMessage(player, "The teleport command was formatted incorrectly");
 		}
+		
+		return true;
+		
+	}
+	
+	void killPlayer(String playerName) {
+		
+		MiscUtils.safeLogging("Activating delayed kill on " + playerName );
+		
+		final String finalName = new String(playerName);
+		
+		MyServer.getServer().addToServerQueue(new Runnable() {
+			
+			public void run() {
+				
+				MyPlayer player = MyServer.getServer().getPlayer(finalName);
+				
+				player.setHealth(0);
+				
+			}
+			
+		});
 		
 	}
 

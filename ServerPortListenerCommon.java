@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -118,6 +119,10 @@ public class ServerPortListenerCommon {
 			PortalInfo portalInfo = portalManager.getPortal(currentGate);
 
 			if( portalInfo != null ) {
+				
+				if( portalInfo.bindStone ) {
+					playerHealth = 20;
+				}
 
 				IntLocation exitPoint = portalInfo.getExitPoint();
 
@@ -144,6 +149,7 @@ public class ServerPortListenerCommon {
 	
 
 	synchronized public boolean onHealthChange(MyPlayer player, int oldValue, int newValue) {
+		
         if( newValue <= 0 ) {
         	
         	Long lastCheck;
@@ -159,11 +165,10 @@ public class ServerPortListenerCommon {
         	
 			LimboStore.dropItems(player);
         	if( TeleportCommand.teleportToBind(communicationManager, player) ) {
-            	player.setHealth(20);
             	player.sendMessage("You have died, restoring your position to bind");
+            	player.setHealth(20);
             	return true;
         	} else {
-        		
         		
         		if( notSpam ) {
         			player.sendMessage("You have died with no bind stone set");
@@ -172,6 +177,7 @@ public class ServerPortListenerCommon {
         		spamShield.put(playerName, currentTime);
         		
         		return false;
+        	        		
         	}
         }
         
@@ -260,6 +266,8 @@ public class ServerPortListenerCommon {
 				gateType = "";
 			}
 			
+			//System.out.println( "id" + block.getType() );
+			
 			if( block.getType() == SIGN ) {
 
 				MySign sign = (MySign)server.getComplexBlock(block.getX(), block.getY(), block.getZ(), block.getStatus());
@@ -312,9 +320,10 @@ public class ServerPortListenerCommon {
 			
 			MiscUtils.safeLogging("[ServerPort] " + player.getName() + " is releasing");
 			
-			player.setHealth(20);
 			LimboStore.dropItems(player);
-			TeleportCommand.teleportToBind(communicationManager, player);
+			if( TeleportCommand.teleportToBind(communicationManager, player) ) {
+				player.setHealth(20);
+			}
 				
 		}
 

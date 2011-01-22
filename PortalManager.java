@@ -587,7 +587,7 @@ public class PortalManager {
 		} else {
 
 			MiscUtils.safeLogging("[ServerPort] Teleporting due to entering portal " + portalInfo.getName() );			
-			TeleportCommand.teleport(communicationManager, player, portalInfo);
+			TeleportCommand.teleport(communicationManager, player, portalInfo, false );
 
 		}
 

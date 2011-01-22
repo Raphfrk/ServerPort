@@ -4,13 +4,13 @@ import java.util.HashSet;
 public class MyPlayer {
 
 	private org.bukkit.entity.Player bukkitPlayer;
-	
+
 	private org.bukkit.Location teleportTo = null;
 
 	private Player hmodPlayer;
 
 	private boolean hmod = false;
-	
+
 	MyPlayer() {
 		hmod = MyServer.getServer().getHmod();	
 	}
@@ -24,47 +24,47 @@ public class MyPlayer {
 		bukkitPlayer = player;
 		hmod = false;
 	}
-	
+
 	void setHmodPlayer( Player player ) {
 		hmod = true;
 		this.hmodPlayer = player;
 	}
-	
+
 	void setBukkitPlayer( org.bukkit.entity.Player player ) {
 		this.bukkitPlayer = player;
 		hmod = false;
 	}
-	
+
 	String getColor() {
-		
+
 		if( hmod ) {
 			return hmodPlayer.getColor();
 		} else {
-			
+
 			String displayName = bukkitPlayer.getDisplayName();
 			if( displayName.indexOf("\u00A7") == 0 ) {
 				return displayName.substring(0,2);
 			}
-			
+
 			return "";
 		}
-		
+
 	}
-	
+
 	org.bukkit.Location getTeleportTo() {
 		return teleportTo;
 	}
 
 	String getName() {
-		
+
 		if( hmod ) {
 			return hmodPlayer.getName();
 		} else {
 			return bukkitPlayer.getName();
 		}
-		
+
 	}
-	
+
 	String getIP() {
 		if( hmod ) {
 			return hmodPlayer.getIP();
@@ -73,29 +73,29 @@ public class MyPlayer {
 			return (ip[0]&0xFF) + "." + (ip[1]&0xFF) + "." + (ip[2]&0xFF) + "." + (ip[3]&0xFF);
 		}
 	}
-	
+
 	MyInventory getInventory() {
 
 		MyInventory inv = new MyInventory();
-		
+
 		if( hmod ) {
-			
+
 			inv.setHmodInventory( hmodPlayer.getInventory() );
-			
+
 			return inv;
-			
+
 		} else {
-	
+
 			inv.setBukkitInventory( bukkitPlayer.getInventory() );
 			return inv;
 		}
-		
+
 	}
-	
+
 	MyLocation getLocation() {
 
 		MyLocation loc = new MyLocation();
-		
+
 		if( hmod ) {
 			loc.setHmodLocation(hmodPlayer.getLocation());
 			return loc;
@@ -103,27 +103,27 @@ public class MyPlayer {
 			loc.setBukkitLocation(bukkitPlayer.getLocation());
 			return loc;
 		}
-		
+
 	}
-	
+
 	void sendMessage(String message) {
-		
+
 		if( hmod ) {
-			
+
 			if( hmodPlayer != null ) {
 				hmodPlayer.sendMessage(message);
 			}
-			
+
 		} else {
-			
+
 			if( bukkitPlayer != null ) {
 				bukkitPlayer.sendMessage(message);
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	void setHealth(int health) {
 		if( hmod ) {
 			hmodPlayer.setHealth(health);
@@ -131,7 +131,7 @@ public class MyPlayer {
 			bukkitPlayer.setHealth(health);
 		}
 	}
-	
+
 	int getHealth() {
 		if( hmod ) {
 			return hmodPlayer.getHealth();
@@ -139,7 +139,7 @@ public class MyPlayer {
 			return bukkitPlayer.getHealth();
 		}
 	}
-	
+
 	void teleportTo(MyLocation loc) {
 		if( hmod ) {
 			hmodPlayer.teleportTo(loc.getHmodLocation());
@@ -148,32 +148,32 @@ public class MyPlayer {
 			teleportTo = loc.getBukkitLocation();
 		}
 	}
-	
+
 	static HashSet<String> admins = null;
 	static HashSet<String> create = null;
 	static HashSet<String> use = null;	
-	
+
 	boolean canUse(String player) {
 		if( use == null ) {
 			use = MiscUtils.fileToSet("use_list.txt");
 		}
 		return use.contains(player);
 	}
-	
+
 	boolean admin(String player) {
 		if( admins == null ) {
 			admins = MiscUtils.fileToSet("admin_list.txt");
 		}
 		return admins.contains(player);
 	}
-	
+
 	boolean canCreate(String player) {
 		if( create == null ) {
 			create = MiscUtils.fileToSet("create_list.txt");
 		}
 		return create.contains(player);
 	}
-	
+
 	boolean canUseCommand( String command ) {
 		if( hmod ) {
 			return hmodPlayer.canUseCommand(command);
@@ -184,7 +184,7 @@ public class MyPlayer {
 			return true;
 		}
 	}
-	
+
 	boolean isAdmin() {
 		if( hmod ) {
 			return hmodPlayer.isAdmin();
@@ -192,7 +192,7 @@ public class MyPlayer {
 			return admins.contains(getName());
 		}
 	}
-	
+
 	float getRotation() {
 		if( hmod ) {
 			return hmodPlayer.getRotation();
@@ -200,7 +200,7 @@ public class MyPlayer {
 			return bukkitPlayer.getLocation().getYaw();
 		}
 	}
-	
+
 	float getPitch() {
 		if( hmod ) {
 			return hmodPlayer.getPitch();
@@ -208,7 +208,7 @@ public class MyPlayer {
 			return bukkitPlayer.getLocation().getPitch();
 		}
 	}
-	
+
 	void kick( String message ) {
 		if( hmod ) {
 			if( hmodPlayer != null && message != null ) {
@@ -216,17 +216,21 @@ public class MyPlayer {
 			}
 		} else {
 			if( bukkitPlayer != null && message != null ) {
-				bukkitPlayer.kickPlayer(message);
+				if( bukkitPlayer.isOnline() ) {
+					System.out.println("Kicking " + bukkitPlayer.getName() + " for " + message );
+					System.out.flush();
+					bukkitPlayer.kickPlayer(message);
+				}
 			}
 		}
 	}
-	
+
 	boolean isNull() {
 		if( hmod ) {
 			return hmodPlayer == null;
 		} else {
-			return bukkitPlayer == null;
+			return bukkitPlayer == null || !bukkitPlayer.isOnline();
 		}
 	}
-	
 }
+
