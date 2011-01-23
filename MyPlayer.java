@@ -152,6 +152,7 @@ public class MyPlayer {
 	static HashSet<String> admins = null;
 	static HashSet<String> create = null;
 	static HashSet<String> use = null;	
+	static HashSet<String> destroy = null;
 
 	boolean canUse(String player) {
 		if( use == null ) {
@@ -160,7 +161,7 @@ public class MyPlayer {
 		return use.contains(player);
 	}
 
-	boolean admin(String player) {
+	boolean isAdmin(String player) {
 		if( admins == null ) {
 			admins = MiscUtils.fileToSet("admin_list.txt");
 		}
@@ -173,15 +174,23 @@ public class MyPlayer {
 		}
 		return create.contains(player);
 	}
+	
+	boolean canDestroy(String player) {
+		if( destroy == null ) {
+			destroy = MiscUtils.fileToSet("destroy_list.txt");
+		}
+		return destroy.contains(player);
+	}
 
 	boolean canUseCommand( String command ) {
 		if( hmod ) {
 			return hmodPlayer.canUseCommand(command);
 		} else {
-			if( command.indexOf("serverportuse") == 0 ) return use.contains(getName());
-			if( command.indexOf("serverportcreate") == 0 ) return create.contains(getName());
+			if( command.indexOf("/serverportuse") == 0 ) return canUse(getName());
+			if( command.indexOf("/serverportcreate") == 0 ) return canCreate(getName());
+			if( command.indexOf("/serverportdestroy") == 0 ) return canDestroy(getName());
 			// TODO
-			return true;
+			return false;
 		}
 	}
 
@@ -189,7 +198,7 @@ public class MyPlayer {
 		if( hmod ) {
 			return hmodPlayer.isAdmin();
 		} else {
-			return admins.contains(getName());
+			return isAdmin(getName());
 		}
 	}
 
