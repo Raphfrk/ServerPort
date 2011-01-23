@@ -158,28 +158,28 @@ public class MyPlayer {
 		if( use == null ) {
 			use = MiscUtils.fileToSet("use_list.txt");
 		}
-		return use.contains(player);
+		return use.contains(player) || use.contains("*");
 	}
 
 	boolean isAdmin(String player) {
 		if( admins == null ) {
 			admins = MiscUtils.fileToSet("admin_list.txt");
 		}
-		return admins.contains(player);
+		return admins.contains(player) || admins.equals("*");
 	}
 
 	boolean canCreate(String player) {
 		if( create == null ) {
 			create = MiscUtils.fileToSet("create_list.txt");
 		}
-		return create.contains(player);
+		return create.contains(player) || create.contains("*");
 	}
 	
 	boolean canDestroy(String player) {
 		if( destroy == null ) {
 			destroy = MiscUtils.fileToSet("destroy_list.txt");
 		}
-		return destroy.contains(player);
+		return destroy.contains(player) || destroy.contains("*");
 	}
 
 	boolean canUseCommand( String command ) {
