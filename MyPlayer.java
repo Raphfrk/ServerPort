@@ -152,7 +152,9 @@ public class MyPlayer {
 	static HashSet<String> admins = null;
 	static HashSet<String> create = null;
 	static HashSet<String> use = null;	
-	static HashSet<String> destroy = null;
+	static HashSet<String> destroy = null;	
+	static HashSet<String> other = null;
+	static HashSet<String> redirect = null;
 
 	boolean canUse(String player) {
 		if( use == null ) {
@@ -181,6 +183,20 @@ public class MyPlayer {
 		}
 		return destroy.contains(player) || destroy.contains("*");
 	}
+	
+	boolean canRedirect(String player) {
+		if( redirect == null ) {
+			redirect = MiscUtils.fileToSet("redirect_list.txt");
+		}
+		return redirect.contains(player) || redirect.contains("*");
+	}
+	
+	boolean canOther(String player) {
+		if( other == null ) {
+			other = MiscUtils.fileToSet("other_list.txt");
+		}
+		return other.contains(player) || other.contains("*");
+	}
 
 	boolean canUseCommand( String command ) {
 		if( hmod ) {
@@ -189,8 +205,8 @@ public class MyPlayer {
 			if( command.indexOf("/serverportuse") == 0 ) return canUse(getName());
 			if( command.indexOf("/serverportcreate") == 0 ) return canCreate(getName());
 			if( command.indexOf("/serverportdestroy") == 0 ) return canDestroy(getName());
-			// TODO
-			return false;
+			if( command.indexOf("/cancelredirect") == 0 ) return canRedirect(getName());
+			                                               return canOther(getName());
 		}
 	}
 
