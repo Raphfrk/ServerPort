@@ -327,7 +327,7 @@ public class ServerPortListenerCommon {
 				
 		}
 
-		if( split[0].equals("/drawgate") && split.length == 2 && ( player.canUseCommand("/drawgate") || player.canUseCommand("/drawgate" + split[1]))) {
+		if( split[0].equals("/drawgate") && split.length == 2 && ( player.isAdmin() || player.canUseCommand("/drawgate") || player.canUseCommand("/drawgate" + split[1]))) {
 			
 			server.dropItem( player.getLocation(), 68, 1 );
 			
