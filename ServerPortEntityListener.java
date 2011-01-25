@@ -25,8 +25,9 @@ public class ServerPortEntityListener extends EntityListener implements Listener
 	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
 		
-		//System.out.println( "Damage event" + event);
+		System.out.println( "Damage event" + event);
 		
+		System.out.println( "Cause: " + ((EntityDamageEvent)event).getCause() );
 		Entity entity = event.getEntity();
 		
 		if( entity == null ) return;

@@ -130,9 +130,10 @@ public class ServerPortListenerCommon {
 				
 				loc.setRotX( (float)limboInfo.getRotX() + 180);
 				loc.setRotY( (float)limboInfo.getRotY() );
-
+				
 				player.teleportTo(loc);
 				player.setHealth(playerHealth);
+				
 
 			} else {
 				MiscUtils.safeLogging(player.getName() + " is set to appear at an unknown gate (" + currentGate + ")");
