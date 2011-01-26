@@ -1,10 +1,10 @@
+import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.block.Block;
 
 
 public class ServerPortPlayerListener extends PlayerListener {
@@ -68,11 +68,35 @@ public class ServerPortPlayerListener extends PlayerListener {
     public void onPlayerMove(PlayerMoveEvent event) {
     	
     	MyPlayer player = new MyPlayer(event.getPlayer());
-    	MyLocation from = new MyLocation(event.getFrom());
-    	MyLocation to = new MyLocation(event.getTo());
     	
+    	org.bukkit.Location from = event.getFrom().clone();
+    	org.bukkit.Location to = event.getTo().clone();
+
+    	int fx = from.getBlockX();
+    	int fy = from.getBlockY();
+    	int fz = from.getBlockZ();
     	
-    	serverPortListenerCommon.onPlayerMove(player, from, to);   	
+    	int tx = to.getBlockX();
+    	int ty = to.getBlockY();
+    	int tz = to.getBlockZ();
+    	
+    	//System.out.println( event.getFrom() );
+    	//System.out.println( event.getTo() );
+    	
+    	if( fx == tx && fy == ty && fz == tz )  return;
+    	
+    	from.setX(fx);
+    	from.setY(fy);
+    	from.setZ(fz);
+    	
+    	to.setX(tx);
+    	to.setY(ty);
+    	to.setZ(tz);
+    	
+    	MyLocation myFrom = new MyLocation(from);
+    	MyLocation myTo= new MyLocation(to);
+    	
+    	serverPortListenerCommon.onPlayerMove(player, myFrom, myTo);   	
     	if( player.getTeleportTo() != null ) {
     		event.setTo(player.getTeleportTo());
     	}
