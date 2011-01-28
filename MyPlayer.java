@@ -167,7 +167,7 @@ public class MyPlayer {
 		if( admins == null ) {
 			admins = MiscUtils.fileToSet("admin_list.txt", true);
 		}
-		return admins.contains(player.toLowerCase()) || admins.equals("*");
+		return admins.contains(player.toLowerCase()) || admins.contains("*");
 	}
 
 	boolean canCreate(String player) {

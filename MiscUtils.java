@@ -94,9 +94,9 @@ public class MiscUtils {
 		
 		for( String current : list ) {
 			if( forceLowerCase ) {
-				set.add(current.toLowerCase());
+				set.add(current.toLowerCase().trim());
 			} else {
-				set.add(current);
+				set.add(current.trim());
 			}
 		}
 		
