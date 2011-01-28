@@ -158,44 +158,44 @@ public class MyPlayer {
 
 	boolean canUse(String player) {
 		if( use == null ) {
-			use = MiscUtils.fileToSet("use_list.txt");
+			use = MiscUtils.fileToSet("use_list.txt", true);
 		}
-		return use.contains(player) || use.contains("*");
+		return use.contains(player.toLowerCase()) || use.contains("*");
 	}
 
 	boolean isAdmin(String player) {
 		if( admins == null ) {
-			admins = MiscUtils.fileToSet("admin_list.txt");
+			admins = MiscUtils.fileToSet("admin_list.txt", true);
 		}
-		return admins.contains(player) || admins.equals("*");
+		return admins.contains(player.toLowerCase()) || admins.equals("*");
 	}
 
 	boolean canCreate(String player) {
 		if( create == null ) {
-			create = MiscUtils.fileToSet("create_list.txt");
+			create = MiscUtils.fileToSet("create_list.txt", true);
 		}
-		return create.contains(player) || create.contains("*");
+		return create.contains(player.toLowerCase()) || create.contains("*");
 	}
 	
 	boolean canDestroy(String player) {
 		if( destroy == null ) {
-			destroy = MiscUtils.fileToSet("destroy_list.txt");
+			destroy = MiscUtils.fileToSet("destroy_list.txt", true);
 		}
-		return destroy.contains(player) || destroy.contains("*");
+		return destroy.contains(player.toLowerCase()) || destroy.contains("*");
 	}
 	
 	boolean canRedirect(String player) {
 		if( redirect == null ) {
-			redirect = MiscUtils.fileToSet("redirect_list.txt");
+			redirect = MiscUtils.fileToSet("redirect_list.txt", true);
 		}
-		return redirect.contains(player) || redirect.contains("*");
+		return redirect.contains(player.toLowerCase()) || redirect.contains("*");
 	}
 	
 	boolean canOther(String player) {
 		if( other == null ) {
-			other = MiscUtils.fileToSet("other_list.txt");
+			other = MiscUtils.fileToSet("other_list.txt", true);
 		}
-		return other.contains(player) || other.contains("*");
+		return other.contains(player.toLowerCase()) || other.contains("*");
 	}
 
 	boolean canUseCommand( String command ) {

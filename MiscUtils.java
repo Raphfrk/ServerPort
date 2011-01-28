@@ -80,7 +80,7 @@ public class MiscUtils {
 		
 	}
 	
-	static HashSet<String> fileToSet( String filename ) {
+	static HashSet<String> fileToSet( String filename , boolean forceLowerCase ) {
 		
 		String filePath = "serverport" + slash + filename;
 		
@@ -93,7 +93,11 @@ public class MiscUtils {
 		HashSet<String> set = new HashSet<String>();
 		
 		for( String current : list ) {
-			set.add(current);
+			if( forceLowerCase ) {
+				set.add(current.toLowerCase());
+			} else {
+				set.add(current);
+			}
 		}
 		
 		return set;
