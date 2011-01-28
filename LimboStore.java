@@ -14,6 +14,7 @@ public class LimboStore {
 	
 	public StringList bannedItems = new StringList();
 	public Boolean banExcept = false;
+	public Boolean bindEnable = true;
 
 	public String newPlayerForward = "allow";
 
@@ -85,6 +86,20 @@ public class LimboStore {
 							"Unless this is set to allow, new players will be redirected to this server.  "
 						},
 						"sets the limbo directory"
+				)
+		);
+		
+		parameterManager.registerParameter( 
+				new ParameterInfo( 
+						this, 
+						"bindEnable",
+						"bindenable",
+						Boolean.class,
+						new Boolean(true),
+						new String[] {
+							"If this parameter is set to true, then bind stones are enabled"
+						},
+						"inverts the ban list"
 				)
 		);
 
