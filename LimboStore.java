@@ -15,6 +15,7 @@ public class LimboStore {
 	public StringList bannedItems = new StringList();
 	public Boolean banExcept = false;
 	public Boolean bindEnable = true;
+	public Boolean updateInvOnLogin = true;
 
 	public String newPlayerForward = "allow";
 
@@ -54,6 +55,20 @@ public class LimboStore {
 						new String[] {
 							"If this parameter is set to true, all items will be banned " + 
 							"except those on the ban list"
+						},
+						"inverts the ban list"
+				)
+		);
+		
+		parameterManager.registerParameter( 
+				new ParameterInfo( 
+						this, 
+						"updateInvOnLogin",
+						"logininv",
+						Boolean.class,
+						new Boolean(true),
+						new String[] {
+							"If this parameter is set to true, player inventories from teleport are restored on login"
 						},
 						"inverts the ban list"
 				)

@@ -56,25 +56,30 @@ public class ServerPortListenerCommon {
 	}
 
 
+	void restoreInventory(MyPlayer player) {
+		String limboInventory = communicationManager.limboStore.removePlayerStore(player);
+
+		String blockedItems = LimboStore.addToPlayerInv( "STORE:" + player.getName() + ";" + limboInventory);
+
+		communicationManager.limboStore.processTransfer("STORE:playername=" + player.getName() + ";" + blockedItems);
+	}
 
 	synchronized public void onLogin(MyPlayer player) {
 
 		String playerName = new String( player.getName());
 
 		communicationManager.limboStore.unLockPlayer(playerName);
-
-		String limboInventory = communicationManager.limboStore.removePlayerStore(player);
-
-		String blockedItems = LimboStore.addToPlayerInv( "STORE:" + player.getName() + ";" + limboInventory);
-
-		communicationManager.limboStore.processTransfer("STORE:playername=" + player.getName() + ";" + blockedItems);
+		
+		if( communicationManager.limboStore.updateInvOnLogin ) {
+			restoreInventory(player);
+		}
 
 		LimboInfo limboInfo = communicationManager.limboStore.getLimboInfo(player.getName());
 
 		if( limboInfo == null ) {
 			return;
 		}
-
+		
 		String currentServer = limboInfo.getCurrentServer();
 
 		if( currentServer.equals("")) {
@@ -327,7 +332,13 @@ public class ServerPortListenerCommon {
 			if( TeleportCommand.teleportToBind(communicationManager, player) ) {
 				player.setHealth(20);
 			}
+			return true;
 
+		}
+		
+		if( split[0].equals("/getinv") ) {
+			restoreInventory(player);
+			return true;
 		}
 
 		if( split[0].equals("/drawgate") && split.length == 2 && ( player.isAdmin() || player.canUseCommand("/drawgate") || player.canUseCommand("/drawgate" + split[1]))) {
@@ -356,6 +367,7 @@ public class ServerPortListenerCommon {
 				communicationManager.limboStore.updateDatabase(limboInfo);
 				MiscUtils.safeMessage(player, "[ServerPort] Current server set to: here");				
 			}
+			return true;
 
 		}
 
