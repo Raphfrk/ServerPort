@@ -285,8 +285,10 @@ public class ServerPortListenerCommon {
 				}
 
 			}
+			
+			boolean signPunched = block.getType() == SIGN && player.holding() <= 0;
 
-			if( ( player.canUseCommand("/serverportuse") || player.canUseCommand("/serverportuse"+gateType) || player.isAdmin() ) && block.getStatus() == 0 && ( block.getType() == BUTTON || block.getType() == SIGN ) ) {
+			if( ( player.canUseCommand("/serverportuse") || player.canUseCommand("/serverportuse"+gateType) || player.isAdmin() ) && block.getStatus() == 0 && ( block.getType() == BUTTON || signPunched ) ) {
 
 				portalManager.buttonPress( block , player );
 

@@ -209,6 +209,14 @@ public class MyPlayer {
 			                                               return canOther(getName());
 		}
 	}
+	
+	int holding() {
+		if( hmod ) {
+			return -1;
+		} else {
+			return bukkitPlayer.getItemInHand().getAmount();
+		}
+	}
 
 	boolean isAdmin() {
 		if( hmod ) {
