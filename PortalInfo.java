@@ -741,7 +741,7 @@ public class PortalInfo {
 
 		Iterator<IntLocation> itr = signBlocks.keySet().iterator();
 
-		if( !hasSign(null) ) {
+		if( !hasSign(null) && portalName.indexOf("FIRE_") != 0 ) {
 
 			if( itr.hasNext() ) {
 				IntLocation firstLoc = itr.next();

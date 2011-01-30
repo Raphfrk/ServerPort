@@ -42,6 +42,8 @@ public class PortalManager {
 	public Boolean safeExit = false;
 	public StringList softBlocks = new StringList();
 
+	public String fireTarget = "none";
+
 	void setButtonRepeat( int delay ) {
 		buttonRepeat = delay;
 	}
@@ -220,6 +222,20 @@ public class PortalManager {
 		parameterManager.registerParameter( 
 				new ParameterInfo( 
 						this, 
+						"fireTarget",
+						"firetarget",
+						String.class,
+						new String("none"),
+						new String[] {
+							"This parameter sets the server name for fire started portals"
+						},
+						"Sets the target for fire started portals"
+				)
+		);
+
+		parameterManager.registerParameter( 
+				new ParameterInfo( 
+						this, 
 						"expansionFactor",
 						"expansion",
 						Double.class,
@@ -253,7 +269,7 @@ public class PortalManager {
 
 	boolean testProtectedBlock( MyBlock block ) {
 		IntLocation loc = new IntLocation( block );
-		
+
 		return blockBlocks.containsKey(loc);
 
 	}
@@ -320,14 +336,26 @@ public class PortalManager {
 
 	boolean destroyPortal( MyBlock block ) {
 
-		if( !testSignBlock(block) ) {
+		boolean signBlock = testSignBlock(block);
+		boolean protectedBlock = testProtectedBlock(block); 
+
+		int idNum=-1;
+		if( signBlock ) {
+			IntLocation loc = new IntLocation( block );
+			idNum = signBlocks.get(loc);
+		} else if (protectedBlock){
+			IntLocation loc = new IntLocation( block );
+			idNum = blockBlocks.get(loc);
+		}
+
+		if( idNum == -1 ) {
 			return false;
 		} else {
 			IntLocation loc = new IntLocation( block );
-			int idNum = signBlocks.get(loc);
+
 			PortalInfo portalInfo = portalList.get(idNum);
 
-			if( !portalInfo.hasSign(loc) ) {
+			if( protectedBlock || !portalInfo.hasSign(loc) ) {
 				File file = new File( portalInfo.getFileName() );
 				if( file.exists() ) {
 					file.delete();
@@ -349,7 +377,7 @@ public class PortalManager {
 	boolean testPortalBlock( MyBlock block , boolean checkActive ) {
 
 		IntLocation loc = new IntLocation( block );
-		
+
 		if( !portalBlocks.containsKey(loc) ) {
 			return false;
 		}
@@ -446,7 +474,7 @@ public class PortalManager {
 
 	}
 
-/*	void enteredPortal( BaseVehicle vehicle, IntLocation loc ) {
+	/*	void enteredPortal( BaseVehicle vehicle, IntLocation loc ) {
 
 		Player player = vehicle.getPassenger();
 
@@ -458,7 +486,7 @@ public class PortalManager {
 
 	}
 
-	
+
 	void enteredPortal( Player player , Location loc ) {
 
 		enteredPortal( player , loc , null );
@@ -472,8 +500,8 @@ public class PortalManager {
 		return delayedMotions;
 
 	}
-*/
-	
+	 */
+
 	void enteredPortal( MyPlayer player , MyLocation loc /*, BaseVehicle vehicle */ ) {
 
 		IntLocation intLoc = new IntLocation( loc );
@@ -507,7 +535,7 @@ public class PortalManager {
 			if( targetPortal.isActive() ) {
 				IntLocation target = targetPortal.getExitPoint();
 				MyLocation newLoc = new MyLocation();
-			
+
 				newLoc.setX( target.x + 0.5 );
 				newLoc.setY( target.y + 0.0 );
 				newLoc.setZ( target.z + 0.5 );
@@ -515,9 +543,9 @@ public class PortalManager {
 				newLoc.setRotX( (float)(loc.getRotX() + 180 + targetPortal.getDir() - portalInfo.getDir()) % 360 );
 				newLoc.setRotY( loc.getRotY() );
 
-//				if( vehicle == null ) {
+				//				if( vehicle == null ) {
 				player.teleportTo(newLoc);
-/*				} else {
+				/*				} else {
 					System.out.println( "Teleporting vehicle");
 					newLoc.y++;
 
@@ -577,7 +605,7 @@ public class PortalManager {
 					}, 500 );
 
 				}
-				*/
+				 */
 
 			} else {
 				MiscUtils.safeMessage(player, "[ServerPort] Target gate is not open");
@@ -1060,23 +1088,90 @@ public class PortalManager {
 
 	}
 
-	void signPlaced( MyPlayer player , MySign sign ) {
+	int gateCounter = 1;
+
+	void fireStarted( MyPlayer player , MyBlock block ) {
+
+		if( fireTarget.equalsIgnoreCase("none")) {
+			return;
+		}
+
+		IntLocation loc = new IntLocation( block.getX(), block.getY(), block.getZ() );
+
+		if( blockBlocks.containsKey(loc) || signBlocks.containsKey(loc) ) {
+			return;
+		}
+
+		for( PortalInfo portalInfo : portalCustom ) {
+
+			String gateType = portalInfo.portalType;
+
+			boolean allowed = player.canUseCommand("/serverportcreate") ||
+			player.canUseCommand("/serverportcreate"+gateType) ||
+			player.isAdmin();
+
+
+			if( allowed && portalInfo.testMatch(block, blockBlocks) ) {
+
+				MiscUtils.safeMessage(player, "[ServerPort] Gate Match detected");
+
+				String gateName;
+				do {
+					gateName = "FIRE_" + MiscUtils.genRandomCode().substring(0, 6);
+				} while ( nameLookup.containsKey(gateName));
+				
+
+				String oldName = portalInfo.getName();
+				String oldFileName = portalInfo.getFileName();
+
+				portalInfo.portalActualName = gateName;
+				portalInfo.owner = player.getName();
+				portalInfo.portalName = gateName;
+				portalInfo.targetServer = fireTarget;
+				portalInfo.targetGate = gateName;
+
+				//String newName = oldName + "_" + (portalInfo.getPos()).getFileString();
+
+				portalInfo.setFileName( portalDirectory + slash + "gates" + slash + gateName + ".gat" );
+
+				portalInfo.save();
+
+				portalInfo.setName(oldName);
+				portalInfo.setFileName(oldFileName);
+
+				loadPortalInfo();
+
+				portalInfo.drawClosed();
+
+				if( portalInfo.portalDuration == -1 ) {
+					buttonPress(block, player);
+				}
+
+				return;
+
+			}
+
+		}
+
+	}
+
+	void signPlaced( MyPlayer player , MySign sign  ) {
 
 		if( sign.getText(0).length() > 0 ) {
 			return;
 		}
-		
+
 		IntLocation loc = new IntLocation( sign.getX(), sign.getY(), sign.getZ() );
 
 		if( blockBlocks.containsKey(loc) || signBlocks.containsKey(loc) ) {
 			return;
 		}
-		
+
 		String actualName = sign.getText(1);
 		String line1 = actualName.toLowerCase();
 		String line2 = sign.getText(2);
 		String line3 = sign.getText(3);
-		
+
 		if( line1.length() + line2.length() + line3.length() == 0 ) {
 			return;
 		}
@@ -1084,11 +1179,11 @@ public class PortalManager {
 		for( PortalInfo portalInfo : portalCustom ) {
 
 			String gateType = portalInfo.portalType;
-			
+
 			boolean allowed = player.canUseCommand("/serverportcreate") ||
 			player.canUseCommand("/serverportcreate"+gateType) ||
 			player.isAdmin();
-			
+
 			if( allowed && portalInfo.testMatch(sign, blockBlocks) ) {
 
 				MiscUtils.safeMessage(player, "[ServerPort] Gate Match detected");
@@ -1385,7 +1480,7 @@ public class PortalManager {
 
 	}
 
-/*	static void processDelayedMotions( HashMap<Integer,Location> delayedMotions, int id , double finalx, double finaly , double finalz, double finalRotX, double finalRotY,  double finalsx, double finalsy, double finalsz ) {
+	/*	static void processDelayedMotions( HashMap<Integer,Location> delayedMotions, int id , double finalx, double finaly , double finalz, double finalRotX, double finalRotY,  double finalsx, double finalsy, double finalsz ) {
 
 		System.out.println( "Attempting delayed action");
 
@@ -1410,7 +1505,7 @@ public class PortalManager {
 		delayedMotions.remove(id);
 
 	}
-	*/
+	 */
 
 
 }

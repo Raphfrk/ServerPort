@@ -69,7 +69,7 @@ public class ServerPortListenerCommon {
 		String playerName = new String( player.getName());
 
 		communicationManager.limboStore.unLockPlayer(playerName);
-		
+
 		if( communicationManager.limboStore.updateInvOnLogin ) {
 			restoreInventory(player);
 		}
@@ -79,7 +79,7 @@ public class ServerPortListenerCommon {
 		if( limboInfo == null ) {
 			return;
 		}
-		
+
 		String currentServer = limboInfo.getCurrentServer();
 
 		if( currentServer.equals("")) {
@@ -261,18 +261,29 @@ public class ServerPortListenerCommon {
 
 	synchronized public boolean onBlockDestroy(MyPlayer player, MyBlock block) {
 
+		String gateType = portalManager.getPortalType( block );
 
-		if( portalManager.testProtectedBlock( block ) ) {
-			return true;
+		if( gateType == null ) {
+			gateType = "";
 		}
 
-		if( portalManager.testSignBlock( block ) ) {
+		if( portalManager.testProtectedBlock( block ) ) 
+			if( !player.canUseCommand("/serverportdestroy") && !player.canUseCommand("/serverportdestroy"+gateType) && !player.isAdmin() ) {
+				return true; 
+			} else {
+				if( block.getStatus() == 3 ) {
 
-			String gateType = portalManager.getPortalType( block );
+					if( portalManager.destroyPortal( block ) ) {
+						MiscUtils.safeMessage(player, "Gate Destroyed");
+						return false;
+					} else {
+						return true;
+					}
 
-			if( gateType == null ) {
-				gateType = "";
+				}
 			}
+
+		if( portalManager.testSignBlock( block ) ) {
 
 			//System.out.println( "id" + block.getType() );
 
@@ -285,7 +296,7 @@ public class ServerPortListenerCommon {
 				}
 
 			}
-			
+
 			boolean signPunched = block.getType() == SIGN && player.holding() <= 0;
 
 			if( ( player.canUseCommand("/serverportuse") || player.canUseCommand("/serverportuse"+gateType) || player.isAdmin() ) && block.getStatus() == 0 && ( block.getType() == BUTTON || signPunched ) ) {
@@ -296,17 +307,6 @@ public class ServerPortListenerCommon {
 
 			}
 
-			if( !player.canUseCommand("/serverportdestroy") && !player.canUseCommand("/serverportdestroy"+gateType) && !player.isAdmin() ) {
-
-				return true; 
-			} else {
-				if( block.getStatus() == 3 ) {
-
-					if( portalManager.destroyPortal( block ) ) {
-						MiscUtils.safeMessage(player, "Gate Destroyed");
-					}
-				}
-			}
 		}
 
 		return false;
@@ -337,7 +337,7 @@ public class ServerPortListenerCommon {
 			return true;
 
 		}
-		
+
 		if( split[0].equals("/getinv") ) {
 			restoreInventory(player);
 			return true;

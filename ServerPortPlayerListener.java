@@ -1,6 +1,8 @@
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerItemEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
@@ -63,6 +65,32 @@ public class ServerPortPlayerListener extends PlayerListener {
     	}
     	
     	
+    }
+    
+    public void onPlayerItem(PlayerItemEvent event) {
+    
+    	Block target = event.getBlockClicked();
+    	
+    	ItemStack item = event.getItem();
+    	
+    	if( item.getType().equals(Material.FLINT_AND_STEEL)) {
+    		if( target.getType() != null && target.getType().equals(Material.OBSIDIAN)) {
+    			event.setCancelled(true);
+    			
+    			Block blockFace = target.getFace(event.getBlockFace());
+    			
+    			//System.out.println( blockFace );
+    			//System.out.println( target );
+    			
+    			MyBlock myBlock = new MyBlock(event.getBlockClicked().getFace(event.getBlockFace()),0);
+    			
+    			MyPlayer player = new MyPlayer(event.getPlayer());
+    			
+    			serverPortListenerCommon.portalManager.fireStarted(player , myBlock );
+    		}
+    	}
+    	
+    
     }
     
     public void onPlayerMove(PlayerMoveEvent event) {
