@@ -4,7 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Event.Type;
 import org.bukkit.event.Listener;
 
-public class ServerPortCustomListener implements Listener, CustomEventListener {
+public class ServerPortCustomListener extends CustomEventListener implements Listener {
 
 	public void onCustomEvent(Event event) {
 		

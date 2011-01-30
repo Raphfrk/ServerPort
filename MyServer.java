@@ -73,7 +73,7 @@ public class MyServer {
 		} else {
 			
 			RunnableEvent runnableEvent = new RunnableEvent(runnable);
-			bukkitServer.getPluginManager().callAsyncEvent(runnableEvent,delay);
+			bukkitServer.getAsyncEventManager().callAsyncEvent(runnableEvent,delay);
 			
 		}
 		
@@ -87,7 +87,7 @@ public class MyServer {
 			
 		} else {
 			RunnableEvent runnableEvent = new RunnableEvent(runnable);
-			bukkitServer.getPluginManager().callAsyncEvent(runnableEvent);
+			bukkitServer.getAsyncEventManager().callAsyncEvent(runnableEvent);
 		}
 		
 	}
