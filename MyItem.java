@@ -46,7 +46,7 @@ public class MyItem {
 		if(hmod) {
 			hmodItem.setDamage(damage);
 		} else {
-			bukkitItem.setDamage((byte)damage);
+			bukkitItem.setDurability((byte)damage);
 		}
 	}
 	
@@ -78,7 +78,7 @@ public class MyItem {
 		if(hmod) {
 			return hmodItem.getDamage();
 		} else {
-			return (int)bukkitItem.getDamage();
+			return (int)bukkitItem.getDurability();
 		}
 	}
 	

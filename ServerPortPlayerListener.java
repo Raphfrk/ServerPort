@@ -74,7 +74,7 @@ public class ServerPortPlayerListener extends PlayerListener {
     	ItemStack item = event.getItem();
     	
     	if( item.getType().equals(Material.FLINT_AND_STEEL)) {
-    		if( target.getType() != null && target.getType().equals(Material.OBSIDIAN)) {
+    		if( target != null && target.getType() != null && target.getType().equals(Material.OBSIDIAN)) {
     			event.setCancelled(true);
     			
     			Block blockFace = target.getFace(event.getBlockFace());
