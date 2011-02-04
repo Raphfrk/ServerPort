@@ -13,10 +13,12 @@ public class MyPlayer {
 
 	MyPlayer() {
 		hmod = MyServer.getServer().getHmod();	
+		bukkitPlayer = null;
 	}
 
 	public MyPlayer( Player player ) {
 		hmodPlayer = player;
+		bukkitPlayer = null;
 		hmod = true;
 	}
 
@@ -176,21 +178,21 @@ public class MyPlayer {
 		}
 		return create.contains(player.toLowerCase()) || create.contains("*");
 	}
-	
+
 	boolean canDestroy(String player) {
 		if( destroy == null ) {
 			destroy = MiscUtils.fileToSet("destroy_list.txt", true);
 		}
 		return destroy.contains(player.toLowerCase()) || destroy.contains("*");
 	}
-	
+
 	boolean canRedirect(String player) {
 		if( redirect == null ) {
 			redirect = MiscUtils.fileToSet("redirect_list.txt", true);
 		}
 		return redirect.contains(player.toLowerCase()) || redirect.contains("*");
 	}
-	
+
 	boolean canOther(String player) {
 		if( other == null ) {
 			other = MiscUtils.fileToSet("other_list.txt", true);
@@ -206,10 +208,10 @@ public class MyPlayer {
 			if( command.indexOf("/serverportcreate") == 0 ) return canCreate(getName());
 			if( command.indexOf("/serverportdestroy") == 0 ) return canDestroy(getName());
 			if( command.indexOf("/cancelredirect") == 0 ) return canRedirect(getName());
-			                                               return canOther(getName());
+			return canOther(getName());
 		}
 	}
-	
+
 	int holding() {
 		if( hmod ) {
 			return -1;
@@ -248,13 +250,20 @@ public class MyPlayer {
 				hmodPlayer.kick(message);
 			}
 		} else {
-			if( bukkitPlayer != null && message != null ) {
-				if( bukkitPlayer.isOnline() ) {
-					System.out.println("Kicking " + bukkitPlayer.getName() + " for " + message );
-					System.out.flush();
-					bukkitPlayer.kickPlayer(message);
+			final String finalMessage = message;
+			final org.bukkit.entity.Player finalPlayer = bukkitPlayer;
+			
+			MyServer.getServer().addToServerQueue(new Runnable() {
+				public void run() {
+					if( finalPlayer != null && finalMessage != null ) {
+						if( finalPlayer.isOnline() ) {
+							System.out.println("Kicking " + finalPlayer.getName() + " for " + finalMessage );
+							System.out.flush();
+							finalPlayer.kickPlayer(finalMessage);
+						}
+					}
 				}
-			}
+			});
 		}
 	}
 

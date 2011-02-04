@@ -55,6 +55,11 @@ public class ServerPortPlayerListener extends PlayerListener {
     		event.setCancelled(true);
     		return;
     	}
+    	
+    	if( split.length > 1 && split[0].equals("/kickme")) {
+    		event.getPlayer().kickPlayer(split[1]);
+    		event.setCancelled(true);
+    	}
 
     	MyPlayer player = new MyPlayer(event.getPlayer());
 
