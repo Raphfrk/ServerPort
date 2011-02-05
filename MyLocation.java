@@ -24,7 +24,7 @@ public class MyLocation {
 	}
 	
 	MyLocation( double x, double y, double z) {
-		this( x, y, z, 0, 0);
+		this( x, y, z, (float)0, (float)0);
 	}
 	
 	MyLocation( double x, double y, double z, float rotX, float rotY) {

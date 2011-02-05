@@ -131,6 +131,7 @@ public class ServerPortListenerCommon {
 
 				IntLocation exitPoint = portalInfo.getExitPoint();
 
+				
 				MyLocation loc = exitPoint.toLocation();
 
 				loc.setRotX( (float)limboInfo.getRotX() + 180);
@@ -138,6 +139,7 @@ public class ServerPortListenerCommon {
 
 				player.teleportTo(loc);
 				player.setHealth(playerHealth);
+				
 
 
 			} else {
@@ -325,6 +327,20 @@ public class ServerPortListenerCommon {
 
 		double m = player.getLocation().getRotX() % 360;
 		m = m < 0 ? m+360 : m;
+		
+		if( split[0].equals("/pos") && player.isAdmin() ) {
+			player.sendMessage("Pos: " + player.getLocation().getBukkitLocation());
+			if( split.length > 3 ) {
+				int x = Integer.parseInt(split[1]);
+				int y = Integer.parseInt(split[2]);
+				int z = Integer.parseInt(split[3]);
+				
+				MiscUtils.gridLoad(x, y, z);
+				player.teleportTo(new MyLocation(x,y,z));
+				player.sendMessage("New pos: " + player.getLocation().getBukkitLocation());
+			}
+			return true;
+		}
 
 		if( split[0].equals("/release") && player.canUseCommand("/release") && player.getHealth() > 0 ) {
 
