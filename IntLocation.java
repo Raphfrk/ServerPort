@@ -165,7 +165,7 @@ public class IntLocation implements Comparable<IntLocation> {
 		
 		String[] split = string.split(",");
 		
-		if( split.length != 3 ) {
+		if( split.length != 4 && split.length != 3 ) {
 			return false;
 		}
 		
@@ -181,28 +181,37 @@ public class IntLocation implements Comparable<IntLocation> {
 
 		if( string == null ) {
 			MiscUtils.safeLogging( "[Serverport] Unable to parse " + string + " as int location" );
-			Integer.parseInt("blah");
 			return null;
 		}
 
 		String[] split = string.split(",");
 
-		if( split.length != 4 ) {
+		if( split.length != 4 && split.length != 3 ) {
 			MiscUtils.safeLogging( "[Serverport] Unable to parse " + string + " as int location" );
-			Integer.parseInt("blah");
 			return null;
 		}
 
+		String name;
+		if( split.length == 3 ) {
+			name = MyServer.bukkitServer.getWorlds().get(0).getName();
+		} else {
+			name = split[3];
+		}
+		
 		return new IntLocation( 
 				MiscUtils.getInt(split[0]),
 				MiscUtils.getInt(split[1]),
 				MiscUtils.getInt(split[2]),
-				split[3]);
+				name);
 
 
 	}
 
 	String getString() {
+		String name = getWorldName();
+		if( name == null ) {
+			name = MyServer.bukkitServer.getWorlds().get(0).getName();
+		}
 		return x + ", " + y + ", " + z + ", " + getWorldName();
 	}
 	
