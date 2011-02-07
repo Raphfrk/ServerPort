@@ -1,5 +1,8 @@
 import java.io.File;
+import java.util.Iterator;
 import java.util.logging.Logger;
+
+import org.bukkit.World.Environment;
 
 
 public class ServerPortCommon {
@@ -53,6 +56,8 @@ public class ServerPortCommon {
 		registerParameters();
 		
 		parameterManager.loadParameters();
+
+		loadWorlds(portalManager);
 		
 		portalManager.init();
 		communicationManager.init();
@@ -86,6 +91,31 @@ public class ServerPortCommon {
 		
 		portalManager.registerParameters( parameterManager );
 		communicationManager.registerParameters( parameterManager );
+		
+	}
+	
+	static void loadWorlds(PortalManager portalManager) {
+		
+		Iterator<String> itr = portalManager.worldList.getValues().keySet().iterator();
+
+		while(itr.hasNext()) {
+			String world = itr.next();
+			log.info("[ServerPort] loading: " + world);
+			String[] params = world.split(";");
+			if(params.length==1) {
+				MyServer.bukkitServer.createWorld(world, Environment.NORMAL);
+				continue;
+			} else if(params.length==2) {
+				if(params[1].equalsIgnoreCase("nether")) {
+					MyServer.bukkitServer.createWorld(params[0], Environment.NETHER);
+					continue;
+				} else if(params[1].equalsIgnoreCase("normal")) {
+					MyServer.bukkitServer.createWorld(params[0], Environment.NETHER);
+					continue;
+				} 
+			}
+			log.info("[ServerPort] Unable to load: " + world);
+		}
 		
 	}
 	

@@ -14,26 +14,26 @@ public class MyLocation {
 		if( hmod ) {
 			hmodLocation = new Location();	
 		} else {
-			bukkitLocation = new org.bukkit.Location(MyServer.getServer().getBukkitWorld(), 0, 0, 0);
+			bukkitLocation = new org.bukkit.Location(MyServer.getServer().getMainWorld(), 0, 0, 0);
 		}
 		
 	}
 	
-	MyLocation( int x, int y, int z) {
-		this((double)x, (double)y, (double)z);
+	MyLocation( org.bukkit.World world, int x, int y, int z) {
+		this(world, (double)x, (double)y, (double)z);
 	}
 	
-	MyLocation( double x, double y, double z) {
-		this( x, y, z, (float)0, (float)0);
+	MyLocation( org.bukkit.World world, double x, double y, double z) {
+		this(world, x, y, z, (float)0, (float)0);
 	}
 	
-	MyLocation( double x, double y, double z, float rotX, float rotY) {
+	MyLocation( org.bukkit.World world, double x, double y, double z, float rotX, float rotY) {
 		this();
 		
 		if( hmod ) {
 			hmodLocation = new Location( x, y, z, rotX, rotY );
 		} else {
-			bukkitLocation = new org.bukkit.Location( MyServer.getServer().getBukkitWorld(), x, y, z, rotX, rotY );
+			bukkitLocation = new org.bukkit.Location( world, x, y, z, rotX, rotY );
 		}
 	}
 	

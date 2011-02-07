@@ -84,9 +84,6 @@ public class ServerPortPlayerListener extends PlayerListener {
     			
     			Block blockFace = target.getFace(event.getBlockFace());
     			
-    			//System.out.println( blockFace );
-    			//System.out.println( target );
-    			
     			MyBlock myBlock = new MyBlock(event.getBlockClicked().getFace(event.getBlockFace()),0);
     			
     			MyPlayer player = new MyPlayer(event.getPlayer());
@@ -112,9 +109,6 @@ public class ServerPortPlayerListener extends PlayerListener {
     	int tx = to.getBlockX();
     	int ty = to.getBlockY();
     	int tz = to.getBlockZ();
-    	
-    	//System.out.println( event.getFrom() );
-    	//System.out.println( event.getTo() );
     	
     	if( fx == tx && fy == ty && fz == tz )  return;
     	

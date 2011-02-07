@@ -1,6 +1,6 @@
 public class MyBlock {
 	
-	private org.bukkit.block.Block bukkitBlock;
+	public org.bukkit.block.Block bukkitBlock;
 	private int bukkitStatus;
 	// 0: start
 	// 3: broken
@@ -72,6 +72,10 @@ public class MyBlock {
 		} else {
 			return bukkitBlock.getZ();
 		}
+	}
+	
+	org.bukkit.World getWorld() {
+		return bukkitBlock.getWorld();
 	}
 	
 

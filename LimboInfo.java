@@ -17,7 +17,7 @@ public class LimboInfo {
 
 	private boolean locked = false;
 
-	private IntLocation lockedPosition = new IntLocation(0,0,0);
+	private IntLocation lockedPosition = new IntLocation(0,0,0, "");
 
 	private long lockRelease = -1;
 	
@@ -249,7 +249,7 @@ public class LimboInfo {
 				if( IntLocation.isIntLocation(split[1])) {
 					this.lockedPosition = IntLocation.getIntLocation(split[1]);
 				} else {
-					this.lockedPosition = new IntLocation(0,0,0);
+					this.lockedPosition = new IntLocation(0,0,0,"");
 					MiscUtils.safeLogging("[ServerPort] Unable to parse lockedposition in file: " + filename);
 				}
 			} else if( split[0].equals("lockedrelease")) {

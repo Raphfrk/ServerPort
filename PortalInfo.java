@@ -46,6 +46,8 @@ public class PortalInfo {
 	String owner = "";
 	String targetServer = "";
 	String targetGate = "";
+	String targetWorld = "_default";
+	String portalWorld = "_default";
 	
 	HashMap<IntLocation,Integer> blockTypes = new HashMap<IntLocation,Integer>();
 	HashMap<IntLocation,Integer> portalBlocks = new HashMap<IntLocation,Integer>();
@@ -53,7 +55,7 @@ public class PortalInfo {
 
 	HashMap<Character,Integer> blockLookup = new HashMap<Character,Integer>();
 
-	IntLocation exitPoint = new IntLocation(0,0,0);
+	IntLocation exitPoint = new IntLocation(0,0,0,"");
 	boolean exitPointSet = false;
 	
 	boolean linearGate = false;
@@ -94,6 +96,8 @@ public class PortalInfo {
 		if( bindStone )                        portalString.add( "bind=" + bindStone );
 		if( linearGate )                       portalString.add( "lineargate=" + linearGate );
 		if( innerZone )                        portalString.add( "innerzone=" + innerZone );
+		if(!portalWorld.equals("_default"))    portalString.add( "portalworld=" + portalWorld );
+		if(!targetWorld.equals("_default"))    portalString.add( "targetworld=" + targetWorld );
 		
 		// 4 linear gates should be created for the outer edges
 		// 1 "innerZone" for cities
@@ -185,7 +189,7 @@ public class PortalInfo {
 
 			if( exitPoint.equals(current) ) {
 				line.append("*");
-			} else if( signBlocks.containsKey((new IntLocation( current.getX(), current.getY() , current.getZ() + 1 ) ) ) ) {
+			} else if( signBlocks.containsKey((new IntLocation( current.getX(), current.getY() , current.getZ() + 1 , portalWorld ) ) ) ) {
 				line.append("-");
 			} else if( portalBlocks.containsKey(current) ) {
 				line.append(".");
@@ -267,6 +271,10 @@ public class PortalInfo {
 				portalType = currentParameter[1];
 			} else if( currentParameter[0].equalsIgnoreCase("owner")) {
 				owner = currentParameter[1];
+			} else if( currentParameter[0].equalsIgnoreCase("portalworld")) {
+				portalWorld = currentParameter[1];
+			} else if( currentParameter[0].equalsIgnoreCase("targetworld")) {
+				targetWorld = currentParameter[1];
 			} else if( currentParameter[0].equalsIgnoreCase("targetgate")) {
 				targetGate = currentParameter[1].toLowerCase();
 			} else if( currentParameter[0].equalsIgnoreCase("targetserver")) {
@@ -302,6 +310,10 @@ public class PortalInfo {
 
 		}
 
+		if(portalWorld.equals("_default")) {
+			portalWorld = MyServer.bukkitServer.getWorlds().get(0).getName();
+			MiscUtils.safeLogging("Changing gate to world: " + portalWorld);
+		}
 
 		cnt++;
 
@@ -340,13 +352,13 @@ public class PortalInfo {
 						return;
 					} else {
 						blockTypes.put(
-								new IntLocation( cnt2 , y, z ),
+								new IntLocation( cnt2 , y, z , portalWorld),
 								blockLookup.get(currentChar)
 						);
 					}
 					if( currentChar == '-' ) {
 						signBlocks.put(
-								new IntLocation( cnt2 , y, z+1 ),
+								new IntLocation( cnt2 , y, z+1 , portalWorld ),
 								68
 						);
 					} else if( currentChar == '.' || currentChar == '*') {
@@ -361,12 +373,12 @@ public class PortalInfo {
 							highX = cnt2;
 						}
 						portalBlocks.put(
-								new IntLocation( cnt2 , y, z ),
+								new IntLocation( cnt2 , y, z , portalWorld ),
 								mistID
 						);
 					}
 					if( currentChar == '*' ) {
-						exitPoint = new IntLocation( cnt2 , y, z );
+						exitPoint = new IntLocation( cnt2 , y, z , portalWorld );
 						exitPointSet = true;
 					}
 				}
@@ -395,7 +407,7 @@ public class PortalInfo {
 			return;
 		} else if( !exitPointSet ) {
 			exitPointSet = true;
-			exitPoint = new IntLocation( (lowX+highX)/2 , lowestY , 0 );
+			exitPoint = new IntLocation( (lowX+highX)/2 , lowestY , 0 , portalWorld );
 		}
 
 
@@ -404,7 +416,7 @@ public class PortalInfo {
 
 	IntLocation transform( IntLocation current ) {
 
-		IntLocation newLoc = new IntLocation(0,0,0);
+		IntLocation newLoc = new IntLocation(0,0,0, portalWorld);
 
 		newLoc.setY(  current.getY() );
 		newLoc.setX(  current.getX()*dx + current.getZ()*dz);
@@ -497,7 +509,7 @@ public class PortalInfo {
 	}
 
 	boolean testMatch( MyBlock block , HashMap<IntLocation,Integer> otherPortals ) {
-
+		
 		int r;
 
 		for( r=2;r<6;r++ ) {
@@ -515,15 +527,15 @@ public class PortalInfo {
 		if( sign == null ) {
 			return false;
 		}
+		
+		int d = server.getBlockData(sign.getBlock().getWorld(), sign.getX(),sign.getY(),sign.getZ());
 
-		int d = server.getBlockData(sign.getX(),sign.getY(),sign.getZ());
-
-		return testMatch( new IntLocation( sign.getX(),sign.getY(),sign.getZ() ) , rotToDX(d) , rotToDZ(d) , otherPortals );
+		return testMatch( new IntLocation( sign.getX(),sign.getY(),sign.getZ() , sign.getBlock().getWorld().getName() ) , rotToDX(d) , rotToDZ(d) , otherPortals );
 
 	}
 
 	boolean testMatch( IntLocation block , int dx , int dz , HashMap<IntLocation,Integer> otherPortals ) {
-
+		
 		IntLocation loc = new IntLocation( block );
 
 		this.x = 0;
@@ -544,6 +556,7 @@ public class PortalInfo {
 			this.x = loc.getX()-current.getX();
 			this.y = loc.getY()-current.getY();
 			this.z = loc.getZ()-current.getZ();
+			this.portalWorld = block.getWorldName();
 
 			HashMap<IntLocation,Integer> gateBlocks = getBlocks(-1);
 
@@ -597,7 +610,7 @@ public class PortalInfo {
 
 	IntLocation getPos() {
 
-		return new IntLocation( this.x , this.y , this.z );
+		return new IntLocation( this.x , this.y , this.z, portalWorld );
 
 	}
 
@@ -713,13 +726,13 @@ public class PortalInfo {
 
 			IntLocation current = itr.next();
 
-			if( MiscUtils.isChunkLoaded(current.getX(), current.getY(), current.getZ())) {
+			if( MiscUtils.isChunkLoaded(current.getWorld(), current.getX(), current.getY(), current.getZ())) {
 
-				MiscUtils.gridLoad(current.getX(), current.getY(), current.getZ());
+				MiscUtils.gridLoad(current.getWorld(), current.getX(), current.getY(), current.getZ());
 
 			}
 
-			int currentId = server.getBlockIdAt(current.getX(), current.getY(), current.getZ());
+			int currentId = server.getBlockIdAt(current.getWorld(), current.getX(), current.getY(), current.getZ());
 
 			if( currentId == SIGN && (loc == null || !loc.equals(current) ) ) {
 				otherSign = true;
@@ -750,7 +763,7 @@ public class PortalInfo {
 
 					String[] text = { "" , portalName , targetServer , targetGate.equals(portalName)?"":targetGate };
 
-					MiscUtils.placeSign(text, firstLoc.getX(), firstLoc.getY(), firstLoc.getZ(), DXDZtoRot(dx, dz));
+					MiscUtils.placeSign(firstLoc.getWorld(), text, firstLoc.getX(), firstLoc.getY(), firstLoc.getZ(), DXDZtoRot(dx, dz));
 
 				}
 

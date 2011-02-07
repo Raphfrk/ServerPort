@@ -1,10 +1,9 @@
 import java.io.File;
+import java.util.List;
 
 import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
@@ -13,8 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ServerPortBukkit extends JavaPlugin {
 	
 	final Server server = getServer();
-	final World[] worlds = server.getWorlds();
-	final World world = worlds[0];
+	final List worlds = server.getWorlds();
 	
 	ServerPortListenerCommon serverPortListenerCommon = new ServerPortListenerCommon();
 	
@@ -26,14 +24,16 @@ public class ServerPortBukkit extends JavaPlugin {
 	
 	private final ServerPortBlockListener blockListener = new ServerPortBlockListener(this);
 	
-	private final ServerPortCustomListener customListener = new ServerPortCustomListener();
+	private final ServerPortCustomListener customListener = new ServerPortCustomListener(this);
 
 	private final ServerPortEntityListener entityListener = new ServerPortEntityListener(this);
+	
+	private final ServerPortWorldListener worldListener = new ServerPortWorldListener(this);
 	
     public ServerPortBukkit(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
         super(pluginLoader, instance, desc, folder, plugin, cLoader);
         
-        MyServer.setBukkitServer(world,server);
+        MyServer.setBukkitServer(server);
 		
 		serverPortCommon.init(serverPortListenerCommon);    
 		
@@ -43,7 +43,7 @@ public class ServerPortBukkit extends JavaPlugin {
         // TODO: Place any custom enable code here including the registration of any events
 
         // Register our events
-        
+        MyServer.setJavaPlugin(this);
     	registerHooks();
 
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
@@ -76,6 +76,8 @@ public class ServerPortBukkit extends JavaPlugin {
         pm.registerEvent(Event.Type.CUSTOM_EVENT, customListener, Priority.Normal, this);
         
         pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.CHUNK_UNLOADED, worldListener, Priority.Normal, this);
+        
        		
 	}
 	

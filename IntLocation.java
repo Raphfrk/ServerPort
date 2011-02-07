@@ -1,10 +1,14 @@
+import java.util.List;
+
+import org.bukkit.World;
+
 
 public class IntLocation implements Comparable<IntLocation> {
 	
 	@Override 
 	public int hashCode() { 
 
-		return x + y%1023 + z%65535;
+		return x + y%1023 + z%65535 + worldIndex;
 		
 	}
 	
@@ -20,7 +24,8 @@ public class IntLocation implements Comparable<IntLocation> {
 		return 
 			x==otherIntLocation.x && 
 			y==otherIntLocation.y && 
-			z==otherIntLocation.z;
+			z==otherIntLocation.z && 
+			worldIndex == otherIntLocation.worldIndex;
 	}
 		
 	
@@ -44,6 +49,12 @@ public class IntLocation implements Comparable<IntLocation> {
 			return -1;
 		}
 		
+		if( this.worldIndex > other.worldIndex ) {
+			return 1;
+		} else if (this.worldIndex < other.worldIndex ){
+			return -1;
+		}
+		
 		return 0;
 	}
 
@@ -51,28 +62,47 @@ public class IntLocation implements Comparable<IntLocation> {
 	int y;
 	int z;
 	
+	String worldName = null;
+	int worldIndex;
+	World world = null;
+	
 	IntLocation( IntLocation loc ) {
 		this.x = loc.x;
 		this.y = loc.y;
 		this.z = loc.z;
+		this.worldIndex = loc.worldIndex;
+		this.world = loc.world;
 	}
 	
-	IntLocation( int x , int y , int z ) {
+	IntLocation( int x , int y , int z , String worldName ) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		List<World> worlds = MyServer.getServer().bukkitServer.getWorlds();
+		int cnt;
+		this.worldName = worldName;
+		for(cnt=0;cnt<worlds.size();cnt++) {
+			if(worlds.get(cnt).getName().equals(worldName)) {
+				this.worldIndex = cnt;
+				this.world = worlds.get(cnt);
+				this.worldName = worldName;
+				return;
+			}
+		}
+		this.worldIndex = -1;
 	}
 	
 	IntLocation( MyBlock block ) {
-		this.x = block.getX();
-		this.y = block.getY();
-		this.z = block.getZ();
+		this(block.getX(), block.getY(), block.getZ(), block.bukkitBlock.getWorld().getName());
 	}
 	
 	IntLocation( MyLocation loc ) {
-		this.x = (int)Math.floor(loc.getX());
-		this.y = (int)Math.floor(loc.getY());
-		this.z = (int)Math.floor(loc.getZ());
+		this(
+				(int)Math.floor(loc.getX()),
+				(int)Math.floor(loc.getY()),
+				(int)Math.floor(loc.getZ()),
+				loc.getBukkitLocation().getWorld().getName()
+				);
 	}
 	
 	int getX() {
@@ -87,6 +117,14 @@ public class IntLocation implements Comparable<IntLocation> {
 		return z;
 	}
 	
+	World getWorld() {
+		return world;
+	}
+	
+	int getWorldId() {
+		return worldIndex;
+	}
+	
 	void setX( int x ) {
 		this.x = x;
 	}
@@ -97,6 +135,21 @@ public class IntLocation implements Comparable<IntLocation> {
 	
 	void setZ( int z ) {
 		this.z = z;
+	}
+	
+	void setWorldIndex( int index ) {
+		this.worldIndex = index;
+		worldName = null;
+	}
+	
+	String getWorldName() {
+		if(worldIndex < 0) {
+			return null;
+		}
+		if(worldName == null) {
+			worldName = MyServer.bukkitServer.getWorlds().get(worldIndex).getName();
+		}
+		return worldName;
 	}
 	
 	@Override
@@ -128,26 +181,29 @@ public class IntLocation implements Comparable<IntLocation> {
 
 		if( string == null ) {
 			MiscUtils.safeLogging( "[Serverport] Unable to parse " + string + " as int location" );
+			Integer.parseInt("blah");
 			return null;
 		}
 
 		String[] split = string.split(",");
 
-		if( split.length != 3 ) {
+		if( split.length != 4 ) {
 			MiscUtils.safeLogging( "[Serverport] Unable to parse " + string + " as int location" );
+			Integer.parseInt("blah");
 			return null;
 		}
 
 		return new IntLocation( 
 				MiscUtils.getInt(split[0]),
 				MiscUtils.getInt(split[1]),
-				MiscUtils.getInt(split[2]));
+				MiscUtils.getInt(split[2]),
+				split[3]);
 
 
 	}
 
 	String getString() {
-		return x + ", " + y + ", " + z;
+		return x + ", " + y + ", " + z + ", " + getWorldName();
 	}
 	
 	MyLocation toLocation() {
@@ -157,6 +213,7 @@ public class IntLocation implements Comparable<IntLocation> {
 		loc.setX( this.x + 0.5 );
 		loc.setY( this.y );
 		loc.setZ( this.z + 0.5 );
+		loc.getBukkitLocation().setWorld(MyServer.bukkitServer.getWorlds().get(worldIndex));
 		
 		return loc;
 		
@@ -164,7 +221,7 @@ public class IntLocation implements Comparable<IntLocation> {
 	
 	String getFileString() {
 		
-		return minusInt(x) + "_" + minusInt(y) + "_" + minusInt(z);
+		return minusInt(x) + "_" + minusInt(y) + "_" + minusInt(z) + "_" + getWorldName();
 		
 	}
 	
@@ -188,6 +245,10 @@ public class IntLocation implements Comparable<IntLocation> {
 		
 		if( dy > d ) d = dy;
 		if( dz > d ) d = dz;
+		
+		if( a.worldIndex != b.worldIndex ) {
+			d+=100000000;
+		}
 		
 		return d;
 		

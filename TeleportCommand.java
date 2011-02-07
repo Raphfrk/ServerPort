@@ -1,3 +1,7 @@
+import java.util.List;
+
+import org.bukkit.World;
+
 
 public class TeleportCommand implements Runnable {
 
@@ -396,13 +400,22 @@ public class TeleportCommand implements Runnable {
 		}  else {
 			
 			boolean ret = teleport( communicationManager , player , targetServer, targetGate , true );
-			//System.out.println( "ret = " + ret );
 			return ret;
 			
 		}
 		
 		
 		
+	}
+	
+	static Integer getLocalWorld(String name) {
+		List<World> worlds = MyServer.bukkitServer.getWorlds();
+		for(int cnt=0;cnt<worlds.size();cnt++) {
+			if(worlds.get(cnt).equals(name)) {
+				return cnt;
+			}
+		}
+		return null;
 	}
 	
 	static boolean teleport( CommunicationManager communicationManager , MyPlayer player , String targetServer , String targetGate , boolean killOnFail ) {
@@ -412,7 +425,9 @@ public class TeleportCommand implements Runnable {
 		portalInfo.targetServer = targetServer;
 		portalInfo.targetGate = targetGate;
 		
-		if( targetServer.equals("here") ) {
+		Integer targetIndex = getLocalWorld(targetServer);
+		
+		if( targetServer.equals("here") || targetIndex != null ) {
 			
 			portalInfo = communicationManager.portalManager.getPortal(targetGate);
 			
@@ -424,9 +439,13 @@ public class TeleportCommand implements Runnable {
 				
 			} else {
 				
+				if( targetServer.equals("here")) {
+					targetIndex = 0;
+				}
+				
 				IntLocation locInt = portalInfo.getExitPoint();
 				
-				MyLocation loc = new MyLocation( 0.5+(double)locInt.getX() , (double)locInt.getY() , 0.5+(double)locInt.getZ() , (float)portalInfo.getDir() , (float)0 );
+				MyLocation loc = new MyLocation( MyServer.bukkitServer.getWorlds().get(targetIndex), 0.5+(double)locInt.getX() , (double)locInt.getY() , 0.5+(double)locInt.getZ() , (float)portalInfo.getDir() , (float)0 );
 				
 				player.teleportTo(loc);
 				

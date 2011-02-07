@@ -1,8 +1,15 @@
+import org.bukkit.World;
+import org.bukkit.plugin.java.JavaPlugin;
+
 
 public class MyServer {
 	
 	public static org.bukkit.Server bukkitServer;
-	public static org.bukkit.World bukkitWorld;
+	public static JavaPlugin plugin;
+	
+	public static void setJavaPlugin(JavaPlugin plugin) {
+		MyServer.plugin = plugin;
+	}
 	
 	public static Server hmodServer;
 	
@@ -18,9 +25,8 @@ public class MyServer {
 	}
 	
 
-	static void setBukkitServer( org.bukkit.World world, org.bukkit.Server server ) {
+	static void setBukkitServer( org.bukkit.Server server ) {
 		
-		MyServer.bukkitWorld = world;
 		MyServer.bukkitServer = server;
 		myServer.hmod = false;
 		
@@ -30,12 +36,6 @@ public class MyServer {
 	public static MyServer getServer() {
 		
 		return myServer;
-		
-	}
-	
-	public org.bukkit.World getBukkitWorld() {
-		
-		return bukkitWorld;
 		
 	}
 	
@@ -64,6 +64,10 @@ public class MyServer {
 		}
 	}
 	
+	World getMainWorld() {
+		return bukkitServer.getWorlds().get(0);
+	}
+	
 	void addToServerQueue( Runnable runnable, long delay ) {
 		
 		if( hmod ) {
@@ -72,8 +76,7 @@ public class MyServer {
 			
 		} else {
 			
-			RunnableEvent runnableEvent = new RunnableEvent(runnable);
-			bukkitServer.getAsyncEventManager().callAsyncEvent(runnableEvent,delay);
+			bukkitServer.getScheduler().scheduleSyncDelayedTask(plugin, runnable, delay/50);
 			
 		}
 		
@@ -86,8 +89,7 @@ public class MyServer {
 			hmodServer.addToServerQueue( runnable );
 			
 		} else {
-			RunnableEvent runnableEvent = new RunnableEvent(runnable);
-			bukkitServer.getAsyncEventManager().callAsyncEvent(runnableEvent);
+			bukkitServer.getScheduler().scheduleSyncDelayedTask(plugin, runnable);
 		}
 		
 	}
@@ -99,7 +101,7 @@ public class MyServer {
 			hmodServer.dropItem(loc.getHmodLocation(), id, quantity);
 			
 		} else {
-			bukkitWorld.dropItem(loc.getBukkitLocation(), new org.bukkit.inventory.ItemStack( id, quantity ));
+			loc.getBukkitLocation().getWorld().dropItem(loc.getBukkitLocation(), new org.bukkit.inventory.ItemStack( id, quantity ));
 		}
 		
 	}
@@ -124,42 +126,43 @@ public class MyServer {
 		
 	}
 	
-	int getBlockIdAt(int x, int y, int z) {
+	int getBlockIdAt(World world, int x, int y, int z) {
 		
 		if( hmod ) {
 			return hmodServer.getBlockIdAt(x, y, z);
 		} else {
-			return bukkitWorld.getBlockAt(x, y, z).getTypeId();
+			return world.getBlockAt(x, y, z).getTypeId();
 		}
 	}
 	
-	void loadChunk(int x, int y, int z) {
+	void loadChunk(org.bukkit.World world, int x, int y, int z) {
 		
 		if( hmod ) {	
 			hmodServer.loadChunk(x, y, z);
 		} else {
-			org.bukkit.Chunk chunk = bukkitWorld.getChunkAt(x>>4, z>>4);
-			bukkitServer.getWorlds()[0].loadChunk(chunk);
+			if(!world.isChunkLoaded(x>>4, z>>4)) {
+				world.loadChunk(x>>4, z>>4);
+			} 
 		}
 		
 	}
 	
-	void setBlockAt(int id, int x, int y, int z) {
+	void setBlockAt(org.bukkit.World world, int id, int x, int y, int z) {
 		
 		if( hmod ) {
 			hmodServer.setBlockAt(id, x, y, z);
 		} else {
-			org.bukkit.block.Block block = bukkitWorld.getBlockAt(x,y,z);
+			org.bukkit.block.Block block = world.getBlockAt(x,y,z);
 			block.setTypeId(id);
 		}
 	}
 	
-	void setBlockData(int x, int y, int z, int d) {
+	void setBlockData(org.bukkit.World world, int x, int y, int z, int d) {
 		
 		if( hmod ) {
 			hmodServer.setBlockData(x, y, z, d);
 		} else {
-			org.bukkit.block.Block block = bukkitWorld.getBlockAt(x,y,z);
+			org.bukkit.block.Block block = world.getBlockAt(x,y,z);
 			block.setData((byte)d);
 		}
 	}
@@ -179,24 +182,24 @@ public class MyServer {
 		}
 	}
 	
-	int getBlockData(int x, int y, int z) {
+	int getBlockData(org.bukkit.World world, int x, int y, int z) {
 				
 		if( hmod ) {
 			return hmodServer.getBlockData(x, y, z);
 		} else {
-			org.bukkit.block.Block block = bukkitWorld.getBlockAt(x,y,z);
+			org.bukkit.block.Block block = world.getBlockAt(x,y,z);
 			return block.getData()&0xFF;
 		}
 		
 	}
 	
-	MySign getComplexBlock( int x, int y, int z, int status ) {
+	MySign getComplexBlock( org.bukkit.World world, int x, int y, int z, int status ) {
 		MySign sign = new MySign();
 
 		if( hmod ) {
 			sign.hmodSign = (Sign)hmodServer.getComplexBlock( x, y, z );
 		} else {
-			org.bukkit.block.BlockState blockState = bukkitWorld.getBlockAt(x,y,z).getState();
+			org.bukkit.block.BlockState blockState = world.getBlockAt(x,y,z).getState();
 			if( !blockState.getType().equals(org.bukkit.Material.WALL_SIGN) ) {
 				sign.bukkitSign = null;
 			} else {
@@ -211,7 +214,7 @@ public class MyServer {
 		if( hmod ) {
 			return hmodServer == null;
 		} else {
-			return bukkitWorld == null || bukkitServer == null;
+			return bukkitServer == null;
 		}
 	}
 	

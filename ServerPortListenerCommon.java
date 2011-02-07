@@ -1,5 +1,6 @@
-import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.bukkit.World;
 
 
 public class ServerPortListenerCommon {
@@ -240,7 +241,7 @@ public class ServerPortListenerCommon {
 		}
 
 		if( communicationManager.limboStore.isLocked( player.getName() )) {
-			MyLocation newFrom = new MyLocation(from.getX(),from.getY(),from.getZ(),from.getRotX(),from.getRotY());
+			MyLocation newFrom = new MyLocation(player.getWorld(), from.getX(),from.getY(),from.getZ(),from.getRotX(),from.getRotY());
 			newFrom.setX( newFrom.getX() + 0.5);
 			newFrom.setZ( newFrom.getZ() + 0.5);
 			player.teleportTo(newFrom);
@@ -287,11 +288,9 @@ public class ServerPortListenerCommon {
 
 		if( portalManager.testSignBlock( block ) ) {
 
-			//System.out.println( "id" + block.getType() );
-
 			if( block.getType() == SIGN ) {
 
-				MySign sign = (MySign)server.getComplexBlock(block.getX(), block.getY(), block.getZ(), block.getStatus());
+				MySign sign = (MySign)server.getComplexBlock(block.getWorld(), block.getX(), block.getY(), block.getZ(), block.getStatus());
 
 				if( !sign.isNull() ) {
 					portalManager.refreshSign( player , sign );
@@ -330,13 +329,24 @@ public class ServerPortListenerCommon {
 		
 		if( split[0].equals("/pos") && player.isAdmin() ) {
 			player.sendMessage("Pos: " + player.getLocation().getBukkitLocation());
-			if( split.length > 3 ) {
+			if( split.length == 3 ) {
 				int x = Integer.parseInt(split[1]);
 				int y = Integer.parseInt(split[2]);
 				int z = Integer.parseInt(split[3]);
 				
-				MiscUtils.gridLoad(x, y, z);
-				player.teleportTo(new MyLocation(x,y,z));
+				MiscUtils.gridLoad(player.getWorld(), x, y, z);
+				player.teleportTo(new MyLocation(player.getWorld(), x,y,z));
+				player.sendMessage("New pos: " + player.getLocation().getBukkitLocation());
+			} else if ( split.length > 3 ) {
+				int x = Integer.parseInt(split[1]);
+				int y = Integer.parseInt(split[2]);
+				int z = Integer.parseInt(split[3]);
+				int index = Integer.parseInt(split[4]);
+				World world = MyServer.getServer().bukkitServer.getWorlds().get(index);
+				
+				MiscUtils.gridLoad(world, x, y, z);
+				player.teleportTo(new MyLocation(world, x,y,z));
+				player.sendMessage("Teleporting to world: " + world.getName() );
 				player.sendMessage("New pos: " + player.getLocation().getBukkitLocation());
 			}
 			return true;
@@ -356,6 +366,11 @@ public class ServerPortListenerCommon {
 
 		if( split[0].equals("/getinv") ) {
 			restoreInventory(player);
+			return true;
+		}
+		
+		if( split[0].equals("/serverport") && split.length>1 && split[1].equalsIgnoreCase("loadworlds")) {
+			ServerPortCommon.loadWorlds(portalManager);
 			return true;
 		}
 
@@ -428,7 +443,7 @@ public class ServerPortListenerCommon {
 
 			MiscUtils.safeMessage(player, "[ServerPort] Loading circle (" + loc + ") with radius " + r);
 
-			MiscUtils.loadCircle(player.getName(), loc.x, loc.y, loc.z, r);
+			MiscUtils.loadCircle(portalManager.worldName, player.getName(), loc.x, loc.y, loc.z, r);
 
 			return true;
 

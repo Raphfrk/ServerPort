@@ -243,6 +243,10 @@ public class MyPlayer {
 			return bukkitPlayer.getLocation().getPitch();
 		}
 	}
+	
+	org.bukkit.World getWorld() {
+		return bukkitPlayer.getLocation().getWorld();
+	}
 
 	void kick( String message ) {
 		if( hmod ) {
@@ -257,8 +261,6 @@ public class MyPlayer {
 				public void run() {
 					if( finalPlayer != null && finalMessage != null ) {
 						if( finalPlayer.isOnline() ) {
-							System.out.println("Kicking " + finalPlayer.getName() + " for " + finalMessage );
-							System.out.flush();
 							finalPlayer.kickPlayer(finalMessage);
 						}
 					}
