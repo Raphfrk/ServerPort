@@ -557,6 +557,8 @@ public class PortalManager {
 
 				newLoc.setRotX( (float)(loc.getRotX() + 180 + targetPortal.getDir() - portalInfo.getDir()) % 360 );
 				newLoc.setRotY( loc.getRotY() );
+				
+				newLoc.setWorld( target.getWorld() );
 
 				//				if( vehicle == null ) {
 				player.teleportTo(newLoc);

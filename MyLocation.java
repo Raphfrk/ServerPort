@@ -119,6 +119,10 @@ public class MyLocation {
 		}
 	}
 	
+	void setWorld(org.bukkit.World world) {
+		bukkitLocation.setWorld(world);
+	}
+	
 	void setZ(double z) {
 		if( hmod ) {
 			hmodLocation.z=z;

@@ -46,7 +46,6 @@ public class PortalInfo {
 	String owner = "";
 	String targetServer = "";
 	String targetGate = "";
-	String targetWorld = "_default";
 	String portalWorld = "_default";
 	
 	HashMap<IntLocation,Integer> blockTypes = new HashMap<IntLocation,Integer>();
@@ -97,7 +96,6 @@ public class PortalInfo {
 		if( linearGate )                       portalString.add( "lineargate=" + linearGate );
 		if( innerZone )                        portalString.add( "innerzone=" + innerZone );
 		if(!portalWorld.equals("_default"))    portalString.add( "portalworld=" + portalWorld );
-		if(!targetWorld.equals("_default"))    portalString.add( "targetworld=" + targetWorld );
 		
 		// 4 linear gates should be created for the outer edges
 		// 1 "innerZone" for cities
@@ -273,8 +271,6 @@ public class PortalInfo {
 				owner = currentParameter[1];
 			} else if( currentParameter[0].equalsIgnoreCase("portalworld")) {
 				portalWorld = currentParameter[1];
-			} else if( currentParameter[0].equalsIgnoreCase("targetworld")) {
-				targetWorld = currentParameter[1];
 			} else if( currentParameter[0].equalsIgnoreCase("targetgate")) {
 				targetGate = currentParameter[1].toLowerCase();
 			} else if( currentParameter[0].equalsIgnoreCase("targetserver")) {
@@ -314,7 +310,7 @@ public class PortalInfo {
 			portalWorld = MyServer.bukkitServer.getWorlds().get(0).getName();
 			MiscUtils.safeLogging("Changing gate to world: " + portalWorld);
 		}
-
+		
 		cnt++;
 
 		int lowestY = 1;

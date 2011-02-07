@@ -425,11 +425,15 @@ public class TeleportCommand implements Runnable {
 		portalInfo.targetServer = targetServer;
 		portalInfo.targetGate = targetGate;
 		
-		Integer targetIndex = getLocalWorld(targetServer);
+		Integer targetIndex = null;
+		PortalInfo localGate = communicationManager.portalManager.getPortal(targetGate);
+		if( localGate != null ) {
+			targetIndex = getLocalWorld(localGate.portalWorld);
+		}
 		
 		if( targetServer.equals("here") || targetIndex != null ) {
 			
-			portalInfo = communicationManager.portalManager.getPortal(targetGate);
+			portalInfo = localGate;
 			
 			if( portalInfo == null ) {
 				
