@@ -2,6 +2,8 @@ import java.io.File;
 import java.util.List;
 
 import org.bukkit.Server;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -78,7 +80,40 @@ public class ServerPortBukkit extends JavaPlugin {
         pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.CHUNK_UNLOADED, worldListener, Priority.Normal, this);
         
+        
        		
 	}
+	
+	/*public boolean onCommand(CommandSender sender, Command command, String commandLabel, String args[]) {
+
+		
+		String commandName = command.getName().toLowerCase();
+		if (commandName.equals("posyml")) {
+			
+			if(!(sender instanceof Player)) {
+				System.out.println("Not player");
+				System.out.flush();
+				return false;
+			}
+			
+			Player player = (Player)sender;
+			
+			String[] split = new String[args.length+1];
+			for(int cnt=0;cnt<args.length;cnt++) {
+				split[cnt+1] = args[cnt]; 
+			}
+			
+			split[0] = "/" + commandName;
+			
+			MyPlayer myPlayer = new MyPlayer(player);
+			
+			System.out.println("About to call onCommand");
+			
+			return serverPortListenerCommon.onCommand(myPlayer, split);
+			
+		}
+				
+		return false;
+	}*/
 	
 }

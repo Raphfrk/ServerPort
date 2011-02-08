@@ -1,7 +1,10 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
+
+import org.bukkit.World;
 
 public class PortalManager {
 
@@ -145,7 +148,7 @@ public class PortalManager {
 						"enables/disables listing of custom gates"
 				)
 		);
-		
+
 		parameterManager.registerParameter( 
 				new ParameterInfo( 
 						this, 
@@ -405,6 +408,19 @@ public class PortalManager {
 
 	}
 
+	boolean isLocalWorld(String name) {
+
+		List<World> worlds = MyServer.bukkitServer.getWorlds();
+
+		for(World world : worlds ) {
+			if(world.getName().equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		return false;
+
+	}
+
 	long lastPress = -1;
 
 	void buttonPress( MyBlock block , MyPlayer player ) {
@@ -453,7 +469,36 @@ public class PortalManager {
 
 		boolean createGate = portalInfo.autoCreate;
 
-		if( targetServer.equals("here")) {
+		if( isLocalWorld(targetServer) ) {
+			String command = 
+				"OPENGATE:" + 
+				playerName + "," + 
+				targetGate + "," + 
+				portalDuration + "," +
+				createGate + "," +
+				type + "," +
+				dx + "," + dz + "," +
+				x + "," + y + "," + z + "," + 
+				"here" + "," +
+				targetServer;
+
+			player.sendMessage(command);
+
+			String reply = activatePortalCommand(command);
+
+			player.sendMessage(reply);
+
+			if( reply != null ) {
+				String[] vars = reply.split(",",-1);
+				boolean gateOpened = reply.indexOf("GATEOPENED") == 0;
+				if( gateOpened && vars.length > 1 && MiscUtils.isInt(vars[1])) {
+					portalInfo.activate(MiscUtils.getInt(vars[1]));
+
+				}
+			}
+
+		} else if( targetServer.equals("here")) {
+
 
 			String reply = activatePortalCommand("OPENGATE:" + playerName + "," + targetGate + "," + portalDuration );
 
@@ -557,7 +602,7 @@ public class PortalManager {
 
 				newLoc.setRotX( (float)(loc.getRotX() + 180 + targetPortal.getDir() - portalInfo.getDir()) % 360 );
 				newLoc.setRotY( loc.getRotY() );
-				
+
 				newLoc.setWorld( target.getWorld() );
 
 				//				if( vehicle == null ) {
@@ -682,9 +727,13 @@ public class PortalManager {
 		if( !MiscUtils.isInt(vars[2])) return "WRONGVARS";
 		int durationRequest = MiscUtils.getInt(vars[2]);
 
-		String reply = activatePortal( targetGate.toLowerCase() , durationRequest );
+		String reply = "NOGATE";
+		
+		if( vars.length < 12 ) {
+			reply = activatePortal( targetGate.toLowerCase() , durationRequest );
+		}
 
-		if( !reply.equals("NOGATE") || vars.length < 11 ) {
+		if( ( !reply.equals("NOGATE") || vars.length < 11 ) && vars.length != 12 ) {
 			return reply;
 		}
 
@@ -726,6 +775,14 @@ public class PortalManager {
 
 		String peerServerName = vars[10];
 
+		String targetWorld;
+
+		if( vars.length < 12 ) {
+			targetWorld = MyServer.bukkitServer.getWorlds().get(0).getName();
+		} else {
+			targetWorld = vars[11];
+		}
+
 		int px = (int)Math.round(x);
 		int py = (int)y;
 		int pz = (int)Math.round(z);
@@ -738,6 +795,7 @@ public class PortalManager {
 		portalCustom.z = pz;
 		portalCustom.dx = dx;
 		portalCustom.dz = dz;
+		portalCustom.portalWorld = targetWorld;
 
 		if( !portalCustom.testDraw(blockBlocks) || !portalCustom.testDraw(signBlocks)) {
 			portalCustom.x = 0;
@@ -745,6 +803,7 @@ public class PortalManager {
 			portalCustom.z = 0;
 			portalCustom.dx = 1;
 			portalCustom.dz = 0;
+			portalCustom.portalWorld = "_default";
 			return "BADBUILD";
 		}
 
@@ -754,6 +813,7 @@ public class PortalManager {
 			portalCustom.z = 0;
 			portalCustom.dx = 1;
 			portalCustom.dz = 0;
+			portalCustom.portalWorld = "_default";
 			return "CHUNKGENBAN";
 
 		}
@@ -772,6 +832,35 @@ public class PortalManager {
 		portalCustom.portalName = targetGate.toLowerCase();
 		portalCustom.portalActualName = targetGate;
 		portalCustom.targetServer = peerServerName;
+
+		if( vars.length == 12 ) {
+			if(targetGate.startsWith("_")) {
+				portalCustom.x = 0;
+				portalCustom.y = 0;
+				portalCustom.z = 0;
+				portalCustom.dx = 1;
+				portalCustom.dz = 0;
+				portalCustom.portalWorld = "_default";
+				return "BADNAME";			
+			} else {
+				PortalInfo originPortal = getPortal(targetGate.toLowerCase());
+				if( originPortal == null ) {
+					portalCustom.x = 0;
+					portalCustom.y = 0;
+					portalCustom.z = 0;
+					portalCustom.dx = 1;
+					portalCustom.dz = 0;
+					portalCustom.portalWorld = "_default";
+					return "NOSOURCEGATE";
+				}
+				originPortal.targetServer = "here";
+				originPortal.targetGate = targetGate.toLowerCase() + "_" ;
+				originPortal.setFileName( portalDirectory + slash + "gates" + slash + originPortal.targetGate.toLowerCase() + ".gat" );
+				originPortal.save();
+				portalCustom.portalName = originPortal.targetGate;
+				portalCustom.targetServer = "here";
+			}
+		}
 
 		IntLocation loc = portalCustom.getExitPoint();
 		int shift = 0;
@@ -999,7 +1088,7 @@ public class PortalManager {
 		portalInfo.x = loc.x-exitBase.getX();
 		portalInfo.y = loc.y-exitBase.getY();
 		portalInfo.z = loc.z-exitBase.getZ();
-		
+
 		portalInfo.portalWorld = player.getWorld().getName();
 
 		if( !portalInfo.testDraw(blockBlocks) || !portalInfo.testDraw(signBlocks)) {
@@ -1139,7 +1228,7 @@ public class PortalManager {
 				do {
 					gateName = "FIRE_" + MiscUtils.genRandomCode().substring(0, 6);
 				} while ( nameLookup.containsKey(gateName));
-				
+
 
 				String oldName = portalInfo.getName();
 				String oldFileName = portalInfo.getFileName();
@@ -1247,7 +1336,7 @@ public class PortalManager {
 					return;
 				}
 
-				if( !line2.equals("here")) {
+				if( !line2.equals("here") && !isLocalWorld(line2)) {
 					if( communicationManager.peerServerDatabase.getServer(line2) == null ) {
 						MiscUtils.safeMessage(player, "[ServerPort] Unknown target server \"" + line2 + "\"" );
 						return;

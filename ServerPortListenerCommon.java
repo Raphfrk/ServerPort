@@ -326,7 +326,7 @@ public class ServerPortListenerCommon {
 
 		double m = player.getLocation().getRotX() % 360;
 		m = m < 0 ? m+360 : m;
-		
+				
 		if( split[0].equals("/pos") && player.isAdmin() ) {
 			player.sendMessage("Pos: " + player.getLocation().getBukkitLocation());
 			if( split.length == 3 ) {
@@ -349,6 +349,7 @@ public class ServerPortListenerCommon {
 				player.sendMessage("Teleporting to world: " + world.getName() );
 				player.sendMessage("New pos: " + player.getLocation().getBukkitLocation());
 			}
+			System.out.println("Returning true");
 			return true;
 		}
 
