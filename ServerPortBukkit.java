@@ -84,36 +84,5 @@ public class ServerPortBukkit extends JavaPlugin {
        		
 	}
 	
-	/*public boolean onCommand(CommandSender sender, Command command, String commandLabel, String args[]) {
-
-		
-		String commandName = command.getName().toLowerCase();
-		if (commandName.equals("posyml")) {
-			
-			if(!(sender instanceof Player)) {
-				System.out.println("Not player");
-				System.out.flush();
-				return false;
-			}
-			
-			Player player = (Player)sender;
-			
-			String[] split = new String[args.length+1];
-			for(int cnt=0;cnt<args.length;cnt++) {
-				split[cnt+1] = args[cnt]; 
-			}
-			
-			split[0] = "/" + commandName;
-			
-			MyPlayer myPlayer = new MyPlayer(player);
-			
-			System.out.println("About to call onCommand");
-			
-			return serverPortListenerCommon.onCommand(myPlayer, split);
-			
-		}
-				
-		return false;
-	}*/
 	
 }

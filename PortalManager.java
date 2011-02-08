@@ -2,6 +2,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.World;
@@ -10,6 +11,8 @@ public class PortalManager {
 
 	final int SIGN = 68;
 	final int BUTTON = 77;
+	
+	String mainWorld;
 
 	protected static final Logger log = Logger.getLogger("Minecraft");
 
@@ -84,6 +87,9 @@ public class PortalManager {
 
 
 	void init() {
+		
+		mainWorld = MyServer.bukkitServer.getWorlds().get(0).getName();
+		
 		loadPortalInfo();
 		savePortalInfo();
 
@@ -294,7 +300,7 @@ public class PortalManager {
 
 	boolean testSignBlock( MyBlock block ) {
 		IntLocation loc = new IntLocation( block );
-
+		
 		return signBlocks.containsKey(loc);
 
 	}
@@ -424,7 +430,7 @@ public class PortalManager {
 	long lastPress = -1;
 
 	void buttonPress( MyBlock block , MyPlayer player ) {
-
+		
 		long currentTime = System.currentTimeMillis();
 
 		if( currentTime < lastPress + buttonRepeat ) {
@@ -434,7 +440,7 @@ public class PortalManager {
 		lastPress = currentTime;
 
 		IntLocation loc = new IntLocation( block );
-
+		
 		if( !signBlocks.containsKey(loc) ) {
 			return;
 		}
@@ -482,11 +488,32 @@ public class PortalManager {
 				"here" + "," +
 				targetServer;
 
-			player.sendMessage(command);
+			//player.sendMessage(command);
 
 			String reply = activatePortalCommand(command);
 
-			player.sendMessage(reply);
+			//player.sendMessage(reply);
+			
+			final String finalPlayerName = playerName;
+			final String finalTargetGate = targetGate;
+			final int finalPortalDuration = portalDuration;
+			
+			if( reply.contains("CHUNKGENFAIL")) {
+				player.sendMessage("Please wait constructing gate");
+				MyServer.bukkitServer.getScheduler().scheduleSyncDelayedTask(MyServer.plugin, new Runnable() {
+					
+					public void run() {
+						String reply = activatePortalCommand("OPENGATE:" + finalPlayerName + "," + finalTargetGate + "," + finalPortalDuration );
+						if(!reply.contains("GATEBUILT") && !reply.contains("GATEOPENED")) {
+							org.bukkit.entity.Player player = MyServer.bukkitServer.getPlayer(finalPlayerName);
+							if( finalPlayerName != null ) {
+								player.sendMessage("Unable to build gate in target world");
+							}
+						}
+					}
+					
+				});
+			}
 
 			if( reply != null ) {
 				String[] vars = reply.split(",",-1);
@@ -499,7 +526,6 @@ public class PortalManager {
 
 		} else if( targetServer.equals("here")) {
 
-
 			String reply = activatePortalCommand("OPENGATE:" + playerName + "," + targetGate + "," + portalDuration );
 
 			if( reply != null ) {
@@ -507,7 +533,6 @@ public class PortalManager {
 				boolean gateOpened = reply.indexOf("GATEOPENED") == 0;
 				if( gateOpened && vars.length > 1 && MiscUtils.isInt(vars[1])) {
 					portalInfo.activate(MiscUtils.getInt(vars[1]));
-
 				}
 			}
 
@@ -1385,6 +1410,8 @@ public class PortalManager {
 		PortalInfo netherGate = new PortalInfo();
 
 		netherGate.portalName = "Nether";
+		
+		netherGate.portalWorld = mainWorld;
 
 		netherGate.mistID = 90;
 
@@ -1393,33 +1420,33 @@ public class PortalManager {
 		netherGate.blockLookup.put( '-', 49 );
 		netherGate.blockLookup.put( 'X', 49 );
 
-		netherGate.blockTypes.put( new IntLocation( 1 , 0 , 0, ""), 49);
-		netherGate.blockTypes.put( new IntLocation( 2 , 0 , 0, ""), 49);
+		netherGate.blockTypes.put( new IntLocation( 1 , 0 , 0, mainWorld), 49);
+		netherGate.blockTypes.put( new IntLocation( 2 , 0 , 0, mainWorld), 49);
 
-		netherGate.blockTypes.put( new IntLocation( 0 , -1 , 0, ""), 49);
-		netherGate.blockTypes.put( new IntLocation( 3 , -1 , 0, ""), 49);
+		netherGate.blockTypes.put( new IntLocation( 0 , -1 , 0, mainWorld), 49);
+		netherGate.blockTypes.put( new IntLocation( 3 , -1 , 0, mainWorld), 49);
 
-		netherGate.blockTypes.put( new IntLocation( 0 , -2 , 0, ""), 49);
-		netherGate.blockTypes.put( new IntLocation( 3 , -2 , 0, ""), 49);
-		netherGate.signBlocks.put( new IntLocation( 0 , -2 , 1, ""), 49);
-		netherGate.signBlocks.put( new IntLocation( 3 , -2 , 1, ""), 49);
+		netherGate.blockTypes.put( new IntLocation( 0 , -2 , 0, mainWorld), 49);
+		netherGate.blockTypes.put( new IntLocation( 3 , -2 , 0, mainWorld), 49);
+		netherGate.signBlocks.put( new IntLocation( 0 , -2 , 1, mainWorld), 49);
+		netherGate.signBlocks.put( new IntLocation( 3 , -2 , 1, mainWorld), 49);
 
-		netherGate.blockTypes.put( new IntLocation( 0 , -3 , 0, ""), 49);
-		netherGate.blockTypes.put( new IntLocation( 3 , -3 , 0, ""), 49);
+		netherGate.blockTypes.put( new IntLocation( 0 , -3 , 0, mainWorld), 49);
+		netherGate.blockTypes.put( new IntLocation( 3 , -3 , 0, mainWorld), 49);
 
-		netherGate.blockTypes.put( new IntLocation( 1 , -4 , 0, ""), 49);
-		netherGate.blockTypes.put( new IntLocation( 2 , -4 , 0, ""), 49);
+		netherGate.blockTypes.put( new IntLocation( 1 , -4 , 0, mainWorld), 49);
+		netherGate.blockTypes.put( new IntLocation( 2 , -4 , 0, mainWorld), 49);
 
-		netherGate.portalBlocks.put(new IntLocation( 1 , -1 , 0, ""), 90);
-		netherGate.portalBlocks.put(new IntLocation( 2 , -1 , 0, ""), 90);
+		netherGate.portalBlocks.put(new IntLocation( 1 , -1 , 0, mainWorld), 90);
+		netherGate.portalBlocks.put(new IntLocation( 2 , -1 , 0, mainWorld), 90);
 
-		netherGate.portalBlocks.put(new IntLocation( 1 , -2 , 0, ""), 90);
-		netherGate.portalBlocks.put(new IntLocation( 2 , -2 , 0, ""), 90);
+		netherGate.portalBlocks.put(new IntLocation( 1 , -2 , 0, mainWorld), 90);
+		netherGate.portalBlocks.put(new IntLocation( 2 , -2 , 0, mainWorld), 90);
 
-		netherGate.portalBlocks.put(new IntLocation( 1 , -3 , 0, ""), 90);
-		netherGate.portalBlocks.put(new IntLocation( 2 , -3 , 0, ""), 90);
+		netherGate.portalBlocks.put(new IntLocation( 1 , -3 , 0, mainWorld), 90);
+		netherGate.portalBlocks.put(new IntLocation( 2 , -3 , 0, mainWorld), 90);
 
-		netherGate.exitPoint = new IntLocation( 1, -3 , 0, "" );
+		netherGate.exitPoint = new IntLocation( 1, -3 , 0, mainWorld );
 
 		netherGate.blockTypes.putAll(netherGate.portalBlocks);
 
@@ -1435,6 +1462,8 @@ public class PortalManager {
 		PortalInfo waterCurtain = new PortalInfo();
 
 		waterCurtain.portalName = "WaterCurtain";
+		
+		waterCurtain.portalWorld = mainWorld;
 
 		waterCurtain.mistID = 8;
 
@@ -1445,20 +1474,20 @@ public class PortalManager {
 
 		int counter;
 		for( counter = -2;counter<=0;counter++) {
-			waterCurtain.blockTypes.put(new IntLocation(0,counter,0, ""), 1);
-			waterCurtain.blockTypes.put(new IntLocation(4,counter,0, ""), 1);
-			waterCurtain.portalBlocks.put(new IntLocation(1,counter,0, ""), 1);
-			waterCurtain.portalBlocks.put(new IntLocation(2,counter,0, ""), 1);
-			waterCurtain.portalBlocks.put(new IntLocation(3,counter,0, ""), 1);
+			waterCurtain.blockTypes.put(new IntLocation(0,counter,0, mainWorld), 1);
+			waterCurtain.blockTypes.put(new IntLocation(4,counter,0, mainWorld), 1);
+			waterCurtain.portalBlocks.put(new IntLocation(1,counter,0, mainWorld), 1);
+			waterCurtain.portalBlocks.put(new IntLocation(2,counter,0, mainWorld), 1);
+			waterCurtain.portalBlocks.put(new IntLocation(3,counter,0, mainWorld), 1);
 
 		}
 
-		waterCurtain.signBlocks.put(new IntLocation(0,-1,1, ""), 1);
-		waterCurtain.signBlocks.put(new IntLocation(4,-1,1, ""), 1);
+		waterCurtain.signBlocks.put(new IntLocation(0,-1,1, mainWorld), 1);
+		waterCurtain.signBlocks.put(new IntLocation(4,-1,1, mainWorld), 1);
 
 		waterCurtain.blockTypes.putAll(waterCurtain.portalBlocks);
 
-		waterCurtain.exitPoint = new IntLocation( 2 , -2 , 0, "" );
+		waterCurtain.exitPoint = new IntLocation( 2 , -2 , 0, mainWorld );
 
 		waterCurtain.portalDuration = 10000;
 
@@ -1471,6 +1500,8 @@ public class PortalManager {
 		PortalInfo bindStone = new PortalInfo();
 
 		bindStone.portalName = "BindStone";
+		
+		bindStone.portalWorld = mainWorld;
 
 		bindStone.mistID = 0;
 
@@ -1479,24 +1510,24 @@ public class PortalManager {
 		bindStone.blockLookup.put( '*', 0 );
 		bindStone.blockLookup.put( '.', 0 );
 
-		bindStone.blockTypes.put( new IntLocation( 1 , 0 , 1, "" ), 4 );
-		bindStone.blockTypes.put( new IntLocation( 1 , -1 , 1, "" ), 4 );
-		bindStone.blockTypes.put( new IntLocation( 1 , -2 , 1, "" ), 4 );
+		bindStone.blockTypes.put( new IntLocation( 1 , 0 , 1, mainWorld ), 4 );
+		bindStone.blockTypes.put( new IntLocation( 1 , -1 , 1, mainWorld ), 4 );
+		bindStone.blockTypes.put( new IntLocation( 1 , -2 , 1, mainWorld ), 4 );
 
-		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 1, "" ), 4 );
-		bindStone.blockTypes.put( new IntLocation( 0 , -3 , 1, "" ), 4 );
-		bindStone.blockTypes.put( new IntLocation( 2 , -3 , 1, "" ), 4 );
-		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 2, "" ), 4 );
-		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 0, "" ), 4 );
+		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 1, mainWorld ), 4 );
+		bindStone.blockTypes.put( new IntLocation( 0 , -3 , 1, mainWorld ), 4 );
+		bindStone.blockTypes.put( new IntLocation( 2 , -3 , 1, mainWorld ), 4 );
+		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 2, mainWorld ), 4 );
+		bindStone.blockTypes.put( new IntLocation( 1 , -3 , 0, mainWorld ), 4 );
 
-		bindStone.signBlocks.put( new IntLocation( 1 , -1, 2, ""), 43);
+		bindStone.signBlocks.put( new IntLocation( 1 , -1, 2, mainWorld), 43);
 
-		bindStone.portalBlocks.put(new IntLocation( 1 , -2 , 3, "" ) , 0 );
-		bindStone.portalBlocks.put(new IntLocation( 1 , -1 , 3, "" ) , 0 );
+		bindStone.portalBlocks.put(new IntLocation( 1 , -2 , 3, mainWorld ) , 0 );
+		bindStone.portalBlocks.put(new IntLocation( 1 , -1 , 3, mainWorld ) , 0 );
 
 		bindStone.blockTypes.putAll(bindStone.portalBlocks);
 
-		bindStone.exitPoint = new IntLocation( 1 , -2 , 3, "" );
+		bindStone.exitPoint = new IntLocation( 1 , -2 , 3, mainWorld );
 
 		bindStone.portalDuration = -1;
 
@@ -1511,6 +1542,8 @@ public class PortalManager {
 		PortalInfo templeGate = new PortalInfo();
 
 		templeGate.portalName = "Temple";
+		
+		templeGate.portalWorld = mainWorld;
 
 		templeGate.mistID = 8;
 
@@ -1527,18 +1560,18 @@ public class PortalManager {
 		for( x = 0; x < 7; x++ ) 
 			for( z = 0; z < 11; z++ ) {
 
-				templeGate.blockTypes.put( new IntLocation( x , -1 , z , ""), 44);
+				templeGate.blockTypes.put( new IntLocation( x , -1 , z , mainWorld), 44);
 
-				templeGate.blockTypes.put( new IntLocation( x , -5 , z , ""), 44 );
+				templeGate.blockTypes.put( new IntLocation( x , -5 , z , mainWorld), 44 );
 
 			}
 
 		for( x = 1; x < 6; x++ ) 
 			for( z = 0; z < 11; z++ ) {
 
-				templeGate.blockTypes.put( new IntLocation( x , -1 , z , ""), 43);
+				templeGate.blockTypes.put( new IntLocation( x , -1 , z , mainWorld), 43);
 				if( z != 10 && z !=0 ) {
-					templeGate.blockTypes.put( new IntLocation( x , -5 , z , ""), 43);
+					templeGate.blockTypes.put( new IntLocation( x , -5 , z , mainWorld), 43);
 				}
 
 			}
@@ -1554,25 +1587,25 @@ public class PortalManager {
 
 		for( z = 0; z < 11; z++ ) {
 
-			templeGate.blockTypes.put( new IntLocation( 2 , 0 , z , ""), 44);
-			templeGate.blockTypes.put( new IntLocation( 3 , 0 , z , ""), 43);
-			templeGate.blockTypes.put( new IntLocation( 4 , 0 , z , ""), 44);
+			templeGate.blockTypes.put( new IntLocation( 2 , 0 , z , mainWorld), 44);
+			templeGate.blockTypes.put( new IntLocation( 3 , 0 , z , mainWorld), 43);
+			templeGate.blockTypes.put( new IntLocation( 4 , 0 , z , mainWorld), 44);
 
 		}
 
 		for( x=2; x<5;x++ ) 
 			for( y=-4;y<-1;y++)
 				for( z = 5;z<6;z++) {
-					templeGate.portalBlocks.put(new IntLocation( x, y, z, ""), 1);
+					templeGate.portalBlocks.put(new IntLocation( x, y, z, mainWorld), 1);
 				}
 
 
-		templeGate.signBlocks.put( new IntLocation( 1 , -3, 10, ""), 43);
-		templeGate.signBlocks.put( new IntLocation( 5 , -3, 10, ""), 43);
+		templeGate.signBlocks.put( new IntLocation( 1 , -3, 10, mainWorld), 43);
+		templeGate.signBlocks.put( new IntLocation( 5 , -3, 10, mainWorld), 43);
 
 		templeGate.blockTypes.putAll(templeGate.portalBlocks);
 
-		templeGate.exitPoint = new IntLocation( 3 , -4 , 5, "" );
+		templeGate.exitPoint = new IntLocation( 3 , -4 , 5, mainWorld );
 
 		templeGate.portalDuration = 10000;
 
@@ -1583,7 +1616,7 @@ public class PortalManager {
 
 		for( int py = y; py < y + 3; py++ ) {
 
-			hashMap.put(new IntLocation( x , py , z , ""), 4);
+			hashMap.put(new IntLocation( x , py , z , mainWorld), 4);
 
 		}
 

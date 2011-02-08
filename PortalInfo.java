@@ -35,7 +35,7 @@ public class PortalInfo {
 	long portalEndtime = -1;
 
 	boolean autoCreate = false;
-	
+
 	boolean bindStone = false;
 
 	String portalFileName = "No filename set";
@@ -47,7 +47,7 @@ public class PortalInfo {
 	String targetServer = "";
 	String targetGate = "";
 	String portalWorld = "_default";
-	
+
 	HashMap<IntLocation,Integer> blockTypes = new HashMap<IntLocation,Integer>();
 	HashMap<IntLocation,Integer> portalBlocks = new HashMap<IntLocation,Integer>();
 	HashMap<IntLocation,Integer> signBlocks = new HashMap<IntLocation,Integer>();
@@ -56,7 +56,7 @@ public class PortalInfo {
 
 	IntLocation exitPoint = new IntLocation(0,0,0,"");
 	boolean exitPointSet = false;
-	
+
 	boolean linearGate = false;
 	boolean innerZone     = false;
 
@@ -96,7 +96,7 @@ public class PortalInfo {
 		if( linearGate )                       portalString.add( "lineargate=" + linearGate );
 		if( innerZone )                        portalString.add( "innerzone=" + innerZone );
 		if(!portalWorld.equals("_default"))    portalString.add( "portalworld=" + portalWorld );
-		
+
 		// 4 linear gates should be created for the outer edges
 		// 1 "innerZone" for cities
 
@@ -185,11 +185,45 @@ public class PortalInfo {
 				px++;
 			}
 
+			IntLocation firstBlock;
+			String tempWorld = null;
+
+			if( signBlocks != null ) {
+				Set<IntLocation> blockSet = signBlocks.keySet();
+				if( blockSet != null ) {
+					Iterator<IntLocation> itr3 = blockSet.iterator();
+					if(itr3.hasNext()) {
+						firstBlock = itr3.next();
+						if( firstBlock != null ) {
+							tempWorld = firstBlock.getWorldName();
+						} 
+					}
+				}
+			}
+
+
+			if( tempWorld == null && portalBlocks != null ) {
+				Set<IntLocation> blockSet = portalBlocks.keySet();
+				if( blockSet != null ) {
+					Iterator<IntLocation> itr3 = blockSet.iterator();
+					if(itr3.hasNext()) {
+						firstBlock = itr3.next();
+						if( firstBlock != null ) {
+							tempWorld = firstBlock.getWorldName();
+						} 
+					}
+				}
+			}
+
+			if( tempWorld == null ) {
+				tempWorld = portalWorld;
+			}
+
 			if( exitPoint.equals(current) ) {
 				line.append("*");
-			} else if( signBlocks.containsKey((new IntLocation( current.getX(), current.getY() , current.getZ() + 1 , portalWorld ) ) ) ) {
+			} else if( signBlocks.containsKey((new IntLocation( current.getX(), current.getY() , current.getZ() + 1 , tempWorld ) ) ) ) {
 				line.append("-");
-			} else if( portalBlocks.containsKey(current) ) {
+			} else if( portalBlocks.containsKey((new IntLocation( current.getX(), current.getY() , current.getZ() , tempWorld ))) ) {
 				line.append(".");
 			} else {
 				line.append(reverseLookup.get(blockTypes.get(current)));
@@ -310,7 +344,7 @@ public class PortalInfo {
 			portalWorld = MyServer.bukkitServer.getWorlds().get(0).getName();
 			MiscUtils.safeLogging("Changing gate to world: " + portalWorld);
 		}
-		
+
 		cnt++;
 
 		int lowestY = 1;
@@ -505,7 +539,7 @@ public class PortalInfo {
 	}
 
 	boolean testMatch( MyBlock block , HashMap<IntLocation,Integer> otherPortals ) {
-		
+
 		int r;
 
 		for( r=2;r<6;r++ ) {
@@ -523,7 +557,7 @@ public class PortalInfo {
 		if( sign == null ) {
 			return false;
 		}
-		
+
 		int d = server.getBlockData(sign.getBlock().getWorld(), sign.getX(),sign.getY(),sign.getZ());
 
 		return testMatch( new IntLocation( sign.getX(),sign.getY(),sign.getZ() , sign.getBlock().getWorld().getName() ) , rotToDX(d) , rotToDZ(d) , otherPortals );
@@ -531,7 +565,7 @@ public class PortalInfo {
 	}
 
 	boolean testMatch( IntLocation block , int dx , int dz , HashMap<IntLocation,Integer> otherPortals ) {
-		
+
 		IntLocation loc = new IntLocation( block );
 
 		this.x = 0;

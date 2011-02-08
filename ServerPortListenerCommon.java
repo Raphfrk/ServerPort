@@ -269,7 +269,7 @@ public class ServerPortListenerCommon {
 		if( gateType == null ) {
 			gateType = "";
 		}
-
+		
 		if( portalManager.testProtectedBlock( block ) ) 
 			if( !player.canUseCommand("/serverportdestroy") && !player.canUseCommand("/serverportdestroy"+gateType) && !player.isAdmin() ) {
 				return true; 
@@ -287,7 +287,7 @@ public class ServerPortListenerCommon {
 			}
 
 		if( portalManager.testSignBlock( block ) ) {
-
+			
 			if( block.getType() == SIGN ) {
 
 				MySign sign = (MySign)server.getComplexBlock(block.getWorld(), block.getX(), block.getY(), block.getZ(), block.getStatus());
@@ -349,7 +349,6 @@ public class ServerPortListenerCommon {
 				player.sendMessage("Teleporting to world: " + world.getName() );
 				player.sendMessage("New pos: " + player.getLocation().getBukkitLocation());
 			}
-			System.out.println("Returning true");
 			return true;
 		}
 
