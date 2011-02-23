@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MyServer {
@@ -57,7 +58,7 @@ public class MyServer {
 	}
 
 	void dropItem( MyLocation loc, int id, int quantity ) {
-		loc.getBukkitLocation().getWorld().dropItem(loc.getBukkitLocation(), new org.bukkit.inventory.ItemStack( id, quantity ));
+		loc.getBukkitLocation().getWorld().dropItem(loc.getBukkitLocation(), new ItemStack( id, quantity ));
 	}
 
 	MyPlayer getPlayer( String name ) {
@@ -120,9 +121,9 @@ public class MyServer {
 		}		
 		return sign;
 	}
-	
+
 	static public File baseFolder;
-	
+
 	public static File getBaseFolder() {
 		return baseFolder;
 	}

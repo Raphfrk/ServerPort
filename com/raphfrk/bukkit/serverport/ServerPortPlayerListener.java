@@ -83,7 +83,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 		Player player = e.getPlayer();
 		if( serverPortListenerCommon.communicationManager.limboStore.bindEnable ) {
 
-			/*{
+			{
 				//if(!deadPlayers.isEmpty()) {
 
 					MyLocation loc = TeleportCommand.teleportToBind(serverPortListenerCommon.communicationManager, new MyPlayer(player));
@@ -97,10 +97,10 @@ public class ServerPortPlayerListener extends PlayerListener {
 					} 
 
 				//}
-			}*/
+			}
 			
 
-			MiscUtils.safeLogging(player.getName() + " has died, attempting to teleport to bind");
+			/*MiscUtils.safeLogging(player.getName() + " has died, attempting to teleport to bind");
 
 			final String name = player.getName();
 
@@ -111,6 +111,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 				}
 
 			},20);
+			*/
 		}
 
 	}

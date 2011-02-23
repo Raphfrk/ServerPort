@@ -6,6 +6,8 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ServerPortBlockListener extends BlockListener {
@@ -19,7 +21,13 @@ public class ServerPortBlockListener extends BlockListener {
 		this.serverPortListenerCommon = serverPort.serverPortListenerCommon;
 	}
 
+    public void onSignChange(SignChangeEvent event) {
+    	System.out.println("Sign changed");
+    }
 
+    public void onBlockPlace(BlockPlaceEvent event) {
+    	System.out.println("Block place");
+    }
 	
 	public void onBlockDamage(BlockDamageEvent event) {
 		
@@ -33,7 +41,7 @@ public class ServerPortBlockListener extends BlockListener {
 			return;
 		}
 
-		if(event.getDamageLevel() == BlockDamageLevel.DIGGING ) {
+		if(event.getDamageLevel() == BlockDamageLevel.STARTED ) {
 
 			if( event.getBlock().getType().equals(Material.WALL_SIGN) ) {
 
