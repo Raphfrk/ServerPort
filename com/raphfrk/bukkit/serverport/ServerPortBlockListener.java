@@ -22,11 +22,9 @@ public class ServerPortBlockListener extends BlockListener {
 	}
 
     public void onSignChange(SignChangeEvent event) {
-    	System.out.println("Sign changed");
     }
 
     public void onBlockPlace(BlockPlaceEvent event) {
-    	System.out.println("Block place");
     }
 	
 	public void onBlockDamage(BlockDamageEvent event) {
