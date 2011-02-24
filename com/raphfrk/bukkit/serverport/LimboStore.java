@@ -12,7 +12,7 @@ public class LimboStore {
 	private static final String slash = System.getProperty("file.separator");
 
 	static MyServer server = MyServer.getServer();
-	
+
 	public StringList bannedItems = new StringList();
 	public Boolean banExcept = false;
 	public Boolean bindEnable = true;
@@ -60,7 +60,7 @@ public class LimboStore {
 						"inverts the ban list"
 				)
 		);
-		
+
 		parameterManager.registerParameter( 
 				new ParameterInfo( 
 						this, 
@@ -104,7 +104,7 @@ public class LimboStore {
 						"sets the limbo directory"
 				)
 		);
-		
+
 		parameterManager.registerParameter( 
 				new ParameterInfo( 
 						this, 
@@ -138,7 +138,7 @@ public class LimboStore {
 		if( !limboDatabase.containsKey(playerName)) {
 			limboInfo = new LimboInfo();
 			limboInfo.setPlayerName(playerName);
-			limboInfo.initFilename(limboDirectory + slash + "limbo");
+			limboInfo.initFilename(MyServer.getBaseFolder() + MiscUtils.slash + "limbo");
 		} else {
 			limboInfo = limboDatabase.get(playerName);
 		}
@@ -216,13 +216,23 @@ public class LimboStore {
 
 	synchronized void loadLimboDatabase() {
 
-		File limboDirFile = new File( limboDirectory );
+		File limboDirFile = MyServer.getBaseFolder();
 
 		if( !limboDirFile.exists() ) {
 			limboDirFile.mkdir();
 		}
 
-		File limboSubDirFile = new File ( limboDirectory + slash + "limbo");
+		File oldDir = new File ( limboDirectory + MiscUtils.slash + "limbo");
+
+		if(oldDir.exists()) {
+			MiscUtils.safeLogging(
+					"\n\n" +
+					"[ServerPort] WARNING: directory structure changed\n" + 
+					"[ServerPort] WARNING: limbo store is now stored in\n" + 
+					"[ServerPort] " + MyServer.getBaseFolder() + MiscUtils.slash + "limbo\n");
+		}
+
+		File limboSubDirFile = new File ( MyServer.getBaseFolder() + MiscUtils.slash + "limbo");
 
 		if( !limboSubDirFile.exists() ) {
 			limboSubDirFile.mkdir();
@@ -234,7 +244,7 @@ public class LimboStore {
 			if( filename.matches("^.*dat$")) {
 
 				LimboInfo limboInfo = new LimboInfo();
-				limboInfo.load( limboDirectory + slash + "limbo" + slash + filename );
+				limboInfo.load( MyServer.getBaseFolder() + MiscUtils.slash + "limbo" + slash + filename );
 				updateDatabase(limboInfo);
 
 			}
@@ -474,7 +484,7 @@ public class LimboStore {
 					}
 
 				}
-				
+
 			}
 		}
 
@@ -553,11 +563,11 @@ public class LimboStore {
 			int damage = MiscUtils.getInt(vars[1]);
 			int id = MiscUtils.getInt(vars[0]);
 			int amount = MiscUtils.getInt(vars[2]);
-			
+
 			MyInventory inv = player.getInventory();
 
 			MyItem itm = inv.getItemFromSlot(slot);
-			
+
 			if( itm.isNull() ) {
 				inv.setSlot(id, amount, damage, slot);
 				return null;

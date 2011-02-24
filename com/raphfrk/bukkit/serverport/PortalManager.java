@@ -476,11 +476,11 @@ public class PortalManager {
 		String type = portalInfo.portalType;
 
 		boolean createGate = portalInfo.autoCreate;
-		
+
 		if( targetServer.equals("here") && !targetWorld.equals("_default")) {
 			targetServer = targetWorld;
 		}
-		
+
 		if( isLocalWorld(targetServer) ) {
 			String command = 
 				"OPENGATE:" + 
@@ -596,24 +596,24 @@ public class PortalManager {
 
 	}
 	 */
-	
+
 	PortalInfo getPortalByBlock(MyBlock block) {
-		
+
 		IntLocation intLoc = new IntLocation( block );
 
 		return getPortalByBlock(intLoc);
-		
+
 	}
-	
+
 	PortalInfo getPortalByBlock(IntLocation intLoc) {
-		
+
 		int idNum;
 
 		if( blockBlocks.containsKey(intLoc) ) {
 			idNum = blockBlocks.get(intLoc);
 			return portalList.get(idNum);
 		} 
-		
+
 		if( signBlocks.containsKey(intLoc) ) {
 			idNum = signBlocks.get(intLoc);
 			return portalList.get(idNum);
@@ -621,7 +621,7 @@ public class PortalManager {
 			return null;
 		}
 	}
-	
+
 	String getDestination(PortalInfo portalInfo) {
 		if(portalInfo.targetServer.equals("here")) {
 			PortalInfo dest = getPortal(portalInfo.targetGate);
@@ -801,7 +801,7 @@ public class PortalManager {
 		int durationRequest = MiscUtils.getInt(vars[2]);
 
 		String reply = activatePortal( targetGate.toLowerCase() , durationRequest );
-		
+
 		if( !reply.equals("NOGATE") || vars.length < 11 ) {
 			return reply;
 		}
@@ -939,7 +939,7 @@ public class PortalManager {
 
 		IntLocation loc = portalCustom.getExitPoint();
 		int shift = 0;
-		
+
 		if( safeExit ) {
 			shift = MiscUtils.getSafeExit( loc , softBlocks.getValues() );
 			portalCustom.y += shift;
@@ -978,7 +978,7 @@ public class PortalManager {
 	String activatePortal( String portalName , int durationRequest ) {
 
 		PortalInfo portalInfo = getPortal(portalName);
-		
+
 		if( portalInfo == null ) {
 			return "NOGATE";
 		} else {
@@ -1056,7 +1056,18 @@ public class PortalManager {
 		portalCustom = new ArrayList<PortalInfo>();
 		portalList = new ArrayList<PortalInfo>();
 
-		File directory = new File( portalDirectory + slash + "custom" );
+		File olddir =  new File( portalDirectory + slash + "custom" );
+
+		if(olddir.exists()) {
+			MiscUtils.safeLogging(
+					"\n\n" +
+					"[ServerPort] WARNING: directory structure changed\n" + 
+					"[ServerPort] WARNING: custom gates should now be placed in\n" + 
+					"[ServerPort] " + MyServer.getBaseFolder() + MiscUtils.slash + "custom\n");
+		}
+
+		File directory = new File(MyServer.getBaseFolder() + MiscUtils.slash + "custom"); 
+
 
 		File netherFile = new File( directory + slash + "Nether.gat");
 
@@ -1118,22 +1129,24 @@ public class PortalManager {
 
 		}
 
-		directory = new File( portalDirectory + slash + "gates" );
+		directory = new File(MyServer.getBaseFolder() + MiscUtils.slash + "gates"); 
 
-		filenames = directory.list();
+		if(directory.exists()) {
+			filenames = directory.list();
 
-		for( String filename : filenames ) {
-			if( filename.matches(".*gat$") ) {
-				PortalInfo portalInfo = new PortalInfo();
-				portalInfo.load( null, directory + slash + filename );
-				portalList.add(portalInfo);
-				int idNum = portalList.size()-1;
-				blockBlocks.putAll(portalInfo.getBlocks(idNum));
-				signBlocks.putAll(portalInfo.getSigns(idNum));
-				portalBlocks.putAll(portalInfo.getPortal(idNum));
-				nameLookup.put(portalInfo.portalName, idNum);
+			for( String filename : filenames ) {
+				if( filename.matches(".*gat$") ) {
+					PortalInfo portalInfo = new PortalInfo();
+					portalInfo.load( null, directory + slash + filename );
+					portalList.add(portalInfo);
+					int idNum = portalList.size()-1;
+					blockBlocks.putAll(portalInfo.getBlocks(idNum));
+					signBlocks.putAll(portalInfo.getSigns(idNum));
+					portalBlocks.putAll(portalInfo.getPortal(idNum));
+					nameLookup.put(portalInfo.portalName, idNum);
+				}
+
 			}
-
 		}
 
 		List<World> worlds = MyServer.bukkitServer.getWorlds();
@@ -1302,7 +1315,7 @@ public class PortalManager {
 	void fireStarted( MyPlayer player , MyBlock block ) {
 
 		String target;
-		
+
 		if( (target = fireTarget.getValue(block.getWorld().getName())) == null ) {
 			return;
 		}
@@ -1312,7 +1325,7 @@ public class PortalManager {
 		if( blockBlocks.containsKey(loc) || signBlocks.containsKey(loc) ) {
 			return;
 		}
-		
+
 		for( PortalInfo portalInfo : portalCustom ) {
 
 			String gateType = portalInfo.portalType;
@@ -1328,7 +1341,7 @@ public class PortalManager {
 				do {
 					gateName = "FIRE_" + MiscUtils.genRandomCode().substring(0, 6);
 				} while ( nameLookup.containsKey(gateName));
-				
+
 				String actualName = gateName;
 				String line1 = actualName.toLowerCase();
 				String line2 = target;
@@ -1366,9 +1379,9 @@ public class PortalManager {
 		for( PortalInfo portalInfo : portalCustom ) {
 
 			String gateType = portalInfo.portalType;
-			
+
 			boolean allowed = player.permissionCheck("create_gate_type", new String[] {gateType, player.getWorld().getName(), "*"});
-			
+
 			if( allowed && portalInfo.testMatch(sign, blockBlocks) ) {
 
 				MiscUtils.safeMessage(player, "[ServerPort] Gate Match detected");
@@ -1379,7 +1392,7 @@ public class PortalManager {
 				}
 
 				processSign(portalInfo, player, sign.getBlock(), actualName, line1, line2, line3);
-				
+
 				return;
 
 			}
@@ -1387,9 +1400,9 @@ public class PortalManager {
 		}
 
 	}
-	
+
 	void processSign(PortalInfo portalInfo, MyPlayer player, MyBlock block, String actualName, String line1, String line2, String line3) {
-		
+
 		if( line2.equals("")) {
 			line2 = "here";
 		} else if( !MiscUtils.checkText(line2) ) {
@@ -1441,8 +1454,8 @@ public class PortalManager {
 				return;
 			}
 		}
-		
-		
+
+
 		String oldName = portalInfo.getName();
 		String oldFileName = portalInfo.getFileName();
 
@@ -1472,8 +1485,8 @@ public class PortalManager {
 			buttonPress(block, player);
 		}
 
-		
-		
+
+
 	}
 
 	PortalInfo netherGate() {

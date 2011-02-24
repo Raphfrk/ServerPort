@@ -41,7 +41,7 @@ public class PeerServerDatabase {
 		
 		serverDatabase = new HashMap<String,PeerServerInfo>();
 
-		File databaseFile = new File( serverDirectory + slash + filename );
+		File databaseFile = new File( MyServer.getBaseFolder() + slash + filename );
 
 		if( !databaseFile.exists() ) {
 			MiscUtils.safeLogging(log, "[Serverport] peer server database file doesn't exist");
@@ -52,7 +52,7 @@ public class PeerServerDatabase {
 		BufferedReader databaseReader;
 		
 		try {
-			databaseReader = new BufferedReader(new FileReader(serverDirectory + slash + filename ));
+			databaseReader = new BufferedReader(new FileReader(MyServer.getBaseFolder() + slash + filename ));
 		} catch (FileNotFoundException fnfe ) {
 			MiscUtils.safeLogging(log, "[Serverport] unable to open peer server database for reading");
 			return;
@@ -87,7 +87,7 @@ public class PeerServerDatabase {
 		BufferedWriter databaseWriter;
 		
 		try {
-			databaseWriter = new BufferedWriter(new FileWriter(serverDirectory + slash + filename ));
+			databaseWriter = new BufferedWriter(new FileWriter(MyServer.getBaseFolder() + slash + filename ));
 		} catch (IOException e) {
 			MiscUtils.safeLogging(log, "[Serverport] unable to open peer server database for writing");
 			return;

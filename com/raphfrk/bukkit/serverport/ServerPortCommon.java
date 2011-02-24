@@ -29,7 +29,7 @@ public class ServerPortCommon {
 		
 		MiscUtils.safeLogging("Initialisation");
 		
-		File serverportDir;
+		/*File serverportDir;
 		if( !(serverportDir = new File( "serverport" )).exists() ) {
 			serverportDir.mkdir();
 		}
@@ -42,7 +42,7 @@ public class ServerPortCommon {
 		File customDir;
 		if( !(customDir = new File( "serverport" + slash + "custom")).exists() ) {
 			customDir.mkdir();
-		}
+		}*/
 		
 		parameterManager.setPropertiesFilename( propertiesFilename );
 		parameterManager.setCommunicationManager(communicationManager);
