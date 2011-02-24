@@ -182,7 +182,8 @@ public class MyPlayer {
 	}
 
 	boolean isAdmin(String player) {
-		return permissionCheck("admins", new String[] {});
+		boolean admin = permissionCheck("admins", new String[] {});
+		return admin;
 	}
 
 	static HashSet<String> admins = null;

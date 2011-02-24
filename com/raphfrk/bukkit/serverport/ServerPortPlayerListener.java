@@ -132,12 +132,9 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 				MyPlayer player = new MyPlayer(event.getPlayer());
 
-				System.out.println("Checking if block is a portal sign");
-				
 				if(serverPortListenerCommon.portalManager.testSignBlock(myBlock)) {
 					serverPortListenerCommon.portalManager.buttonPress(myBlock, player);
 				} else {
-					System.out.print("It isn't");
 					serverPortListenerCommon.portalManager.fireStarted(player , myBlock );
 				}
 			}

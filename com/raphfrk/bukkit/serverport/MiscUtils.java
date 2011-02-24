@@ -597,8 +597,6 @@ public class MiscUtils {
 
 		HashMap<IntLocation,Boolean> chunks = new HashMap<IntLocation,Boolean>();
 
-		boolean generated = true;
-
 		while( itr.hasNext() ) {
 
 			IntLocation loc = itr.next();
@@ -607,14 +605,12 @@ public class MiscUtils {
 
 			if( !chunks.containsKey(chunkHash) ) {
 				chunks.put(chunkHash, true);
-				if( !generatedTest(loc.getWorld() , loc.getX(),loc.getY(),loc.getZ())) {
-					generated = false;
-				}
+				gridLoad(loc.getWorld() , loc.getX(),loc.getY(),loc.getZ());
 			}
 
 		}
 
-		return generated;
+		return true;
 
 
 	}

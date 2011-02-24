@@ -373,6 +373,7 @@ public class TeleportCommand implements Runnable {
 
 				MyPlayer player = server.getPlayer(finalPlayerName);
 				if( player != null && !player.isNull() ) {
+					MyServer.bukkitServer.broadcastMessage("[ServerPort] " + player.getName() + " is about to teleport");
 					player.kick( finalKickString );
 				}
 			}

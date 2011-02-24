@@ -1313,8 +1313,6 @@ public class PortalManager {
 			return;
 		}
 		
-		System.out.println("Checking for match");
-
 		for( PortalInfo portalInfo : portalCustom ) {
 
 			String gateType = portalInfo.portalType;
@@ -1322,8 +1320,6 @@ public class PortalManager {
 			boolean allowed = 
 				player.permissionCheck("create_fire_gate_type" , new String[] {gateType, player.getWorld().getName(),target});
 
-			System.out.println("Allowed: " + gateType + " " + allowed);
-			
 			if( allowed && portalInfo.testMatch(block, blockBlocks) ) {
 
 				MiscUtils.safeMessage(player, "[ServerPort] Gate Match detected");
