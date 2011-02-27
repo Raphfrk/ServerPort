@@ -424,7 +424,7 @@ public class ServerPortListenerCommon {
 		}
 
 		if( split.length > 0 && commandLabel.equals("serverport") && split[0].equals("permissions") && ((player != null && player.isAdmin()) || sender.isOp()) ) {
-			player.sendMessage("Permissions reloaded");
+			sender.sendMessage("Permissions reloaded");
 			MyPlayer.hashMaps = null;
 			return true;
 		}
@@ -491,7 +491,7 @@ public class ServerPortListenerCommon {
 		 */
 
 
-		if( !commandLabel.equals(commandName) ) {
+		if( !commandLabel.equals(commandName.substring(1)) ) {
 			return false;
 		}
 
