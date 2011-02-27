@@ -45,8 +45,10 @@ public class StringMap {
 				String[] split2 = line.split(";");
 				if(split2.length==2) {
 					list.put(split2[0], split2[1]);
+				} else {
+					list.put("*", line);
 				}
-			}
+			} 
 		}
 		
 	}

@@ -62,9 +62,9 @@ public class ParameterManager {
 	
 	synchronized boolean processCommand( MyPlayer player , String[] split ) {
 		
-		if( split.length > 2 && split[1].equals("invite") ) {
+		if( split.length > 1 && split[0].equals("invite") ) {
 
-			String hostname = split[2];
+			String hostname = split[1];
 			String[] hostsplit = hostname.split(":",-1);
 
 			int portnum = 25465;
@@ -78,12 +78,12 @@ public class ParameterManager {
 					portnum = MiscUtils.getInt(hostsplit[1]);
 					hostname = hostsplit[0];
 				}
-			} else if( split.length > 3 ) {
-				if( !MiscUtils.isInt(split[3]) ) {
+			} else if( split.length > 2 ) {
+				if( !MiscUtils.isInt(split[2]) ) {
 					MiscUtils.safeMessage(player, "Unable to parse port number for target server");
 					return true;
 				} else {
-					portnum = MiscUtils.getInt(split[3]);
+					portnum = MiscUtils.getInt(split[2]);
 				}
 
 			}
@@ -92,7 +92,7 @@ public class ParameterManager {
 			return true;
 		}
 		
-		if( split.length < 2 || (split[1].equalsIgnoreCase("help") && split.length == 2) ) {
+		if( split.length < 1 || (split[0].equalsIgnoreCase("help") && split.length == 1) ) {
 			
 			MiscUtils.safeMessage(player, "Command list");
 			
@@ -111,15 +111,15 @@ public class ParameterManager {
 			
 		}
 		
-		if( split.length > 2 && split[1].equals("help") ) {
+		if( split.length > 1 && split[0].equals("help") ) {
 			
-			if( MiscUtils.isInt(split[2])) {
+			if( MiscUtils.isInt(split[1])) {
 				
 				MiscUtils.safeMessage(player, "");
-				MiscUtils.safeMessage(player, server.getColor("Green") + "ServerPort Command List Page " + MiscUtils.getInt(split[2]));
+				MiscUtils.safeMessage(player, server.getColor("Green") + "ServerPort Command List Page " + MiscUtils.getInt(split[1]));
 				MiscUtils.safeMessage(player, "");
 				int cnt=0;
-				int target = 8*MiscUtils.getInt(split[2])-8;
+				int target = 8*MiscUtils.getInt(split[1])-8;
 				
 				Iterator<ParameterInfo> itr = parameters.iterator();
 				while( itr.hasNext() && cnt < target + 8 ) {
@@ -139,7 +139,7 @@ public class ParameterManager {
 			
 			while( itr.hasNext() ) {
 				ParameterInfo current = itr.next();
-				if( split[2].equalsIgnoreCase(current.commandName) ) {
+				if( split[1].equalsIgnoreCase(current.commandName) ) {
 					MiscUtils.safeMessage(player, current.commandName );
 					MiscUtils.safeMessage(player, "" );
 					for( String line : current.longHelp ) {
@@ -152,14 +152,14 @@ public class ParameterManager {
 	
 		}
 		
-		if( split.length > 2 ) {
+		if( split.length > 1 ) {
 			
-			if( parameterExists( split[1] ) ) {
+			if( parameterExists( split[0] ) ) {
 				
-				if( !setParameter( split[1], split[2] ) ) {
+				if( !setParameter( split[0], split[1] ) ) {
 					MiscUtils.safeMessage(player, "[Serverport] Unable to set parse parameter value");
 				} else {
-					MiscUtils.safeMessage(player, "[Serverport] " + split[1] + " set to " + getParameter( split[1] ));
+					MiscUtils.safeMessage(player, "[Serverport] " + split[0] + " set to " + getParameter( split[0] ));
 				}
 				return true;
 				
@@ -167,10 +167,10 @@ public class ParameterManager {
 				return false;
 			}
 			
-		} else if ( split.length == 2 ) {
-			if( parameterExists( split[1] ) ) {
+		} else if ( split.length == 1 ) {
+			if( parameterExists( split[0] ) ) {
 
-				MiscUtils.safeMessage(player, "[Serverport] " + split[1] + " set to " + getParameter( split[1] ));
+				MiscUtils.safeMessage(player, "[Serverport] " + split[0] + " set to " + getParameter( split[0] ));
 				return true;
 
 			} else {

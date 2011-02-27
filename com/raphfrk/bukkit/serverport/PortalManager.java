@@ -40,7 +40,7 @@ public class PortalManager {
 
 	public boolean createDefaultGates = true;
 
-	public Double expansionFactor = 100.0;
+	public StringMap expansionFactor = new StringMap();
 	public Boolean autoCreate = true;
 
 	public Boolean newChunks = false;
@@ -263,10 +263,10 @@ public class PortalManager {
 						this, 
 						"expansionFactor",
 						"expansion",
-						Double.class,
-						new Double(100.0),
+						StringMap.class,
+						new String(""),
 						new String[] {
-							"This parameter determines the expansion factor for the server.  This is used when automatically creating target gates.",
+							"This parameter determines the expansion factor for each of the worlds.  This is used when automatically creating target gates.",
 							"The default is 100.  A server with a number lower than 100 will act like the Nether on single player.  Nether would have an expansion factor of 12.5, as the real world has 8 blocks for every Nether block.",
 							"Expansion factors below 1 are assumed to be 1"
 						},
@@ -464,7 +464,20 @@ public class PortalManager {
 
 		IntLocation portalLoc = portalInfo.getPos();
 
-		double effectiveExpansion = (expansionFactor<1)?1:expansionFactor;
+		String worldExpansionString = expansionFactor.getValue(block.getWorld().getName());
+		if(worldExpansionString == null) {
+			worldExpansionString = expansionFactor.getValue("*");
+		}
+		
+		Double expansion = 100.0;
+		if(worldExpansionString != null) {
+			try {
+			expansion = Double.parseDouble(worldExpansionString);
+			} catch (NumberFormatException nfe) {
+			}
+		}
+		
+		double effectiveExpansion = (expansion<1)?1:expansion;
 
 		double x = ((double)portalLoc.getX()) / effectiveExpansion;
 		double y = ((double)portalLoc.getY()) ;
@@ -831,17 +844,6 @@ public class PortalManager {
 		if( !MiscUtils.isInt(vars[6])) return "WRONGVARS";
 		int dz = MiscUtils.getInt(vars[6]);
 
-		double effectiveExpansion = (expansionFactor<1)?1:expansionFactor;
-
-		if( !MiscUtils.isDouble(vars[7])) return "WRONGVARS";
-		double x = MiscUtils.getDouble(vars[7]) * effectiveExpansion;
-
-		if( !MiscUtils.isDouble(vars[8])) return "WRONGVARS";
-		double y = MiscUtils.getDouble(vars[8]);
-
-		if( !MiscUtils.isDouble(vars[9])) return "WRONGVARS";
-		double z = MiscUtils.getDouble(vars[9]) * effectiveExpansion;
-
 		String peerServerName = vars[10];
 
 		String targetWorld;
@@ -851,6 +853,30 @@ public class PortalManager {
 		} else {
 			targetWorld = vars[11];
 		}
+		
+		String worldExpansionString = expansionFactor.getValue(targetWorld);
+		if(worldExpansionString == null) {
+			worldExpansionString = expansionFactor.getValue("*");
+		}
+		
+		Double expansion = 100.0;
+		if(worldExpansionString != null) {
+			try {
+			expansion = Double.parseDouble(worldExpansionString);
+			} catch (NumberFormatException nfe) {
+			}
+		}
+		
+		double effectiveExpansion = (expansion<1)?1:expansion;
+
+		if( !MiscUtils.isDouble(vars[7])) return "WRONGVARS";
+		double x = MiscUtils.getDouble(vars[7]) * effectiveExpansion;
+
+		if( !MiscUtils.isDouble(vars[8])) return "WRONGVARS";
+		double y = MiscUtils.getDouble(vars[8]);
+
+		if( !MiscUtils.isDouble(vars[9])) return "WRONGVARS";
+		double z = MiscUtils.getDouble(vars[9]) * effectiveExpansion;
 
 		int px = (int)Math.round(x);
 		int py = (int)y;
