@@ -413,7 +413,7 @@ public class TeleportCommand implements Runnable {
 	static Integer getLocalWorld(String name) {
 		List<World> worlds = MyServer.bukkitServer.getWorlds();
 		for(int cnt=0;cnt<worlds.size();cnt++) {
-			if(worlds.get(cnt).equals(name)) {
+			if(worlds.get(cnt).getName().equalsIgnoreCase(name)) {
 				return cnt;
 			}
 		}
@@ -445,7 +445,7 @@ public class TeleportCommand implements Runnable {
 				
 			} else {
 				
-				if( targetServer.equals("here")) {
+				if(targetIndex==null) {
 					targetIndex = 0;
 				}
 				
