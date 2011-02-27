@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 
 public class ServerPortListenerCommon {
@@ -340,20 +342,24 @@ public class ServerPortListenerCommon {
 	}
 
 
-	synchronized public boolean onCommand(MyPlayer player, String[] split) {
+	synchronized public boolean onCommand(CommandSender sender, String commandLabel, String[] split) {
 
-		double m = player.getLocation().getRotX() % 360;
-		m = m < 0 ? m+360 : m;
-
-		if( split[0].equals("/worldlist")) {
+		MyPlayer player = null;
+		
+		if(sender instanceof Player) {
+			player = new MyPlayer((Player)sender);
+		}
+		
+		
+		if( commandLabel.equals("worldlist")) {
 			List<World> worlds = MyServer.bukkitServer.getWorlds();
 			for(World world : worlds) {
-				player.sendMessage("World name:" + world.getName());
+				sender.sendMessage("World name:" + world.getName());
 			}
 			return true;
 		}
 
-		if( split[0].equals("/pos") && player.isAdmin() ) {
+		if( commandLabel.equals("pos") && player != null && player.isAdmin() ) {
 			player.sendMessage("Pos: " + player.getLocation().getBukkitLocation());
 			if( split.length == 3 ) {
 				int x = Integer.parseInt(split[1]);
@@ -378,7 +384,7 @@ public class ServerPortListenerCommon {
 			return true;
 		}
 
-		if( split[0].equals("/release") && player.permissionCheck("release", new String[] {"allow"}) && player.getHealth() > 0 ) {
+		if( commandLabel.equals("release") && player != null && player.permissionCheck("release", new String[] {"allow"}) && player.getHealth() > 0 ) {
 
 			MiscUtils.safeLogging("[ServerPort] " + player.getName() + " is releasing");
 
@@ -387,17 +393,17 @@ public class ServerPortListenerCommon {
 
 		}
 
-		if( split[0].equals("/getinv") ) {
+		if( player != null && commandLabel.equals("getinv") ) {
 			restoreInventory(player);
 			return true;
 		}
 
-		if( player.isAdmin() && split[0].equals("/serverport") && split.length>1 && split[1].equalsIgnoreCase("loadworlds")) {
+		if( ((player != null && player.isAdmin()) || sender.isOp()) && commandLabel.equals("serverport") && split.length>0 && split[0].equalsIgnoreCase("loadworlds")) {
 			worldManager.loadWorlds(portalManager);
 			return true;
 		}
 
-		if( split[0].equals("/drawgate") && split.length == 2 && player.permissionCheck("draw_gate", new String[] {split[1]})) {
+		if( commandLabel.equals("drawgate") && split.length == 1 && player != null && player.permissionCheck("draw_gate", new String[] {split[0]})) {
 
 			if(!player.getInventory().bukkitInventory.contains(323)) {
 				server.dropItem( player.getLocation(), 323, 1 );
@@ -407,7 +413,7 @@ public class ServerPortListenerCommon {
 			}
 			
 
-			if( portalManager.drawGate(player, split[1])) {
+			if( portalManager.drawGate(player, split[0])) {
 				MiscUtils.safeMessage(player.getName(), "[ServerPort] Gate Auto-generation success");
 				return true;
 			} else {
@@ -417,13 +423,13 @@ public class ServerPortListenerCommon {
 
 		}
 
-		if( split.length > 1 && split[0].equals("/serverport") && split[1].equals("permissions") && player.isAdmin() ) {
+		if( split.length > 0 && commandLabel.equals("serverport") && split[0].equals("permissions") && ((player != null && player.isAdmin()) || sender.isOp()) ) {
 			player.sendMessage("Permissions reloaded");
 			MyPlayer.hashMaps = null;
 			return true;
 		}
 
-		if( split[0].equals("/cancelredirect") && player.permissionCheck("cancel_redirect", new String[] {"allow"})  ) {
+		if( commandLabel.equals("cancelredirect") && player != null && player.permissionCheck("cancel_redirect", new String[] {"allow"})  ) {
 
 			LimboInfo limboInfo = communicationManager.limboStore.getLimboInfo(player.getName());
 
@@ -439,9 +445,7 @@ public class ServerPortListenerCommon {
 
 		}
 
-		if( split[0].equals("/regengates") && player.permissionCheck("regen_gates", new String[] {"allow"}) ) {
-
-
+		if( commandLabel.equals("regengates") && player != null && player.permissionCheck("regen_gates", new String[] {"allow"}) ) {
 
 			int d = 32;
 
@@ -487,11 +491,11 @@ public class ServerPortListenerCommon {
 		 */
 
 
-		if( !split[0].equals(commandName) ) {
+		if( !commandLabel.equals(commandName) ) {
 			return false;
 		}
 
-		if( !player.permissionCheck("serverport", new String[] {"allow"}) && !player.isAdmin() ) {
+		if( !player.permissionCheck("serverport", new String[] {"allow"}) && (player == null || (!player.isAdmin())) ) {
 			return false;
 		}
 

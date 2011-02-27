@@ -52,7 +52,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 	}
 
-	public void onPlayerCommand(PlayerChatEvent event) {
+/*	public void onPlayerCommand(PlayerChatEvent event) {
 
 		String[] split = event.getMessage().split(" ",-1);
 
@@ -69,14 +69,14 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 		MyPlayer player = new MyPlayer(event.getPlayer());
 
-		boolean ret = serverPortListenerCommon.onCommand(player, split);
+		boolean ret = serverPortListenerCommon.onCommand(event.getPlayer(), split);
 
 		if( ret ) {
 			event.setCancelled(true);
 		}
 
 
-	}
+	}*/
 
 	public void onPlayerRespawn(PlayerRespawnEvent e) {
 

@@ -3,6 +3,8 @@ import java.util.List;
 
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -69,7 +71,6 @@ public class ServerPortBukkit extends JavaPlugin {
         pm.registerEvent(Event.Type.BLOCK_DAMAGED, blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_FLOW, blockListener, Priority.Normal, this);
         
-        pm.registerEvent(Event.Type.PLAYER_COMMAND, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.Normal, this);
@@ -85,6 +86,14 @@ public class ServerPortBukkit extends JavaPlugin {
         
         
        		
+	}
+	
+
+	@Override
+	public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+		
+		return serverPortListenerCommon.onCommand(commandSender, commandLabel, args);
+		
 	}
 	
 	
