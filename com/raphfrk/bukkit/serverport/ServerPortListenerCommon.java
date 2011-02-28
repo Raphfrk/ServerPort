@@ -362,19 +362,19 @@ public class ServerPortListenerCommon {
 		if( commandLabel.equals("pos") && player != null && player.isAdmin() ) {
 			player.sendMessage("Pos: " + player.getLocation().getBukkitLocation());
 			if( split.length == 3 ) {
-				int x = Integer.parseInt(split[1]);
-				int y = Integer.parseInt(split[2]);
-				int z = Integer.parseInt(split[3]);
+				int x = Integer.parseInt(split[0]);
+				int y = Integer.parseInt(split[1]);
+				int z = Integer.parseInt(split[2]);
 
 				MiscUtils.gridLoad(player.getWorld(), x, y, z);
 				player.teleportTo(new MyLocation(player.getWorld(), x,y,z));
 				player.sendMessage("New pos: " + player.getLocation().getBukkitLocation());
 			} else if ( split.length > 3 ) {
-				int x = Integer.parseInt(split[1]);
-				int y = Integer.parseInt(split[2]);
-				int z = Integer.parseInt(split[3]);
-				int index = Integer.parseInt(split[4]);
-				World world = MyServer.getServer().bukkitServer.getWorlds().get(index);
+				int x = Integer.parseInt(split[0]);
+				int y = Integer.parseInt(split[1]);
+				int z = Integer.parseInt(split[2]);
+				int index = Integer.parseInt(split[3]);
+				World world = MyServer.bukkitServer.getWorlds().get(index);
 
 				MiscUtils.gridLoad(world, x, y, z);
 				player.teleportTo(new MyLocation(world, x,y,z));
