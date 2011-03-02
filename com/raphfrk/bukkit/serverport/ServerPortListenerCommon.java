@@ -160,6 +160,7 @@ public class ServerPortListenerCommon {
 
 			limboInfo.setCurrentGate("");
 			communicationManager.limboStore.updateDatabase(limboInfo);
+		
 
 		}
 

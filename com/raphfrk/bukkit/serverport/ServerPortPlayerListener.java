@@ -145,12 +145,14 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 	HashSet<String> deadPlayers = new HashSet<String>();
 	HashMap<String, Long> spamShield = new HashMap<String, Long>();
+	
+	HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
 
 	public void onPlayerMove(PlayerMoveEvent event) {
 
 		if(!deadPlayers.isEmpty()) {
 			Player player = event.getPlayer();
-
+			
 			if(player.getHealth()>0 && deadPlayers.contains(player.getName())) {
 
 				long currentTime = System.currentTimeMillis();
@@ -184,24 +186,28 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 		org.bukkit.Location from = event.getFrom().clone();
 		org.bukkit.Location to = event.getTo().clone();
+		
+		int entityId = event.getPlayer().getEntityId();
+		
+		IntLocation oldLocation = oldPositions.get(entityId);
+		
+		if(oldLocation==null) {
+			oldLocation = new IntLocation(from.getBlockX(), from.getBlockY(), from.getBlockZ(), from.getWorld().getName());
+		}
+		
+		IntLocation newLocation = new IntLocation(to.getBlockX(), to.getBlockY(), to.getBlockZ(), to.getWorld().getName());
 
-		int fx = from.getBlockX();
-		int fy = from.getBlockY();
-		int fz = from.getBlockZ();
+		if(oldLocation.equals(newLocation)) return;
 
-		int tx = to.getBlockX();
-		int ty = to.getBlockY();
-		int tz = to.getBlockZ();
+		from.setX(oldLocation.getX());
+		from.setY(oldLocation.getY());
+		from.setZ(oldLocation.getZ());
 
-		if( fx == tx && fy == ty && fz == tz )  return;
-
-		from.setX(fx);
-		from.setY(fy);
-		from.setZ(fz);
-
-		to.setX(tx);
-		to.setY(ty);
-		to.setZ(tz);
+		to.setX(newLocation.getX());
+		to.setY(newLocation.getY());
+		to.setZ(newLocation.getZ());
+		
+		oldPositions.put(entityId, newLocation);
 
 		MyLocation myFrom = new MyLocation(from);
 		MyLocation myTo= new MyLocation(to);
