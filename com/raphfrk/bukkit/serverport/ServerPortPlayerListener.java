@@ -191,12 +191,14 @@ public class ServerPortPlayerListener extends PlayerListener {
 		
 		IntLocation oldLocation = oldPositions.get(entityId);
 		
-		if(oldLocation==null) {
-			oldLocation = new IntLocation(from.getBlockX(), from.getBlockY(), from.getBlockZ(), from.getWorld().getName());
+		IntLocation newLocation = new IntLocation(to.getBlockX(), to.getBlockY(), to.getBlockZ(), to.getWorld().getName());
+		
+		oldPositions.put(entityId, newLocation);
+		
+		if(oldLocation==null || !oldLocation.getWorld().getName().equals(newLocation.getWorld().getName())) {
+			return;
 		}
 		
-		IntLocation newLocation = new IntLocation(to.getBlockX(), to.getBlockY(), to.getBlockZ(), to.getWorld().getName());
-
 		if(oldLocation.equals(newLocation)) return;
 
 		from.setX(oldLocation.getX());
@@ -207,7 +209,6 @@ public class ServerPortPlayerListener extends PlayerListener {
 		to.setY(newLocation.getY());
 		to.setZ(newLocation.getZ());
 		
-		oldPositions.put(entityId, newLocation);
 
 		MyLocation myFrom = new MyLocation(from);
 		MyLocation myTo= new MyLocation(to);
