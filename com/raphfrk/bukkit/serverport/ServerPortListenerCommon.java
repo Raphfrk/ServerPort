@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.World;
+import org.bukkit.block.BlockDamageLevel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -292,7 +293,7 @@ public class ServerPortListenerCommon {
 			if( !player.permissionCheck("destroy_gate", new String[] {origin.portalType, origin.portalWorld, destination} ) ) {
 				return true; 
 			} else {
-				if( block.getStatus() == 2 ) {
+				if( block.getStatus() == BlockDamageLevel.BROKEN.getLevel() ) {
 
 					if( portalManager.destroyPortal( block ) ) {
 						MiscUtils.safeMessage(player, "Gate Destroyed");
