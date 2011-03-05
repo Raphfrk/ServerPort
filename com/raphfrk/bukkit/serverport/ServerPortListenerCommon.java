@@ -292,7 +292,7 @@ public class ServerPortListenerCommon {
 			if( !player.permissionCheck("destroy_gate", new String[] {origin.portalType, origin.portalWorld, destination} ) ) {
 				return true; 
 			} else {
-				if( block.getStatus() == 3 ) {
+				if( block.getStatus() == 2 ) {
 
 					if( portalManager.destroyPortal( block ) ) {
 						MiscUtils.safeMessage(player, "Gate Destroyed");
