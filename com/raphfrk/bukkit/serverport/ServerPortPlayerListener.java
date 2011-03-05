@@ -89,7 +89,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 					MyLocation loc = TeleportCommand.teleportToBind(serverPortListenerCommon.communicationManager, new MyPlayer(player));
 
 					if( loc != null) {
-						player.sendMessage("You have died, restoring your position to bind - new version");
+						//player.sendMessage("You have died, restoring your position to bind - new version");
 
 						e.setRespawnLocation(loc.getBukkitLocation());
 						return;

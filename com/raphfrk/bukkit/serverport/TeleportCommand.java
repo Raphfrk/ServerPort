@@ -468,7 +468,7 @@ public class TeleportCommand implements Runnable {
 		
 		communicationManager.limboStore.lockPlayer(player.getName(), 5000);
 
-		String playerData = LimboStore.removePlayerInv( player );
+		String playerData = killOnFail?"":LimboStore.removePlayerInv( player );
 		
 		LimboInfo limboInfo = communicationManager.limboStore.getLimboInfo(player.getName());
 		
