@@ -305,9 +305,9 @@ public class ServerPortListenerCommon {
 				}
 			}
 		}
-
+		
 		if( portalManager.testSignBlock( block ) ) {
-
+			
 			if( block.getType() == SIGN ) {
 
 				MySign sign = (MySign)server.getComplexBlock(block.getWorld(), block.getX(), block.getY(), block.getZ(), block.getStatus());
@@ -321,9 +321,9 @@ public class ServerPortListenerCommon {
 			boolean signPunched = block.getType() == SIGN && player.holding() <= 0;
 
 			PortalInfo portalInfo = portalManager.getPortalByBlock(block);
-
+			
 			if( ( player.permissionCheck("use_gate_type", new String[] {portalInfo.portalType, portalInfo.portalWorld, portalManager.getDestination(portalInfo)})) && block.getStatus() == 0 && ( block.getType() == BUTTON || signPunched ) ) {
-
+				
 				portalManager.buttonPress( block , player );
 
 				return false;
@@ -511,7 +511,7 @@ public class ServerPortListenerCommon {
 
 
 	synchronized public boolean onSignChange(MyPlayer player, MySign sign) {
-
+		
 		portalManager.signPlaced( player, sign );
 
 		return false;

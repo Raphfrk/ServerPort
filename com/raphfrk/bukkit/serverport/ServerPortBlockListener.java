@@ -35,10 +35,11 @@ public class ServerPortBlockListener extends BlockListener {
 		MyPlayer player = new MyPlayer(event.getPlayer());
 		
 		if( serverPortListenerCommon.onBlockDestroy(player, block) ) {
+			System.out.println("returned true");
 			event.setCancelled(true);
 			return;
 		}
-
+		
 		if(event.getDamageLevel() == BlockDamageLevel.STARTED ) {
 
 			if( event.getBlock().getType().equals(Material.WALL_SIGN) ) {

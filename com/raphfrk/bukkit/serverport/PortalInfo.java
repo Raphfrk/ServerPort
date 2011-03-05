@@ -814,8 +814,6 @@ public class PortalInfo {
 	
 	void drawClosed() {
 		
-		//System.out.println( "Drawing: " + portalName + "closed");
-		
 		HashMap<IntLocation,Integer> portalBlocks = getPortal( offID );
 
 		if(!blocksChecked) {

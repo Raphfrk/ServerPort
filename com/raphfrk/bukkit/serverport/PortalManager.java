@@ -1386,7 +1386,7 @@ public class PortalManager {
 		if( sign.getText(0).length() > 0 ) {
 			return;
 		}
-
+		
 		IntLocation loc = new IntLocation( sign.getX(), sign.getY(), sign.getZ() , sign.getBlock().getWorld().getName());
 
 		if( blockBlocks.containsKey(loc) || signBlocks.containsKey(loc) ) {
