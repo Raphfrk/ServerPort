@@ -29,7 +29,6 @@ public class ChatManager {
 	void RegisterParameters( ParameterManager parameterManager ) {
 		
 		this.parameterManager = parameterManager;
-		
 		parameterManager.registerParameter(new ParameterInfo( 
 				this, 
 				"targetServers",

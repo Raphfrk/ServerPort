@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockDamageLevel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 
 public class ServerPortListenerCommon {
@@ -359,6 +360,33 @@ public class ServerPortListenerCommon {
 				sender.sendMessage("World name:" + world.getName());
 			}
 			return true;
+		}
+		
+		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("itemgen") && split.length > 0) {
+
+			int typeId = 1;
+			int amount = 1;
+			
+			if( split.length > 0 ) {
+				try {
+					typeId = Integer.parseInt(split[0]);
+				} catch (NumberFormatException nfe) {
+					sender.sendMessage("Unable to parse type id");
+					return true;
+				}
+			}
+			if( split.length > 1 ) {
+				try {
+					amount = Integer.parseInt(split[1]);
+				} catch (NumberFormatException nfe) {
+					sender.sendMessage("Unable to parse amount, using 1");
+				}
+			}
+			
+			((Player)sender).getInventory().addItem(new ItemStack(typeId, amount));
+			
+			return true;
+			
 		}
 
 		if( commandLabel.equals("pos") && player != null && player.isAdmin() ) {

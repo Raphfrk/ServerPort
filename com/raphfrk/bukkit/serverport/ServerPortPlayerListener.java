@@ -146,7 +146,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 	HashSet<String> deadPlayers = new HashSet<String>();
 	HashMap<String, Long> spamShield = new HashMap<String, Long>();
 	
-	HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
+	public HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
 
 	public void onPlayerMove(PlayerMoveEvent event) {
 
@@ -219,6 +219,8 @@ public class ServerPortPlayerListener extends PlayerListener {
 		}
 
 	}
+	
+	
 
 
 

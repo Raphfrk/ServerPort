@@ -3,10 +3,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
+import org.bukkit.util.Vector;
 
 public class PortalManager {
 
@@ -468,15 +470,15 @@ public class PortalManager {
 		if(worldExpansionString == null) {
 			worldExpansionString = expansionFactor.getValue("*");
 		}
-		
+
 		Double expansion = 100.0;
 		if(worldExpansionString != null) {
 			try {
-			expansion = Double.parseDouble(worldExpansionString);
+				expansion = Double.parseDouble(worldExpansionString);
 			} catch (NumberFormatException nfe) {
 			}
 		}
-		
+
 		double effectiveExpansion = (expansion<1)?1:expansion;
 
 		double x = ((double)portalLoc.getX()) / effectiveExpansion;
@@ -691,69 +693,78 @@ public class PortalManager {
 
 				newLoc.setWorld( target.getWorld() );
 
-				//				if( vehicle == null ) {
-				player.teleportTo(newLoc);
-				/*				} else {
-					System.out.println( "Teleporting vehicle");
-					newLoc.y++;
+				Vehicle vehicle = player.getVehicle();
 
-					float rotation = newLoc.rotX - loc.rotX;
+				if( vehicle == null ) {
+					player.teleportTo(newLoc);
+				} else {
+					newLoc.setX( target.x + 0.0 );
+					newLoc.setY( target.y + 0.5 );
+					newLoc.setZ( target.z + 0.0 );
+					
+					float rotation = newLoc.getRotX() - loc.getRotX();
 					float radians = -(float)Math.toRadians(rotation);
 
-					System.out.println( "Rotation required: " + rotation );
+					Vector velocity = vehicle.getVelocity();
 
-					double sx = vehicle.getMotionX();
-					double sy = vehicle.getMotionY();
-					double sz = vehicle.getMotionZ();
+					double newsx = Math.cos(radians)*velocity.getX() + Math.sin(radians)*velocity.getZ();
+					double newsz = Math.cos(radians)*velocity.getZ() + Math.sin(radians)*velocity.getX();
 
-					System.out.println( sx + "," + sy + "," + sz );
-					System.out.println( newLoc.rotX );
+					Vector newVelocity = new Vector(newsx, velocity.getY(), newsz);
 
-					sy = 0;
+					MiscUtils.gridLoad(newLoc.getWorld(), (int)Math.floor(newLoc.getX()), (int)Math.floor(newLoc.getY()), (int)Math.floor(newLoc.getZ()));
 
-					double newsx = Math.cos(radians)*sx + Math.sin(radians)*sz;
-					double newsz = Math.cos(radians)*sz + Math.sin(radians)*sx;
+					((ServerPortBukkit)MyServer.plugin).playerListener.oldPositions.remove(player.getBukkitPlayer().getEntityId());
 
-					System.out.println( newsx + "," + sy + "," + newsz );
-					System.out.println( loc.rotX + "->" + newLoc.rotX );
-					System.out.println( "new loc: " + newLoc.x + "," + newLoc.y + "," + newLoc.z );
-					System.out.println( "old loc: " + loc.x + "," + loc.y + "," + loc.z );
+					//player.leaveVehicle();
+					
+					vehicle.setVelocity(new Vector(0,0,0));
 
-					MiscUtils.gridLoad((int)Math.floor(newLoc.x), (int)Math.floor(newLoc.y), (int)Math.floor(newLoc.z));
+					final MyPlayer finalPlayer = player;
+					final Vehicle finalVehicle = vehicle;
+					final Vector finalNewVelocity = newVelocity.clone();
+					final MyLocation finalNewLoc = newLoc;
+					
+					finalVehicle.teleportTo(finalNewLoc.getBukkitLocation());
+					finalVehicle.setVelocity(finalNewVelocity);
 
-					vehicle.setMotion(newsx*0.000001,0,newsz*0.00001);
-					//vehicle.teleportTo(newLoc);
-					//vehicle.setY(newLoc.y);
+					/*MyServer.bukkitServer.getScheduler().scheduleSyncDelayedTask(MyServer.plugin, new Runnable() {
+						public void run() {
+							((ServerPortBukkit)MyServer.plugin).playerListener.oldPositions.remove(finalPlayer.getBukkitPlayer().getEntityId());
+					//		finalPlayer.teleportTo(finalNewLoc);
+						}
+					},5);
+					
+					MyServer.bukkitServer.getScheduler().scheduleSyncDelayedTask(MyServer.plugin, new Runnable() {
+						public void run() {
+							((ServerPortBukkit)MyServer.plugin).playerListener.oldPositions.remove(finalPlayer.getBukkitPlayer().getEntityId());
+							finalVehicle.teleportTo(finalNewLoc.getBukkitLocation());
+							finalVehicle.setVelocity(new Vector(0,0,0));
+						}
+					},10);
 
-					final double finalx = newLoc.x;
-					final double finaly = newLoc.y;
-					final double finalz = newLoc.z;
 
-					final double finalRotX = newLoc.rotX;
-					final double finalRotY = newLoc.rotY;
-
-					final double finalsx = newsx;
-					final double finalsy = sy;
-					final double finalsz = newsz;
-					final Location finalLoc = new Location( finalsx , finalsy , finalsz );
-					final int id = vehicle.getId();
-
-					delayedMotions.put(id, finalLoc);
-
-					targetPortal.deactivate();
-
-					etc.getServer().addToServerQueue(new Runnable() {
+					MyServer.bukkitServer.getScheduler().scheduleSyncDelayedTask(MyServer.plugin, new Runnable() {
 
 						public void run() {
-
-							processDelayedMotions( delayedMotions, id , finalx, finaly , finalz, finalRotX , finalRotY, finalsx, finalsy, finalsz );
-
+							System.out.println("Setting delayed info");
+							((ServerPortBukkit)MyServer.plugin).playerListener.oldPositions.remove(finalPlayer.getBukkitPlayer().getEntityId());
+					//		if(!finalVehicle.setPassenger(finalPlayer.getBukkitPlayer())) {
+					//			System.out.println("Unable to set passenger");
+					//		}
 						}
+					}, 100);
+					
+					MyServer.bukkitServer.getScheduler().scheduleSyncDelayedTask(MyServer.plugin, new Runnable() {
 
-					}, 500 );
+						public void run() {
+							System.out.println("Setting velocity info");
+							finalVehicle.setVelocity(finalNewVelocity);
+						}
+					}, 200);
 
+*/
 				}
-				 */
 
 			} else {
 				MiscUtils.safeMessage(player, "[ServerPort] Target gate is not open");
@@ -853,20 +864,20 @@ public class PortalManager {
 		} else {
 			targetWorld = vars[11];
 		}
-		
+
 		String worldExpansionString = expansionFactor.getValue(targetWorld);
 		if(worldExpansionString == null) {
 			worldExpansionString = expansionFactor.getValue("*");
 		}
-		
+
 		Double expansion = 100.0;
 		if(worldExpansionString != null) {
 			try {
-			expansion = Double.parseDouble(worldExpansionString);
+				expansion = Double.parseDouble(worldExpansionString);
 			} catch (NumberFormatException nfe) {
 			}
 		}
-		
+
 		double effectiveExpansion = (expansion<1)?1:expansion;
 
 		if( !MiscUtils.isDouble(vars[7])) return "WRONGVARS";
@@ -1142,6 +1153,18 @@ public class PortalManager {
 			bindStone.save();
 
 		}
+		
+		File cartFile = new File( directory + slash + "CartGate.gat");
+
+		if( createDefaultGates ) {
+
+			PortalInfo cartGate = cartGate();
+
+			cartGate.portalFileName = cartFile.getPath();
+
+			cartGate.save();
+
+		}
 
 		String[] filenames = directory.list();
 
@@ -1386,7 +1409,7 @@ public class PortalManager {
 		if( sign.getText(0).length() > 0 ) {
 			return;
 		}
-		
+
 		IntLocation loc = new IntLocation( sign.getX(), sign.getY(), sign.getZ() , sign.getBlock().getWorld().getName());
 
 		if( blockBlocks.containsKey(loc) || signBlocks.containsKey(loc) ) {
@@ -1730,6 +1753,47 @@ public class PortalManager {
 
 		}
 
+	}
+	
+	PortalInfo cartGate() {
+
+		PortalInfo cartGate = new PortalInfo();
+
+		cartGate.portalName = "CartGate";
+
+		cartGate.portalWorld = mainWorld;
+
+		cartGate.mistID = 66;
+
+		cartGate.blockLookup.put( '.', 0 );
+		cartGate.blockLookup.put( '*', 0 );
+		cartGate.blockLookup.put( '-', 1 );
+		cartGate.blockLookup.put( 'X', 1 );
+
+		int counter;
+		for( counter = 0;counter<=4;counter++) {
+			cartGate.blockTypes.put(new IntLocation(counter,-4,0, mainWorld), 1);
+		}
+		for( counter = -3;counter<=-1;counter++) {
+			cartGate.blockTypes.put(new IntLocation(0,counter,0, mainWorld), 1);
+			cartGate.blockTypes.put(new IntLocation(4,counter,0, mainWorld), 1);
+		}
+		for( counter = 0;counter<=4;counter++) {
+			cartGate.blockTypes.put(new IntLocation(counter,0,0, mainWorld), 1);
+		}
+
+		cartGate.portalBlocks.put(new IntLocation( 2 , -3 , 0, mainWorld ) , 0 );
+
+		cartGate.exitPoint = new IntLocation( 2 , -3 , 0, mainWorld );
+		
+		cartGate.signBlocks.put(new IntLocation(0,-2,1, mainWorld), 1);
+		cartGate.signBlocks.put(new IntLocation(4,-2,1, mainWorld), 1);
+
+		cartGate.blockTypes.putAll(cartGate.portalBlocks);
+		
+		cartGate.portalDuration = -1;
+
+		return cartGate;
 	}
 
 	/*	static void processDelayedMotions( HashMap<Integer,Location> delayedMotions, int id , double finalx, double finaly , double finalz, double finalRotX, double finalRotY,  double finalsx, double finalsy, double finalsz ) {

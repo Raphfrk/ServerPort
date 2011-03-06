@@ -4,9 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+
+import org.bukkit.entity.Vehicle;
 
 public class MyPlayer {
 
@@ -45,6 +46,24 @@ public class MyPlayer {
 
 		return bukkitPlayer.getName();
 
+	}
+	
+	Vehicle getVehicle() {
+		
+		if(bukkitPlayer == null || !bukkitPlayer.isInsideVehicle()) {
+			return null;
+		} else {
+			return bukkitPlayer.getVehicle();
+		}
+		
+	}
+	
+	org.bukkit.entity.Player getBukkitPlayer() {
+		return bukkitPlayer;
+	}
+	
+	boolean leaveVehicle() {
+		return bukkitPlayer.leaveVehicle();
 	}
 
 	String getIP() {

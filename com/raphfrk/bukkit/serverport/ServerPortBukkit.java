@@ -22,14 +22,16 @@ public class ServerPortBukkit extends JavaPlugin {
 	
 	ServerPortCommon serverPortCommon = new ServerPortCommon();
 	
-	private final ServerPortPlayerListener playerListener = new ServerPortPlayerListener(this);
+	protected final ServerPortPlayerListener playerListener = new ServerPortPlayerListener(this);
 	
 	private final ServerPortBlockListener blockListener = new ServerPortBlockListener(this);
 	
 	private final ServerPortCustomListener customListener = new ServerPortCustomListener(this);
 
 	private final ServerPortEntityListener entityListener = new ServerPortEntityListener(this);
-	
+
+	private final ServerPortVehicleListener vehicleListener = new ServerPortVehicleListener(this);
+
 	private final ServerPortWorldListener worldListener = new ServerPortWorldListener(this);
 	
     public void onEnable() {
@@ -80,6 +82,7 @@ public class ServerPortBukkit extends JavaPlugin {
         
         pm.registerEvent(Event.Type.CUSTOM_EVENT, customListener, Priority.Normal, this);
         
+        pm.registerEvent(Event.Type.VEHICLE_MOVE, vehicleListener, Priority.Normal, this);
         
         //pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.CHUNK_UNLOADED, worldListener, Priority.Normal, this);
