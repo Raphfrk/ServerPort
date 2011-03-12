@@ -67,6 +67,7 @@ public class ServerPortBukkit extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
         
         pm.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_INTERACT, blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.BLOCK_CANBUILD, blockListener, Priority.Normal, this);

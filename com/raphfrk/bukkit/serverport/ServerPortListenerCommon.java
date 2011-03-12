@@ -2,6 +2,7 @@ package com.raphfrk.bukkit.serverport;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockDamageLevel;
 import org.bukkit.command.CommandSender;
@@ -212,7 +213,7 @@ public class ServerPortListenerCommon {
 
 
 	synchronized public void onPlayerMove(MyPlayer player, MyLocation from, MyLocation to) {
-
+		
 		LimboStore limboStore = communicationManager.limboStore;
 
 		LimboInfo limboInfo = limboStore.getLimboInfo(player.getName());
@@ -288,6 +289,7 @@ public class ServerPortListenerCommon {
 		}
 
 		if( portalManager.testProtectedBlock( block ) ) {
+			
 			PortalInfo origin = portalManager.getPortalByBlock(block);
 			String destination = portalManager.getDestination(origin);
 
@@ -361,6 +363,18 @@ public class ServerPortListenerCommon {
 			}
 			return true;
 		}
+		
+		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("refresh") && split.length > 0) {
+
+			int distance = Integer.parseInt(split[0]);
+			
+			Location loc = player.getLocation().getBukkitLocation();
+			
+			player.sendMessage("Attempting refresh" );
+			player.getWorld().refreshChunk(loc.getBlockX()>>4, loc.getBlockY()>>4);		
+			
+		}
+		
 		
 		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("itemgen") && split.length > 0) {
 

@@ -2,6 +2,7 @@ package com.raphfrk.bukkit.serverport;
 import org.bukkit.Material;
 import org.bukkit.block.BlockDamageLevel;
 import org.bukkit.block.Sign;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockListener;
@@ -25,6 +26,19 @@ public class ServerPortBlockListener extends BlockListener {
     }
 
     public void onBlockPlace(BlockPlaceEvent event) {
+    }
+    
+    @Override
+    public void onBlockBreak(BlockBreakEvent event) {
+    	MyBlock block = new MyBlock();
+		block.setBukkitBlock(event.getBlock(), BlockDamageLevel.BROKEN.getLevel());
+		
+		MyPlayer player = new MyPlayer(event.getPlayer());
+		
+		if( serverPortListenerCommon.onBlockDestroy(player, block) ) {
+			event.setCancelled(true);
+			return;
+		}
     }
 	
 	public void onBlockDamage(BlockDamageEvent event) {

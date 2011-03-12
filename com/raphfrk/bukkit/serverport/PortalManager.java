@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
@@ -724,8 +723,9 @@ public class PortalManager {
 					final Vehicle finalVehicle = vehicle;
 					final Vector finalNewVelocity = newVelocity.clone();
 					final MyLocation finalNewLoc = newLoc;
-					
+										
 					finalVehicle.teleportTo(finalNewLoc.getBukkitLocation());
+					//finalPlayer.teleportTo(finalNewLoc);
 					finalVehicle.setVelocity(finalNewVelocity);
 
 					/*MyServer.bukkitServer.getScheduler().scheduleSyncDelayedTask(MyServer.plugin, new Runnable() {
