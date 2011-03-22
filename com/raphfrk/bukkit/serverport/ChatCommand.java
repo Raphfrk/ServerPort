@@ -109,6 +109,10 @@ public class ChatCommand implements Runnable {
 		
 		string = string.replace(":" , "CEC" );
 		
+		string = string.replace("/" , "fEf" );
+		
+		string = string.replace("\\" , "bEb" );
+		
 		int length = string.length();
 		
 		StringBuilder sb = new StringBuilder();
@@ -161,6 +165,10 @@ public class ChatCommand implements Runnable {
 			}
 			
 		}
+		
+		string = string.replace("fEf" , "/");
+		
+		string = string.replace("bEb" , "\\");
 		
 		string = string.replace("cEc", "," );
 		
