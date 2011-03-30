@@ -1,6 +1,5 @@
 package com.raphfrk.bukkit.serverport;
 import org.bukkit.Material;
-import org.bukkit.block.BlockDamageLevel;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -13,6 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class ServerPortBlockListener extends BlockListener {
 
+	public static int START_DIGGING = 1;
+	public static int BLOCK_BROKEN = 3;
+
 	JavaPlugin serverPort = null;
 
 	ServerPortListenerCommon serverPortListenerCommon;
@@ -22,73 +24,69 @@ public class ServerPortBlockListener extends BlockListener {
 		this.serverPortListenerCommon = serverPort.serverPortListenerCommon;
 	}
 
-    public void onSignChange(SignChangeEvent event) {
-    }
+	public void onSignChange(SignChangeEvent event) {
+	}
 
-    public void onBlockPlace(BlockPlaceEvent event) {
-    }
-    
-    @Override
-    public void onBlockBreak(BlockBreakEvent event) {
-    	MyBlock block = new MyBlock();
-		block.setBukkitBlock(event.getBlock(), BlockDamageLevel.BROKEN.getLevel());
-		
-		MyPlayer player = new MyPlayer(event.getPlayer());
-		
-		if( serverPortListenerCommon.onBlockDestroy(player, block) ) {
-			event.setCancelled(true);
-			return;
-		}
-    }
-	
-	public void onBlockDamage(BlockDamageEvent event) {
-		
+	public void onBlockPlace(BlockPlaceEvent event) {
+	}
+
+	@Override
+	public void onBlockBreak(BlockBreakEvent event) {
 		MyBlock block = new MyBlock();
-		block.setBukkitBlock(event.getBlock(), event.getDamageLevel().getLevel());
+		block.setBukkitBlock(event.getBlock(), BLOCK_BROKEN);
 
 		MyPlayer player = new MyPlayer(event.getPlayer());
-		
+
 		if( serverPortListenerCommon.onBlockDestroy(player, block) ) {
 			event.setCancelled(true);
 			return;
 		}
-		
-		if(event.getDamageLevel() == BlockDamageLevel.STARTED ) {
+	}
 
-			if( event.getBlock().getType().equals(Material.WALL_SIGN) ) {
+	public void onBlockDamage(BlockDamageEvent event) {
 
-				MySign sign = new MySign();
+		MyBlock block = new MyBlock();
+		block.setBukkitBlock(event.getBlock(), START_DIGGING);
 
-				sign.setBukkitSign((Sign)(event.getBlock()).getState(), 0);
+		MyPlayer player = new MyPlayer(event.getPlayer());
 
-				serverPortListenerCommon.onSignChange(player, sign);
-				
-			}
+		if( serverPortListenerCommon.onBlockDestroy(player, block) ) {
+			event.setCancelled(true);
+			return;
+		}
+
+		if( event.getBlock().getType().equals(Material.WALL_SIGN) ) {
+
+			MySign sign = new MySign();
+
+			sign.setBukkitSign((Sign)(event.getBlock()).getState(), 0);
+
+			serverPortListenerCommon.onSignChange(player, sign);
 
 		}
 
 	}
-	
-    public void onBlockFlow(BlockFromToEvent event) {
-    	
-    	MyBlock blockFrom = new MyBlock(event.getBlock(), 0);
-    	MyBlock blockTo = new MyBlock(event.getToBlock(), 0);
-    	
-    	if( serverPortListenerCommon.onFlow(blockFrom, blockTo) ) {
-    		event.setCancelled(true);
-    	}
-    	
-    }
+
+	public void onBlockFlow(BlockFromToEvent event) {
+
+		MyBlock blockFrom = new MyBlock(event.getBlock(), 0);
+		MyBlock blockTo = new MyBlock(event.getToBlock(), 0);
+
+		if( serverPortListenerCommon.onFlow(blockFrom, blockTo) ) {
+			event.setCancelled(true);
+		}
+
+	}
 
 
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-    	
-    	MyBlock block = new MyBlock(event.getBlock(), 0);
+	public void onBlockPhysics(BlockPhysicsEvent event) {
 
-    	if( serverPortListenerCommon.onBlockPhysics(block, false) ) {
-    		event.setCancelled(true);
-    	}
-    	
-    }
+		MyBlock block = new MyBlock(event.getBlock(), 0);
+
+		if( serverPortListenerCommon.onBlockPhysics(block, false) ) {
+			event.setCancelled(true);
+		}
+
+	}
 
 }

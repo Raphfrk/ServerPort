@@ -125,6 +125,17 @@ public class ForwardCommand implements Runnable {
 
 		if( (error=serverPortClient.connect()) != null ) {
 			MiscUtils.safeLogging( "[ServerPort] " + error);
+			if(error.contains("port number not open")) {
+				final String finalPlayer = playerName;
+				MyServer.bukkitServer.getScheduler().scheduleSyncDelayedTask(MyServer.plugin, new Runnable() {
+					public void run() {
+						org.bukkit.entity.Player player = MyServer.bukkitServer.getPlayer(finalPlayer);
+						if(player != null) {
+							player.kickPlayer("Character is not located on this server");
+						}
+					}
+				});
+			}
 			return null;
 		}
 		

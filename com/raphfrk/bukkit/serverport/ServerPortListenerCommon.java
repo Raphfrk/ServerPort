@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.BlockDamageLevel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -79,7 +78,9 @@ public class ServerPortListenerCommon {
 		communicationManager.limboStore.processTransfer("STORE:playername=" + player.getName() + ";" + blockedItems);
 	}
 
-	synchronized public void onLogin(MyPlayer player) {
+	synchronized public boolean onLogin(MyPlayer player) {
+
+		boolean displayMessage = true;
 
 		String playerName = new String( player.getName());
 
@@ -92,7 +93,7 @@ public class ServerPortListenerCommon {
 		LimboInfo limboInfo = communicationManager.limboStore.getLimboInfo(player.getName());
 
 		if( limboInfo == null ) {
-			return;
+			return displayMessage;
 		}
 
 		String currentServer = limboInfo.getCurrentServer();
@@ -107,7 +108,7 @@ public class ServerPortListenerCommon {
 
 
 		} else if( !currentServer.equals("here") ) {
-
+			displayMessage = true;
 			MiscUtils.safeMessage(playerName, "[ServerPort] You have logged into the wrong server.  If you move you will be teleported");
 
 			if( limboInfo.getTimeToLive() == 0 ) {
@@ -121,7 +122,7 @@ public class ServerPortListenerCommon {
 			}
 
 			//communicationManager.limboStore.lockPlayer(playerName);
-			return;
+			return displayMessage;
 		}
 
 		String currentGate = limboInfo.getCurrentGate();
@@ -134,6 +135,7 @@ public class ServerPortListenerCommon {
 
 		if( !currentGate.equals("") ) {
 
+			displayMessage = false;
 			int playerHealth = limboInfo.getPlayerHealth();
 
 			PortalInfo portalInfo = portalManager.getPortal(currentGate);
@@ -163,17 +165,19 @@ public class ServerPortListenerCommon {
 
 			limboInfo.setCurrentGate("");
 			communicationManager.limboStore.updateDatabase(limboInfo);
-		
+
 
 		}
 
+		return displayMessage;
+
 	}
 
-	HashMap<String,Long> spamShield = new HashMap<String,Long>();
+	//HashMap<String,Long> spamShield = new HashMap<String,Long>();
 
-	
-	
-/*	synchronized public boolean onHealthChange(MyPlayer player, int oldValue, int newValue) {
+
+
+	/*	synchronized public boolean onHealthChange(MyPlayer player, int oldValue, int newValue) {
 
 		if( communicationManager.limboStore.bindEnable && newValue <= 0 ) {
 
@@ -213,7 +217,7 @@ public class ServerPortListenerCommon {
 
 
 	synchronized public void onPlayerMove(MyPlayer player, MyLocation from, MyLocation to) {
-		
+
 		LimboStore limboStore = communicationManager.limboStore;
 
 		LimboInfo limboInfo = limboStore.getLimboInfo(player.getName());
@@ -289,14 +293,14 @@ public class ServerPortListenerCommon {
 		}
 
 		if( portalManager.testProtectedBlock( block ) ) {
-			
+
 			PortalInfo origin = portalManager.getPortalByBlock(block);
 			String destination = portalManager.getDestination(origin);
 
 			if( !player.permissionCheck("destroy_gate", new String[] {origin.portalType, origin.portalWorld, destination} ) ) {
 				return true; 
 			} else {
-				if( block.getStatus() == BlockDamageLevel.BROKEN.getLevel() ) {
+				if( block.getStatus() == ServerPortBlockListener.BLOCK_BROKEN ) {
 
 					if( portalManager.destroyPortal( block ) ) {
 						MiscUtils.safeMessage(player, "Gate Destroyed");
@@ -308,9 +312,9 @@ public class ServerPortListenerCommon {
 				}
 			}
 		}
-		
+
 		if( portalManager.testSignBlock( block ) ) {
-			
+
 			if( block.getType() == SIGN ) {
 
 				MySign sign = (MySign)server.getComplexBlock(block.getWorld(), block.getX(), block.getY(), block.getZ(), block.getStatus());
@@ -324,9 +328,9 @@ public class ServerPortListenerCommon {
 			boolean signPunched = block.getType() == SIGN && player.holding() <= 0;
 
 			PortalInfo portalInfo = portalManager.getPortalByBlock(block);
-			
+
 			if( ( player.permissionCheck("use_gate_type", new String[] {portalInfo.portalType, portalInfo.portalWorld, portalManager.getDestination(portalInfo)})) && block.getStatus() == 0 && ( block.getType() == BUTTON || signPunched ) ) {
-				
+
 				portalManager.buttonPress( block , player );
 
 				return false;
@@ -334,7 +338,7 @@ public class ServerPortListenerCommon {
 			}
 
 		}
-		
+
 		return false;
 	}
 
@@ -350,12 +354,12 @@ public class ServerPortListenerCommon {
 	synchronized public boolean onCommand(CommandSender sender, String commandLabel, String[] split) {
 
 		MyPlayer player = null;
-		
+
 		if(sender instanceof Player) {
 			player = new MyPlayer((Player)sender);
 		}
-		
-		
+
+
 		if( commandLabel.equals("worldlist")) {
 			List<World> worlds = MyServer.bukkitServer.getWorlds();
 			for(World world : worlds) {
@@ -363,24 +367,24 @@ public class ServerPortListenerCommon {
 			}
 			return true;
 		}
-		
+
 		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("refresh") && split.length > 0) {
 
 			int distance = Integer.parseInt(split[0]);
-			
+
 			Location loc = player.getLocation().getBukkitLocation();
-			
+
 			player.sendMessage("Attempting refresh" );
 			player.getWorld().refreshChunk(loc.getBlockX()>>4, loc.getBlockY()>>4);		
-			
+
 		}
-		
-		
+
+
 		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("itemgen") && split.length > 0) {
 
 			int typeId = 1;
 			int amount = 1;
-			
+
 			if( split.length > 0 ) {
 				try {
 					typeId = Integer.parseInt(split[0]);
@@ -396,11 +400,11 @@ public class ServerPortListenerCommon {
 					sender.sendMessage("Unable to parse amount, using 1");
 				}
 			}
-			
+
 			((Player)sender).getInventory().addItem(new ItemStack(typeId, amount));
-			
+
 			return true;
-			
+
 		}
 
 		if( commandLabel.equals("pos") && player != null && player.isAdmin() ) {
@@ -437,6 +441,24 @@ public class ServerPortListenerCommon {
 
 		}
 
+		if( commandLabel.equals("usegate") && player != null && player.permissionCheck("opteleport", new String[] {"allow"}) ) {
+
+			if( split.length > 0 ) {	
+				PortalInfo portalInfo = portalManager.getPortal(split[0]);
+				if(portalInfo == null) {
+					player.sendMessage("[ServerPort] Unable to find portal " + split[0] + " on current server");
+				} else {
+					TeleportCommand.teleport(communicationManager, player, portalInfo, false);
+				}
+			} else {
+				player.sendMessage("[ServerPort] Command format is: /stele <servername> <gatename>");
+			}
+
+			return true;
+
+
+		}
+
 		if( player != null && commandLabel.equals("getinv") ) {
 			restoreInventory(player);
 			return true;
@@ -455,7 +477,7 @@ public class ServerPortListenerCommon {
 			if(!player.getInventory().bukkitInventory.contains(259)) {
 				server.dropItem( player.getLocation(), 259, 1 );
 			}
-			
+
 
 			if( portalManager.drawGate(player, split[0])) {
 				MiscUtils.safeMessage(player.getName(), "[ServerPort] Gate Auto-generation success");
@@ -553,7 +575,7 @@ public class ServerPortListenerCommon {
 
 
 	synchronized public boolean onSignChange(MyPlayer player, MySign sign) {
-		
+
 		portalManager.signPlaced( player, sign );
 
 		return false;

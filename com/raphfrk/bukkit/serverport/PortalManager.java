@@ -713,7 +713,7 @@ public class PortalManager {
 
 					MiscUtils.gridLoad(newLoc.getWorld(), (int)Math.floor(newLoc.getX()), (int)Math.floor(newLoc.getY()), (int)Math.floor(newLoc.getZ()));
 
-					((ServerPortBukkit)MyServer.plugin).playerListener.oldPositions.remove(player.getBukkitPlayer().getEntityId());
+					//((ServerPortBukkit)MyServer.plugin).playerListener.oldPositions.remove(player.getBukkitPlayer().getEntityId());
 
 					//player.leaveVehicle();
 					
@@ -724,7 +724,7 @@ public class PortalManager {
 					final Vector finalNewVelocity = newVelocity.clone();
 					final MyLocation finalNewLoc = newLoc;
 										
-					finalVehicle.teleportTo(finalNewLoc.getBukkitLocation());
+					finalVehicle.teleport(finalNewLoc.getBukkitLocation());
 					//finalPlayer.teleportTo(finalNewLoc);
 					finalVehicle.setVelocity(finalNewVelocity);
 

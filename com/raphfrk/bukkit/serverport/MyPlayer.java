@@ -122,6 +122,7 @@ public class MyPlayer {
 		new String[] {"Allows use of /regengates command",  "regen_gates" , "allow"},
 		new String[] {"Allows use of /serverport command",  "serverport" , "allow"},
 		new String[] {"Allows use of /drawgate command",  "draw_gate" , "<gate type>"},
+		new String[] {"Allows use of /stele command", "opteleport", "allow"}
 	};
 
 	static HashMap<String,HashMap> hashMaps = new HashMap<String,HashMap>();

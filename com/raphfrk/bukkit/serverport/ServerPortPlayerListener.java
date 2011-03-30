@@ -5,9 +5,11 @@ import java.util.HashSet;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -34,14 +36,23 @@ public class ServerPortPlayerListener extends PlayerListener {
 		return serverPortListenerCommon.onBlockPlace(new MyPlayer(player), new MyBlock(blockPlaced, 0), new MyBlock(blockClicked, 0), newItem );
 
 	}
+	
+	@Override
+	public void onPlayerKick(PlayerKickEvent event) {
+		if(TeleportCommand.playerKicked(event.getPlayer().getName())) {
+			event.setLeaveMessage(null);
+		}
+	}
 
-	public void onPlayerJoin(PlayerEvent event) {
+	public void onPlayerJoin(PlayerJoinEvent event) {
 
 		org.bukkit.entity.Player player = event.getPlayer();
 
 		MyPlayer myPlayer = new MyPlayer(player);
-
-		serverPortListenerCommon.onLogin(myPlayer);
+		
+		if(!serverPortListenerCommon.onLogin(myPlayer)) {
+			event.setJoinMessage(null);
+		}
 	}
 
 	public void onPlayerChat(PlayerChatEvent event) {
@@ -116,19 +127,31 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 	}
 
-	public void onPlayerItem(PlayerItemEvent event) {
+	@Override
+    public void onPlayerInteract(PlayerInteractEvent event) {
+		
+		Action action = event.getAction();
+		
+		if(action != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		
+		Block target = event.getClickedBlock();
 
-		Block target = event.getBlockClicked();
-
+		//event.getPlayer().sendMessage("Biome: " + target.getBiome());
+		
+		if(!event.hasItem()) {
+			return;
+		}
 		ItemStack item = event.getItem();
 
 		if( item.getType().equals(Material.FLINT_AND_STEEL)) {
 			if( target != null && target.getType() != null && target.getType().equals(Material.OBSIDIAN)) {
 				event.setCancelled(true);
 
-				Block blockFace = target.getFace(event.getBlockFace());
+				//Block blockFace = target.getFace(event.getBlockFace());
 
-				MyBlock myBlock = new MyBlock(event.getBlockClicked().getFace(event.getBlockFace()),0);
+				MyBlock myBlock = new MyBlock(event.getClickedBlock().getFace(event.getBlockFace()),0);
 
 				MyPlayer player = new MyPlayer(event.getPlayer());
 
@@ -143,14 +166,14 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 	}
 
-	HashSet<String> deadPlayers = new HashSet<String>();
+	//HashSet<String> deadPlayers = new HashSet<String>();
 	HashMap<String, Long> spamShield = new HashMap<String, Long>();
 	
-	public HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
+	//public HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
 
 	public void onPlayerMove(PlayerMoveEvent event) {
 
-		if(!deadPlayers.isEmpty()) {
+		/*if(!deadPlayers.isEmpty()) {
 			Player player = event.getPlayer();
 			
 			if(player.getHealth()>0 && deadPlayers.contains(player.getName())) {
@@ -181,19 +204,17 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 			}
 		}
-
+		*/
 		MyPlayer player = new MyPlayer(event.getPlayer());
 
 		org.bukkit.Location from = event.getFrom().clone();
 		org.bukkit.Location to = event.getTo().clone();
 		
-		int entityId = event.getPlayer().getEntityId();
-		
-		IntLocation oldLocation = oldPositions.get(entityId);
+		IntLocation oldLocation = new IntLocation(from.getBlockX(), from.getBlockY(), from.getBlockZ(), from.getWorld().getName());
 		
 		IntLocation newLocation = new IntLocation(to.getBlockX(), to.getBlockY(), to.getBlockZ(), to.getWorld().getName());
 		
-		oldPositions.put(entityId, newLocation);
+		//oldPositions.put(entityId, newLocation);
 		
 		if(oldLocation==null || !oldLocation.getWorld().getName().equals(newLocation.getWorld().getName())) {
 			return;

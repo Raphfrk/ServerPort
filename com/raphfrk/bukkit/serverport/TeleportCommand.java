@@ -1,4 +1,5 @@
 package com.raphfrk.bukkit.serverport;
+import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.World;
@@ -130,9 +131,9 @@ public class TeleportCommand implements Runnable {
 		
 	}
 
+	static HashSet<String> teleportingPlayers = new HashSet<String>();
 
 	public void run() {
-
 
 		PeerServerInfo peerServerInfoFromConnection = null;
 		PeerServerInfo peerServerInfoFromDatabase = null;
@@ -300,8 +301,7 @@ public class TeleportCommand implements Runnable {
 		);
 
 	}
-
-
+	
 	static void teleport( String playerName , String playerIP , String[] params , String hostname ) {
 
 
@@ -373,12 +373,26 @@ public class TeleportCommand implements Runnable {
 
 				MyPlayer player = server.getPlayer(finalPlayerName);
 				if( player != null && !player.isNull() ) {
-					MyServer.bukkitServer.broadcastMessage("[ServerPort] " + player.getName() + " is about to teleport");
+					//MyServer.bukkitServer.broadcastMessage("[ServerPort] " + player.getName() + " is about to teleport");
+					synchronized(teleportingPlayers) {
+						teleportingPlayers.add(finalPlayerName);
+					}
 					player.kick( finalKickString );
 				}
 			}
 
 		});
+	}
+	
+	static boolean playerKicked(String playerName) {
+		synchronized(teleportingPlayers) {
+			if(teleportingPlayers.contains(playerName)) {
+				teleportingPlayers.remove(playerName);
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 	
 	static MyLocation teleportToBind( CommunicationManager communicationManager , MyPlayer player  ) {
@@ -434,7 +448,8 @@ public class TeleportCommand implements Runnable {
 		}
 		
 		if( targetServer.equals("here") || targetIndex != null ) {
-			
+			player.sendMessage("executing here/main if branch: " + targetServer + " " + targetGate);
+
 			portalInfo = localGate;
 			
 			if( portalInfo == null ) {
@@ -458,6 +473,7 @@ public class TeleportCommand implements Runnable {
 			}
 			
 		} else {
+			player.sendMessage("executing else");
 			teleport( communicationManager , player , portalInfo , killOnFail );
 			return null;
 		}
