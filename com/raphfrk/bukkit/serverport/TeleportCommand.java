@@ -448,7 +448,6 @@ public class TeleportCommand implements Runnable {
 		}
 		
 		if( targetServer.equals("here") || targetIndex != null ) {
-			player.sendMessage("executing here/main if branch: " + targetServer + " " + targetGate);
 
 			portalInfo = localGate;
 			
@@ -473,7 +472,6 @@ public class TeleportCommand implements Runnable {
 			}
 			
 		} else {
-			player.sendMessage("executing else");
 			teleport( communicationManager , player , portalInfo , killOnFail );
 			return null;
 		}
