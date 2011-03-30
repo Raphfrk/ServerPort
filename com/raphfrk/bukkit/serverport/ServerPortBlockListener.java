@@ -67,7 +67,7 @@ public class ServerPortBlockListener extends BlockListener {
 
 	}
 
-	public void onBlockFlow(BlockFromToEvent event) {
+	public void onBlockFromTo(BlockFromToEvent event) {
 
 		MyBlock blockFrom = new MyBlock(event.getBlock(), 0);
 		MyBlock blockTo = new MyBlock(event.getToBlock(), 0);
