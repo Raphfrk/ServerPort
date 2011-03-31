@@ -1,6 +1,5 @@
 package com.raphfrk.bukkit.serverport;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;

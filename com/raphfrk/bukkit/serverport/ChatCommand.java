@@ -13,6 +13,7 @@ public class ChatCommand implements Runnable {
 	String playerName = null;
 	String targetServer = null;
 	String message = null;
+	String targetPlayer = null;
 	
 	HashMap<String,Long> onlineTargetServers = null;
 	
@@ -33,6 +34,27 @@ public class ChatCommand implements Runnable {
 			return;
 		}
 
+		this.playerName = new String(playerName);
+		this.targetServer = new String(targetServer);
+		this.message = new String(message);
+		this.onlineTargetServers = onlineTargetServers;
+
+		isValid = true;
+
+	}
+	
+	ChatCommand( CommunicationManager communicationManager , String targetPlayer, String playerName , String targetServer , String message , HashMap<String,Long> onlineTargetServers) {
+
+		if( communicationManager != null ) {
+			this.communicationManager = communicationManager;
+		} else {
+			isValid = false;
+			return;
+		}
+
+		if( targetPlayer != null ) {
+			this.targetPlayer = new String(targetPlayer);
+		}
 		this.playerName = new String(playerName);
 		this.targetServer = new String(targetServer);
 		this.message = new String(message);
@@ -89,7 +111,14 @@ public class ChatCommand implements Runnable {
 			
 		} else {
 				
-			serverPortClient.sendRequest( "MESSAGE" , message , peerServerInfoFromDatabase);
+			if(targetPlayer == null) {
+				serverPortClient.sendRequest( "MESSAGE" , message , peerServerInfoFromDatabase);
+			} else {
+				String reply = serverPortClient.sendRequest( "TELL" , targetPlayer + "," + message , peerServerInfoFromDatabase);
+				if(!reply.equals("UNKNOWN")) {
+					MiscUtils.safeMessage(playerName, reply);
+				}
+			}
 
 		}
 

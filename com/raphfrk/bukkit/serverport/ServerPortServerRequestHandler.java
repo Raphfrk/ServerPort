@@ -142,6 +142,10 @@ public class ServerPortServerRequestHandler implements Runnable {
 
 				sendReply( communicationManager.commandFIFO.runMainCommand(new String(command + ";" + peerServerName )));
 				
+			} else if ( split[0].equals("TELL") ) { 
+
+				sendReply( communicationManager.commandFIFO.runMainCommand(new String(command + ";" + peerServerName )));
+				
 			} else if ( split[0].equals("ERROR")) {
 				MiscUtils.safeLogging("[ServerPort] Client replied that passcode is invalid" );
 				sendReply( "Error acknowledged" );

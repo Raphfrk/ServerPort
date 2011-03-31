@@ -380,7 +380,18 @@ public class ServerPortListenerCommon {
 
 			player.sendMessage("Attempting refresh" );
 			player.getWorld().refreshChunk(loc.getBlockX()>>4, loc.getBlockY()>>4);		
+			return true;
 
+		}
+		
+		if( sender instanceof Player && commandLabel.equals("stell") && split.length > 1) {
+			String targetPlayerName = split[0];
+			String message = "";
+			for(int cnt = 1; cnt < split.length;cnt++) {
+				message = message + split[cnt] + " ";
+			}
+			communicationManager.chatManager.sendChat(targetPlayerName, player, message);
+			return true;
 		}
 
 

@@ -129,6 +129,9 @@ public class CommandFIFO {
 		} else if( split[0].equals("MESSAGE")) {
 		
 			return communicationManager.chatManager.processMessage(command);
+		} else if( split[0].equals("TELL")) {
+		
+			return communicationManager.chatManager.processMessage(command);
 		}
 		
 		return "NOACTION";
