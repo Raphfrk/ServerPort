@@ -137,6 +137,15 @@ public class ServerPortPlayerListener extends PlayerListener {
 		}
 		
 		Block target = event.getClickedBlock();
+		
+		if( target != null && target.getType() != null && target.getType().equals(Material.BED_BLOCK)) {
+			LimboInfo limboInfo = serverPortListenerCommon.communicationManager.limboStore.getLimboInfo(event.getPlayer().getName());
+			if(!limboInfo.getHomeServer().equals("none")) {
+				limboInfo.setHomeGate("none");
+				limboInfo.setHomeServer("none");
+				event.getPlayer().sendMessage("[ServerPort] Bind point cleared");
+			}
+		}
 
 		//event.getPlayer().sendMessage("Biome: " + target.getBiome());
 		

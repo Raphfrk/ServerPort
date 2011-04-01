@@ -315,8 +315,6 @@ public class ServerPortListenerCommon {
 
 		if( portalManager.testSignBlock( block ) ) {
 			
-			player.sendMessage("Sign block = true");
-
 			if( block.getType() == SIGN ) {
 				
 				MySign sign = (MySign)server.getComplexBlock(block.getWorld(), block.getX(), block.getY(), block.getZ(), block.getStatus());
@@ -332,8 +330,6 @@ public class ServerPortListenerCommon {
 			PortalInfo portalInfo = portalManager.getPortalByBlock(block);
 
 			if( ( player.permissionCheck("use_gate_type", new String[] {portalInfo.portalType, portalInfo.portalWorld, portalManager.getDestination(portalInfo)})) && block.getStatus() == ServerPortBlockListener.START_DIGGING && ( block.getType() == BUTTON || signPunched ) ) {
-
-				player.sendMessage("Pushing button");
 				
 				portalManager.buttonPress( block , player );
 
@@ -394,7 +390,27 @@ public class ServerPortListenerCommon {
 			return true;
 		}
 
-
+		if( commandLabel.equals("stime") && split.length > 0) {
+			Long time = 0L;
+			try {
+				time = Long.parseLong(split[0]);
+			} catch (NumberFormatException nfe) {
+				sender.sendMessage("Unable to process time");
+				return true;
+			}
+			if(sender instanceof Player) {
+				((Player)sender).getWorld().setTime(time);
+				return true;
+			} else {
+				List<World> worlds = MyServer.bukkitServer.getWorlds();
+				for(World world : worlds) {
+					world.setTime(time);
+				}
+				return true;
+			}
+			
+		}
+		
 		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("itemgen") && split.length > 0) {
 
 			int typeId = 1;
