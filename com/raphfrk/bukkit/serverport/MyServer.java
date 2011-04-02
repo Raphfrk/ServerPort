@@ -16,8 +16,6 @@ public class MyServer {
 		MyServer.plugin = plugin;
 	}
 
-	public static Server hmodServer;
-
 	private static MyServer myServer = new MyServer();
 
 	static void setBukkitServer( org.bukkit.Server server ) {

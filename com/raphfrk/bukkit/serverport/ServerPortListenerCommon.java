@@ -467,7 +467,7 @@ public class ServerPortListenerCommon {
 
 			MiscUtils.safeLogging("[ServerPort] " + player.getName() + " is releasing");
 
-			player.setHealth(-1);
+			player.setHealth(0);
 			return true;
 
 		}
