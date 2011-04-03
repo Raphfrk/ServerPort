@@ -592,7 +592,7 @@ public class ServerPortListenerCommon {
 			return false;
 		}
 
-		if( !player.permissionCheck("serverport", new String[] {"allow"}) && (player == null || (!player.isAdmin())) ) {
+		if( player == null || ( (!player.permissionCheck("serverport", new String[] {"allow"})) && (!player.isAdmin())) ) {
 			return false;
 		}
 
