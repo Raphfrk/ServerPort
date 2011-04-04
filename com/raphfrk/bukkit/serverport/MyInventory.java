@@ -77,14 +77,14 @@ public class MyInventory {
 				int offset = slot-bukkitBasicSlots;
 
 				switch(offset) {
-				case 0: bukkitInventory.setHelmet(new org.bukkit.inventory.ItemStack(id, amount, (byte)damage)); break;
-				case 1: bukkitInventory.setLeggings(new org.bukkit.inventory.ItemStack(id, amount, (byte)damage)); break;
-				case 2: bukkitInventory.setChestplate(new org.bukkit.inventory.ItemStack(id, amount, (byte)damage)); break;
-				case 3: bukkitInventory.setBoots(new org.bukkit.inventory.ItemStack(id, amount, (byte)damage)); break;
+				case 0: bukkitInventory.setHelmet(new org.bukkit.inventory.ItemStack(id, amount, (short)damage)); break;
+				case 1: bukkitInventory.setLeggings(new org.bukkit.inventory.ItemStack(id, amount, (short)damage)); break;
+				case 2: bukkitInventory.setChestplate(new org.bukkit.inventory.ItemStack(id, amount, (short)damage)); break;
+				case 3: bukkitInventory.setBoots(new org.bukkit.inventory.ItemStack(id, amount, (short)damage)); break;
 				default: MiscUtils.safeLogging("Error slot out of range for setSlot in MyInventory");
 				}
 			} else {
-				bukkitInventory.setItem(slot, new org.bukkit.inventory.ItemStack(id, amount, (byte)damage));
+				bukkitInventory.setItem(slot, new org.bukkit.inventory.ItemStack(id, amount, (short)damage));
 			}
 		}
 
