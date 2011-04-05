@@ -156,7 +156,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 		if( item.getType().equals(Material.FLINT_AND_STEEL)) {
 			if( target != null && target.getType() != null && target.getType().equals(Material.OBSIDIAN)) {
-				event.setCancelled(true);
+				
 
 				//Block blockFace = target.getFace(event.getBlockFace());
 
@@ -167,7 +167,9 @@ public class ServerPortPlayerListener extends PlayerListener {
 				if(serverPortListenerCommon.portalManager.testSignBlock(myBlock)) {
 					serverPortListenerCommon.portalManager.buttonPress(myBlock, player);
 				} else {
-					serverPortListenerCommon.portalManager.fireStarted(player , myBlock );
+					if(serverPortListenerCommon.portalManager.fireStarted(player , myBlock )) {
+						event.setCancelled(true);
+					}
 				}
 			}
 		}

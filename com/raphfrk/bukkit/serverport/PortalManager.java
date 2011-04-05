@@ -1361,18 +1361,18 @@ public class PortalManager {
 
 	int gateCounter = 1;
 
-	void fireStarted( MyPlayer player , MyBlock block ) {
+	boolean fireStarted( MyPlayer player , MyBlock block ) {
 
 		String target;
 
 		if( (target = fireTarget.getValue(block.getWorld().getName())) == null ) {
-			return;
+			return false;
 		}
 
 		IntLocation loc = new IntLocation( block.getX(), block.getY(), block.getZ(), block.getWorld().getName());
 
 		if( blockBlocks.containsKey(loc) || signBlocks.containsKey(loc) ) {
-			return;
+			return false;
 		}
 
 		for( PortalInfo portalInfo : portalCustom ) {
@@ -1396,11 +1396,15 @@ public class PortalManager {
 				String line2 = target;
 				String line3 = "";
 
-				processSign(portalInfo, player, block, actualName, line1, line2, line3);				
+				processSign(portalInfo, player, block, actualName, line1, line2, line3);	
+				
+				return true;
 
 			}
 
 		}
+		
+		return false;
 
 	}
 
