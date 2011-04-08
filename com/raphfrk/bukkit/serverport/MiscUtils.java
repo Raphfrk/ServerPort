@@ -17,15 +17,11 @@ import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-
-import javax.swing.event.ListSelectionEvent;
 
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -674,29 +670,31 @@ public class MiscUtils {
 
 	}
 
-	static void loadCircle( String worldName, String playerName , int x , int y , int z , int r ) {
+	static void loadCircle( World world, String playerName , int x , int y , int z , int r ) {
 
 		if( r <= 0 ) {
 			MiscUtils.safeMessage(playerName, "[ServerPort] Radius must be positive" );
+			return;
+		} else if(world == null) {
+			MiscUtils.safeMessage(playerName, "[ServerPort] Unknown world" );
 			return;
 		}
 
 		loadCircle = true;
 
-		MiscUtils.safeLogging("[ServerPort] Beginning circle load at centre " + x + ", " + z + " with radius " + r );
+		MiscUtils.safeLogging("[ServerPort] Beginning circle load at centre " + x + ", " + z + " (" + world.getName() + ") with radius " + r );
 
-		MiscUtils.safeMessage(playerName, "[ServerPort] Beginning circle load at centre " + x + ", " + z + " with radius " + r );
+		MiscUtils.safeMessage(playerName, "[ServerPort] Beginning circle load at centre " + x + ", " + z + " (" + world.getName() + ") with radius " + r );
 
 		int rQuan = ((int)Math.ceil(r/16))*16;
 
-		loadCircle( worldName, playerName , -rQuan , x , y , z , r , z-10*r);
+		loadCircle( world, playerName , -rQuan , x , y , z , r , z-10*r);
 
 	}
 
-	static void loadCircle( String worldName, String playerName , int px , int x , int y, int z , int r , int last) {
+	static void loadCircle( World world, String playerName , int px , int x , int y, int z , int r , int last) {
 
-		/*long startTime = System.currentTimeMillis();
-		int chunkCount = 0;
+		long startTime = System.currentTimeMillis();
 
 		if( !loadCircle ) {
 
@@ -706,7 +704,6 @@ public class MiscUtils {
 			return;
 
 		}
-
 
 		int rQuan = ((int)Math.ceil(r/16))*16;
 
@@ -724,9 +721,9 @@ public class MiscUtils {
 
 		int pz;
 
-		if( last > z - 2*r ) {
+		if( last > - 2*r ) {
 			pz = last;
-			MiscUtils.safeLogging( "[ServerPort] starting at z=" + pz );
+			//MiscUtils.safeLogging( "[ServerPort] starting at z=" + pz );
 		} else {		
 			MiscUtils.safeLogging("[ServerPort] Loading row x=" + px + " with z = " + (z-sz) + " to " + (z+sz) + " (" + percent + "%)");
 			MiscUtils.safeMessage( playerName , "[ServerPort] Loading row x=" + px + " with z = " + (z-sz) + " to " + (z+sz) + " (" + percent + "%)");
@@ -735,45 +732,50 @@ public class MiscUtils {
 		}
 
 
-
 		boolean chunkLoaded = false;
 		for( ; pz<=sz && !chunkLoaded; pz+=16 ) {
-			if(!MiscUtils.fileCheck(worldName, x+px, y, z + pz)) {
-				server.loadChunk( x + px , y , z + pz );
+			if(!world.isChunkLoaded(x, z)) {
+				world.loadChunk( (x + px)>>4 , (z + pz)>>4 );
+				world.unloadChunk( (x+px)>>4 , (z + pz)>>4 , false , false);
 				chunkLoaded = true;
+			} else {
+				chunkLoaded = false;
 			}
 		}
 
 		boolean finishedRow = pz>sz;
+		//if(finishedRow) {
+		//	MiscUtils.safeLogging("Finished row");
+		//}
 
 		final int finalx = x;
 		final int finaly = y;
 		final int finalz = z;
 		final int finalr = r;
 		final int finalpx = finishedRow?px+16:px;
-		final int finallast = finishedRow?z-10*r:pz;
-		final String finalWorldName = new String( worldName );
+		final int finallast = finishedRow?(-10*r):pz;
+		final World finalWorld = world;
 		final String finalPlayerName = new String( playerName );
 
 		long delayTime = System.currentTimeMillis() - startTime;
-		System.out.println("Delay until next burst: " + (System.currentTimeMillis() - startTime) );
+		//MiscUtils.safeLogging("Delay until next burst: " + (System.currentTimeMillis() - startTime) );
 
-		if( delayTime < 65 ) {
-			delayTime = 65;
+		if( delayTime < 25 ) {
+			delayTime = 25;
 		}
 
 		server.addToServerQueue(new Runnable() {
 
 			public void run() {
 
-				loadCircle( finalWorldName, finalPlayerName, finalpx, finalx, finaly, finalz, finalr, finallast);
+				loadCircle( finalWorld, finalPlayerName, finalpx, finalx, finaly, finalz, finalr, finallast);
 
 			}
 
 		}, delayTime);
 
 
-		 */
+		 
 
 
 

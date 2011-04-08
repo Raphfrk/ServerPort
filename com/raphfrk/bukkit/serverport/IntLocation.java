@@ -163,7 +163,7 @@ public class IntLocation implements Comparable<IntLocation> {
 			return null;
 		}
 		if(worldName == null) {
-			worldName = MyServer.bukkitServer.getWorlds().get(worldIndex).getName();
+			worldName = ((World)MyServer.bukkitServer.getWorlds().get(worldIndex)).getName();
 		}
 		return worldName;
 	}
@@ -209,7 +209,7 @@ public class IntLocation implements Comparable<IntLocation> {
 
 		String name;
 		if( split.length == 3 ) {
-			name = MyServer.bukkitServer.getWorlds().get(0).getName();
+			name = ((World)MyServer.bukkitServer.getWorlds().get(0)).getName();
 		} else {
 			name = split[3];
 		}
@@ -226,7 +226,7 @@ public class IntLocation implements Comparable<IntLocation> {
 	String getString() {
 		String name = getWorldName();
 		if( name == null ) {
-			name = MyServer.bukkitServer.getWorlds().get(0).getName();
+			name = ((World)MyServer.bukkitServer.getWorlds().get(0)).getName();
 		}
 		return x + ", " + y + ", " + z + ", " + getWorldName();
 	}
@@ -238,7 +238,7 @@ public class IntLocation implements Comparable<IntLocation> {
 		loc.setX( this.x + 0.5 );
 		loc.setY( this.y );
 		loc.setZ( this.z + 0.5 );
-		loc.getBukkitLocation().setWorld(MyServer.bukkitServer.getWorlds().get(worldIndex));
+		loc.getBukkitLocation().setWorld((World)MyServer.bukkitServer.getWorlds().get(worldIndex));
 		
 		return loc;
 		

@@ -465,7 +465,7 @@ public class TeleportCommand implements Runnable {
 				
 				IntLocation locInt = portalInfo.getExitPoint();
 				
-				MyLocation loc = new MyLocation( MyServer.bukkitServer.getWorlds().get(targetIndex), 0.5+(double)locInt.getX() , (double)locInt.getY() , 0.5+(double)locInt.getZ() , (float)portalInfo.getDir() , (float)0 );
+				MyLocation loc = new MyLocation( (World)MyServer.bukkitServer.getWorlds().get(targetIndex), 0.5+(double)locInt.getX() , (double)locInt.getY() , 0.5+(double)locInt.getZ() , (float)portalInfo.getDir() , (float)0 );
 				
 				return loc;
 				

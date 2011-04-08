@@ -365,7 +365,7 @@ public class PortalInfo {
 		}
 
 		if(portalWorld.equals("_default")) {
-			portalWorld = MyServer.bukkitServer.getWorlds().get(0).getName();
+			portalWorld = ((World)MyServer.bukkitServer.getWorlds().get(0)).getName();
 			MiscUtils.safeLogging("Changing gate to world: " + portalWorld);
 		}
 

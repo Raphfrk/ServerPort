@@ -44,7 +44,7 @@ public class MyServer {
 	}
 
 	World getMainWorld() {
-		return bukkitServer.getWorlds().get(0);
+		return (World)bukkitServer.getWorlds().get(0);
 	}
 
 	void addToServerQueue( Runnable runnable, long delay ) {

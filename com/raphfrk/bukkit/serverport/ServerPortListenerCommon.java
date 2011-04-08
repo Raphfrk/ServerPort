@@ -453,7 +453,7 @@ public class ServerPortListenerCommon {
 				int y = Integer.parseInt(split[1]);
 				int z = Integer.parseInt(split[2]);
 				int index = Integer.parseInt(split[3]);
-				World world = MyServer.bukkitServer.getWorlds().get(index);
+				World world = ((World)MyServer.bukkitServer.getWorlds().get(index));
 
 				MiscUtils.gridLoad(world, x, y, z);
 				player.teleportTo(new MyLocation(world, x,y,z));
@@ -557,7 +557,7 @@ public class ServerPortListenerCommon {
 
 		}
 
-		/*if( split[0].equals("/stopcircle" ) && ( player.canUseCommand("/circleload") || player.canUseCommand("/stopcircle") || player.isAdmin() )) {
+		if( commandLabel.equals("stopcircle" ) && ( player != null && player.isAdmin() )) {
 
 			MiscUtils.stopCircle(player.getName());
 			return true;
@@ -565,27 +565,26 @@ public class ServerPortListenerCommon {
 		}
 
 
-		if( split[0].equals("/circleload" ) && ( player.canUseCommand("/circleload") || player.isAdmin() )) {
+		if( commandLabel.equals("circleload" ) && ( player != null && player.isAdmin() )) {
 
 			IntLocation loc = new IntLocation( player.getLocation() );
 
 			int r = 100;
 
-			if( split.length>1 && MiscUtils.isInt(split[1])) {
+			if( split.length>0 && MiscUtils.isInt(split[0])) {
 
-				r = MiscUtils.getInt(split[1]);
+				r = MiscUtils.getInt(split[0]);
 
 			}
 
 			MiscUtils.safeMessage(player, "[ServerPort] Loading circle (" + loc + ") with radius " + r);
 
-			MiscUtils.loadCircle(portalManager.worldName, player.getName(), loc.x, loc.y, loc.z, r);
+			MiscUtils.loadCircle(player.getWorld(), player.getName(), loc.x, loc.y, loc.z, r);
 
 			return true;
 
 
 		}
-		 */
 
 
 		if( !commandLabel.equals(commandName.substring(1)) ) {

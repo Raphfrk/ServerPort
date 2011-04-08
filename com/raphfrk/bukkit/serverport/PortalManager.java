@@ -90,7 +90,7 @@ public class PortalManager {
 
 	void init() {
 
-		mainWorld = MyServer.bukkitServer.getWorlds().get(0).getName();
+		mainWorld = ((World)MyServer.bukkitServer.getWorlds().get(0)).getName();
 
 		loadPortalInfo();
 		savePortalInfo();
