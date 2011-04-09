@@ -1,5 +1,6 @@
 package com.raphfrk.bukkit.serverport;
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -63,9 +64,38 @@ public class ServerPortCommon {
 		serverPortListenerCommon.setPortalManager( portalManager );
 		serverPortListenerCommon.setCommunicationManager(communicationManager);
 		
-	
+		autoPermissionReload(300);
 	}
 
+	
+	void autoPermissionReload(long delay) {
+		final CommunicationManager finalCM = communicationManager;
+
+		MyServer.bukkitServer.getScheduler().scheduleSyncDelayedTask(MyServer.plugin, new Runnable() {
+			
+			public void run() {
+				int newPeriod = finalCM.autoPermissionReload;
+				int period = 1;
+				if(newPeriod < 0) {
+					period = 300;
+				} else if(newPeriod < 5) {
+					period = 100;
+				} else {
+					period = newPeriod * 20;
+				}
+				
+				if(newPeriod > 0) {
+					MiscUtils.safeLogging("[ServerPort] Auto-reloading permissions");
+					MyPlayer.hashMaps = new HashMap<String,HashMap>();
+				}
+				
+				autoPermissionReload(period);
+				
+			}
+			
+		}, delay);
+	}
+	
 	synchronized public void disable() {
 		
 		if( communicationManager != null ) {

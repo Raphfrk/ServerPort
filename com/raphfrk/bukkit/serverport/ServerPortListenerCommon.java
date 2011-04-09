@@ -522,7 +522,7 @@ public class ServerPortListenerCommon {
 
 		if( split.length > 0 && commandLabel.equals("serverport") && split[0].equals("permissions") && ((player != null && player.isAdmin()) || sender.isOp()) ) {
 			sender.sendMessage("Permissions reloaded");
-			MyPlayer.hashMaps = null;
+			MyPlayer.hashMaps = new HashMap<String,HashMap>();
 			return true;
 		}
 

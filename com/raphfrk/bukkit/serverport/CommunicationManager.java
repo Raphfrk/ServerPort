@@ -20,6 +20,8 @@ public class CommunicationManager {
 	
 	public Integer defaultTimeToLive = 10;
 	
+	public Integer autoPermissionReload = -1;
+	
 	ParameterManager parameterManager = null;
 	
 	void setPortalManager(PortalManager portalManager) {
@@ -29,6 +31,19 @@ public class CommunicationManager {
 	void registerParameters( ParameterManager parameterManager ) {
 		
 		this.parameterManager = parameterManager;
+		
+		parameterManager.registerParameter(new ParameterInfo( 
+				this, 
+				"autoPermissionReload",
+				"autopermission",
+				Integer.class,
+				new Integer(-1),
+				new String[] {
+					"This sets the delay between auto-reloads of the permission file, in seconds.  Negative numbers mean not to reload."
+				},
+				"period of permission file reloads"
+		)
+		);
 		
 		parameterManager.registerParameter(new ParameterInfo( 
 				this, 
