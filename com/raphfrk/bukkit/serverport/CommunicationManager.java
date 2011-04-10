@@ -22,6 +22,10 @@ public class CommunicationManager {
 	
 	public Integer autoPermissionReload = -1;
 	
+	public Integer restartDelay = 60;
+
+	public Integer restartThreshold = 300;
+	
 	ParameterManager parameterManager = null;
 	
 	void setPortalManager(PortalManager portalManager) {
@@ -31,6 +35,33 @@ public class CommunicationManager {
 	void registerParameters( ParameterManager parameterManager ) {
 		
 		this.parameterManager = parameterManager;
+		
+		parameterManager.registerParameter(new ParameterInfo( 
+				this, 
+				"restartDelay",
+				"cpurestartdelay",
+				Integer.class,
+				new Integer(60),
+				new String[] {
+					"This sets the delay between cpu measurements for restarting"
+				},
+				"This sets the cpu restart delay"
+		)
+		);
+		
+		
+		parameterManager.registerParameter(new ParameterInfo( 
+				this, 
+				"restartThreshold",
+				"restartthreshold",
+				Integer.class,
+				new Integer(300),
+				new String[] {
+					"This sets the threshold for cpu restart in ticks per minute"
+				},
+				"This sets the cpu restart threshold"
+		)
+		);
 		
 		parameterManager.registerParameter(new ParameterInfo( 
 				this, 
