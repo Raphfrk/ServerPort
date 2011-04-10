@@ -39,7 +39,7 @@ public class CommunicationManager {
 		parameterManager.registerParameter(new ParameterInfo( 
 				this, 
 				"restartDelay",
-				"cpurestartdelay",
+				"cpurestartwindow",
 				Integer.class,
 				new Integer(60),
 				new String[] {
