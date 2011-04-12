@@ -34,7 +34,7 @@ public class CPUMeasure implements Runnable {
 						MiscUtils.safeLogging("[ServerPort] Autostop plugin required to restart server");
 					}
 				}
-				System.out.println("ticks per minute: " + ticksPerMinute);
+				//System.out.println("ticks per minute: " + ticksPerMinute);
 			}
 		}
 	}
