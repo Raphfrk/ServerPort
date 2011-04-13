@@ -13,7 +13,7 @@ public class ServerPortListenerCommon {
 
 	static MyServer server = MyServer.getServer();
 	
-	public String startCommand = "cmd.exe /c start cmd.exe /k java -jar craftbukkit-0.0.1-SNAPSHOT.jar";
+	public String startCommand = "java -Xms512M -Xmx1024M -jar craftbukkit-0.0.1-SNAPSHOT.jar";
 
 	public String commandName = "/serverport";
 
@@ -36,7 +36,7 @@ public class ServerPortListenerCommon {
 						"startCommand",
 						"restartCommand",
 						String.class,
-						new String("cmd.exe /c start cmd.exe /k java -jar craftbukkit-0.0.1-SNAPSHOT.jar"),
+						new String("java -Xms512M -Xmx1024M -jar craftbukkit-0.0.1-SNAPSHOT.jar"),
 						new String[] {
 							"This sets the command line for restarting the server if it is overloaded for more than 1 minute."
 						},

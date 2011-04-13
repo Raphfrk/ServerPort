@@ -1,5 +1,6 @@
 package com.raphfrk.bukkit.serverport;
 
+import java.io.IOException;
 import java.util.List;
 
 import net.hailxenu.serverautostop.AutoStopPlugin;
@@ -43,7 +44,13 @@ public class CPUMeasure implements Runnable {
 							world.save();
 						}
 						MyServer.bukkitServer.broadcastMessage("[ServerPort] CPU overload detected, restarting server");
-						MyServer.bukkitServer.dispatchCommand(new ConsoleCommandSender(MyServer.bukkitServer), "restart");
+						try {
+							Runtime.getRuntime().exec("java -jar AutoRestart.jar " + ((ServerPortBukkit)MyServer.plugin).serverPortListenerCommon.startCommand);
+							System.exit(0);
+						} catch (IOException e) {
+							MyServer.bukkitServer.broadcastMessage("[ServerPort] Restart failed");
+						}
+						
 					} else {
 						MiscUtils.safeLogging("[ServerPort] Autostop plugin required to restart server");
 					}
