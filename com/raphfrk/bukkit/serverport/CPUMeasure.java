@@ -1,8 +1,12 @@
 package com.raphfrk.bukkit.serverport;
 
+import java.util.List;
+
 import net.hailxenu.serverautostop.AutoStopPlugin;
 
+import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 public class CPUMeasure implements Runnable {
 
@@ -28,11 +32,22 @@ public class CPUMeasure implements Runnable {
 					AutoStopPlugin autoStop;
 					autoStop = (AutoStopPlugin)MyServer.bukkitServer.getPluginManager().getPlugin("ServerAutoStop");
 					if(autoStop != null) {
+						MyServer.bukkitServer.getPluginManager().disablePlugins();
+						Player[] players = MyServer.bukkitServer.getOnlinePlayers();
+						for(Player player : players) {
+							player.saveData();
+							player.kickPlayer("Restarting server - please wait 2 mins before reconnecting");
+						}
+						List<World> worlds = (MyServer.bukkitServer).getWorlds();
+						for(World world : worlds) {
+							world.save();
+						}
 						MyServer.bukkitServer.broadcastMessage("[ServerPort] CPU overload detected, restarting server");
 						MyServer.bukkitServer.dispatchCommand(new ConsoleCommandSender(MyServer.bukkitServer), "restart");
 					} else {
 						MiscUtils.safeLogging("[ServerPort] Autostop plugin required to restart server");
 					}
+					
 				}
 				//System.out.println("ticks per minute: " + ticksPerMinute);
 			}

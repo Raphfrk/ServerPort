@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 public class ServerPortListenerCommon {
 
 	static MyServer server = MyServer.getServer();
+	
+	public String startCommand = "cmd.exe /c start cmd.exe /k java -jar craftbukkit-0.0.1-SNAPSHOT.jar";
 
 	public String commandName = "/serverport";
 
@@ -27,6 +29,20 @@ public class ServerPortListenerCommon {
 	synchronized public void setParameterManager( ParameterManager parameterManager ) {
 
 		this.parameterManager = parameterManager;
+		
+		parameterManager.registerParameter( 
+				new ParameterInfo( 
+						this, 
+						"startCommand",
+						"restartCommand",
+						String.class,
+						new String("cmd.exe /c start cmd.exe /k java -jar craftbukkit-0.0.1-SNAPSHOT.jar"),
+						new String[] {
+							"This sets the command line for restarting the server if it is overloaded for more than 1 minute."
+						},
+						"Sets the command line for restarting"
+				)
+		);
 
 	}
 
