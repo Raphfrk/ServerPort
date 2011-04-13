@@ -1,4 +1,5 @@
 package com.raphfrk.bukkit.serverport;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -60,6 +61,8 @@ public class CommandFIFO {
 		
 	}
 	
+	public static ConcurrentHashMap<String,Long> spamShield = new ConcurrentHashMap<String,Long>();
+	
 	String syncedRunCommand( String command ) {
 		
 		String[] split = command.split(":");
@@ -105,6 +108,18 @@ public class CommandFIFO {
 				playerIP = vars[1];
 			}
 			
+			String playerName = null;
+			Long currentTime = null;
+			if( vars.length > 2 ) {
+				playerName = vars[2];
+				currentTime = System.currentTimeMillis();
+				Long lastTeleport = spamShield.get(playerName);
+				if(lastTeleport != null && ( lastTeleport + portalManager.teleportCooldown ) > currentTime) {
+					return "SPAMSHIELD";
+				}
+				
+			}
+			
 			PortalInfo portalInfo = portalManager.getPortal(vars[0]);
 			
 			if( portalInfo == null ) {
@@ -113,6 +128,9 @@ public class CommandFIFO {
 				if( !playerIP.matches(communicationManager.serverPortServer.requiredIP) ) {
 					return "BADIP";
 				} else if( portalInfo.isActive() ) {
+					if(playerName != null) {
+						spamShield.put(playerName, currentTime);
+					}
 					return "OK";
 				} else {
 					return "INACTIVE";

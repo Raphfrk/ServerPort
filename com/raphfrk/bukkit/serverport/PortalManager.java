@@ -43,6 +43,8 @@ public class PortalManager {
 
 	public StringMap expansionFactor = new StringMap();
 	public Boolean autoCreate = true;
+	
+	public Long teleportCooldown = 30000L;
 
 	public Boolean newChunks = false;
 
@@ -154,6 +156,20 @@ public class PortalManager {
 							"If this parameter is true, then the plugin will list all custom gates when started"
 						},
 						"enables/disables listing of custom gates"
+				)
+		);
+		
+		parameterManager.registerParameter( 
+				new ParameterInfo( 
+						this, 
+						"teleportCooldown",
+						"cooldown",
+						Long.class,
+						new Long(30000),
+						new String[] {
+							"This sets the cooldown before the server will accept another inbound teleport from a player"
+						},
+						"Sets the inbound teleport cooldown"
 				)
 		);
 

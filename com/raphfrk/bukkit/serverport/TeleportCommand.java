@@ -181,7 +181,7 @@ public class TeleportCommand implements Runnable {
 
 			String gateExists = serverPortClient.sendRequest( 
 					"GATETEST" , 
-					targetGate + "," + playerIP,
+					targetGate + "," + playerIP + "," + playerName,
 					peerServerInfoFromDatabase);
 
 			if( gateExists.equals("NOGATE")) {
@@ -193,6 +193,13 @@ public class TeleportCommand implements Runnable {
 				return;
 			} else if( gateExists.equals("BADIP")) {
 				MiscUtils.safeMessage(playerName, "[ServerPort] The target server refused to connections from your IP");
+				serverPortClient.close(peerServerInfoFromConnection);
+				restoreInventory();
+				unlockPlayer();
+				if( killOnFail ) killPlayer(playerName);
+				return;
+			} else if( gateExists.equals("SPAMSHIELD")) {
+				MiscUtils.safeMessage(playerName, "[ServerPort] Teleport refused due to cooldown timer");
 				serverPortClient.close(peerServerInfoFromConnection);
 				restoreInventory();
 				unlockPlayer();
@@ -377,7 +384,10 @@ public class TeleportCommand implements Runnable {
 					synchronized(teleportingPlayers) {
 						teleportingPlayers.add(finalPlayerName);
 					}
+					String playerName = player.getName();
+					CommandFIFO.spamShield.put(playerName, System.currentTimeMillis());
 					player.kick( finalKickString );
+					
 				}
 			}
 
