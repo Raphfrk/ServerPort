@@ -3,7 +3,7 @@ package com.raphfrk.bukkit.serverport;
 import java.io.IOException;
 import java.util.List;
 
-import net.hailxenu.serverautostop.AutoStopPlugin;
+//import net.hailxenu.serverautostop.AutoStopPlugin;
 
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
@@ -30,7 +30,8 @@ public class CPUMeasure implements Runnable {
 				oldTime = currentTime;
 				counter = 0;
 				if(ticksPerMinute < ((ServerPortBukkit)MyServer.plugin).serverPortListenerCommon.communicationManager.restartThreshold) {
-					AutoStopPlugin autoStop;
+					System.out.println("[ServerPort] Auto-restrart functionality disabled");
+					/*AutoStopPlugin autoStop;
 					autoStop = (AutoStopPlugin)MyServer.bukkitServer.getPluginManager().getPlugin("ServerAutoStop");
 					if(autoStop != null) {
 						MyServer.bukkitServer.getPluginManager().disablePlugins();
@@ -53,7 +54,7 @@ public class CPUMeasure implements Runnable {
 						
 					} else {
 						MiscUtils.safeLogging("[ServerPort] Autostop plugin required to restart server");
-					}
+					}*/
 					
 				}
 				//System.out.println("ticks per minute: " + ticksPerMinute);
