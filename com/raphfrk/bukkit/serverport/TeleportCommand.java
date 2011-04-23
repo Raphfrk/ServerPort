@@ -267,7 +267,9 @@ public class TeleportCommand implements Runnable {
 				}
 			}
 
-			MiscUtils.safeMessage(playerName, "Reply was: " + reply);
+			if( reply.indexOf("OK") != 0 ) {
+				MiscUtils.safeMessage(playerName, "Reply was: " + reply);
+			}
 
 		}
 
