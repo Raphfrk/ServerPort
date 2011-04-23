@@ -453,6 +453,23 @@ public class ServerPortListenerCommon {
 			return true;
 
 		}
+		
+		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("stime") && split.length > 0) {
+
+			int newTime = 0;
+			
+			try {
+				newTime = Integer.parseInt(split[0]);
+			} catch (NumberFormatException nfe) {
+				sender.sendMessage("Unable to parse type id");
+				return true;
+			}
+
+			((Player)sender).getWorld().setTime(newTime);
+
+			return true;
+
+		}
 
 		if( commandLabel.equals("pos") && player != null && player.isAdmin() ) {
 			player.sendMessage("Pos: " + player.getLocation().getBukkitLocation());
