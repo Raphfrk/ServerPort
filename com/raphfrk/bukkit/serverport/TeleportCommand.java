@@ -319,7 +319,7 @@ public class TeleportCommand implements Runnable {
 		
 		boolean singleHost = true;
 		
-		String[] multiHostSplit = globalHostname.split(",");
+		/*String[] multiHostSplit = globalHostname.split(",");
 		
 		globalHostname = multiHostSplit[0];
 		
@@ -339,12 +339,16 @@ public class TeleportCommand implements Runnable {
 				
 			}
 				
-		}
+		}*/
 		
 		String[] hostSplit = globalHostname.split(":");
+		
+		boolean directOverride = false;
 
-		if( hostSplit.length == 2 && MiscUtils.isInt(hostSplit[1])) {
-
+		if( globalHostname.indexOf(",") >= 0) {
+			directOverride = true;
+			gameport = 25565;
+		} else if( hostSplit.length == 2 && MiscUtils.isInt(hostSplit[1])) {
 			globalHostname = hostSplit[0];
 			gameport = MiscUtils.getInt(hostSplit[1]);
 			MiscUtils.safeLogging("[ServerPort] portnum overridden by globalhostname");
@@ -355,7 +359,7 @@ public class TeleportCommand implements Runnable {
 			gameport = 25565;
 		}
 
-		if( 
+		if( 	!directOverride &&
 				MiscUtils.isAddressLocal(hostname) &&
 				MiscUtils.isAddressLocal(playerIP) &&
 				singleHost
@@ -366,7 +370,9 @@ public class TeleportCommand implements Runnable {
 
 		String kickString;
 
-		if( gameport == 25565 ) {
+		if( directOverride ) {
+			kickString = "[Serverport] : " + globalHostname ;
+		} else if( gameport == 25565 ) {
 			kickString = "[Serverport] You have teleported, please connect to : " + globalHostname;
 		} else {
 			kickString = "[Serverport] You have teleported, please connect to : " + globalHostname + ":" + gameport;
