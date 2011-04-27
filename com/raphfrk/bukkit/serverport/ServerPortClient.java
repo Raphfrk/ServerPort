@@ -195,10 +195,12 @@ public class ServerPortClient {
 		
 	}
 	
-	String sendRequest(String command, String vars, PeerServerInfo peerServerInfo ) {
+	String sendRequest(String command, String vars, PeerServerInfo peerServerInfo , boolean log ) {
 		
-		MiscUtils.safeLogging("[ServerPort] Sending request: " + command + ":" + vars );
-		
+		if(log) {
+			MiscUtils.safeLogging("[ServerPort] Sending request: " + command + ":" + vars );
+		}
+				
 		try {
 			String line = command + ":" + vars;
 			String toHash = peerServerInfo.passcode + line + peerSession + session;
@@ -225,7 +227,9 @@ public class ServerPortClient {
 		try {
 		reply = in.readLine();
 		replyHash = in.readLine();
-		MiscUtils.safeLogging("[ServerPort] Reply received: " + reply );
+		if(log) {
+			MiscUtils.safeLogging("[ServerPort] Reply received: " + reply );
+		}
 		} catch (SocketTimeoutException ste) {
 			
 			return "Error: [ServerPort] Connection timed out waiting for reply";
@@ -241,7 +245,9 @@ public class ServerPortClient {
 		
 		String expectedReplyHash = MiscUtils.sha1Hash( peerServerInfo.passcode + reply + peerSession + session);
 		if( replyHash.equals(expectedReplyHash) ) {
-			MiscUtils.safeLogging("[ServerPort] Reply verified" );
+			if(log) {
+				MiscUtils.safeLogging("[ServerPort] Reply verified" );
+			}
 			return reply;
 		} else {
 			return "Error: [ServerPort] Hash mismatch with connection";
@@ -249,9 +255,9 @@ public class ServerPortClient {
 		
 	}
 	
-	String close(PeerServerInfo peerServerInfo) {
+	String close(PeerServerInfo peerServerInfo, boolean log ) {
 		
-		sendRequest( "END" , "END" , peerServerInfo );
+		sendRequest( "END" , "END" , peerServerInfo , log );
 		
 		try {
 			out.flush();

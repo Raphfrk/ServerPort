@@ -26,6 +26,8 @@ public class CommunicationManager {
 
 	public Integer restartThreshold = 300;
 	
+	public Boolean verbose = false;
+	
 	ParameterManager parameterManager = null;
 	
 	void setPortalManager(PortalManager portalManager) {
@@ -49,6 +51,20 @@ public class CommunicationManager {
 		)
 		);
 		
+		this.parameterManager = parameterManager;
+		
+		parameterManager.registerParameter(new ParameterInfo( 
+				this, 
+				"verbose",
+				"networklog",
+				Boolean.class,
+				new Boolean(false),
+				new String[] {
+					"This enables verbose network logging"
+				},
+				"This enables verbose network logging"
+		)
+		);
 		
 		parameterManager.registerParameter(new ParameterInfo( 
 				this, 

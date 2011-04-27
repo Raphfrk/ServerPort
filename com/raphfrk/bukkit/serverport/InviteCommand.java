@@ -78,18 +78,18 @@ public class InviteCommand implements Runnable {
 		if( peerServerInfoFromDatabase == null ) {
 			
 			String passcode = MiscUtils.genRandomCode();
-			String reply = serverPortClient.sendRequest( "PASSCODE" , passcode , peerServerInfoFromConnection );
+			String reply = serverPortClient.sendRequest( "PASSCODE" , passcode , peerServerInfoFromConnection , communicationManager.verbose);
 			
 			if( MiscUtils.errorCheck(reply) != null ) {
 				MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				return;
 			} 
 
 			if( !reply.substring(0, passcode.length()).equals(passcode) ) {
 				MiscUtils.safeMessage(playerName, "[ServerPort] The server replied with an illegal passcode" );
-				reply = serverPortClient.sendRequest( "ERROR" , "ILLEGAL-PASSCODE" , peerServerInfoFromConnection );
-				serverPortClient.close(peerServerInfoFromConnection);
+				reply = serverPortClient.sendRequest( "ERROR" , "ILLEGAL-PASSCODE" , peerServerInfoFromConnection, communicationManager.verbose );
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				return;
 			} else {
 				peerServerInfoFromConnection.passcode = reply;
@@ -101,11 +101,11 @@ public class InviteCommand implements Runnable {
 
 		} else {
 						
-			String reply = serverPortClient.sendRequest( "CONNECT" , "CONNECT" , peerServerInfoFromDatabase );
+			String reply = serverPortClient.sendRequest( "CONNECT" , "CONNECT" , peerServerInfoFromDatabase , communicationManager.verbose);
 			
 			if( MiscUtils.errorCheck(reply) != null ) {
 				MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				return;
 			} 
 
@@ -124,7 +124,7 @@ public class InviteCommand implements Runnable {
 			
 		}
 		
-		if( (error = serverPortClient.close(peerServerInfoFromConnection) ) != null ) {
+		if( (error = serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose) ) != null ) {
 			MiscUtils.safeMessage(playerName, "[ServerPort] " + error);
 		}
 

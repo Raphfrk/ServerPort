@@ -182,25 +182,25 @@ public class TeleportCommand implements Runnable {
 			String gateExists = serverPortClient.sendRequest( 
 					"GATETEST" , 
 					targetGate + "," + playerIP + "," + playerName,
-					peerServerInfoFromDatabase);
+					peerServerInfoFromDatabase, communicationManager.verbose);
 
 			if( gateExists.equals("NOGATE")) {
 				MiscUtils.safeMessage(playerName, "[ServerPort] Target gate does not exist");
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				restoreInventory();
 				unlockPlayer();
 				if( killOnFail ) killPlayer(playerName);
 				return;
 			} else if( gateExists.equals("BADIP")) {
 				MiscUtils.safeMessage(playerName, "[ServerPort] The target server refused to connections from your IP");
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				restoreInventory();
 				unlockPlayer();
 				if( killOnFail ) killPlayer(playerName);
 				return;
 			} else if( gateExists.equals("SPAMSHIELD")) {
 				MiscUtils.safeMessage(playerName, "[ServerPort] Teleport refused due to cooldown timer");
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				restoreInventory();
 				unlockPlayer();
 				if( killOnFail ) killPlayer(playerName);
@@ -214,17 +214,17 @@ public class TeleportCommand implements Runnable {
 				}
 				restoreInventory();
 				unlockPlayer();
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				if( killOnFail ) killPlayer(playerName);
 				return;
 			}
 
-			String reply = serverPortClient.sendRequest( "TRANSFERINV" , "playername=" + playerName + ";playerhealth=" + playerHealth + ";homeserver=" + homeServer + ";homegate=" + homeGate + ";" + playerData, peerServerInfoFromDatabase );
+			String reply = serverPortClient.sendRequest( "TRANSFERINV" , "playername=" + playerName + ";playerhealth=" + playerHealth + ";homeserver=" + homeServer + ";homegate=" + homeGate + ";" + playerData, peerServerInfoFromDatabase, communicationManager.verbose );
 
 			if( MiscUtils.errorCheck(reply) != null ) {
 				MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
 				restoreInventory();
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				if( killOnFail ) killPlayer(playerName);
 				return;
 			} 
@@ -232,12 +232,12 @@ public class TeleportCommand implements Runnable {
 			if( reply.indexOf("REJECTEDITEMS") == 0 ) {
 				communicationManager.commandFIFO.runMainCommand(reply);
 
-				reply = serverPortClient.sendRequest( "TELEPORT", playerName + "," + targetGate + "," + rotX + "," + rotY , peerServerInfoFromDatabase);
+				reply = serverPortClient.sendRequest( "TELEPORT", playerName + "," + targetGate + "," + rotX + "," + rotY , peerServerInfoFromDatabase, communicationManager.verbose);
 
 				if( MiscUtils.errorCheck(reply) != null ) {
 					MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
 					restoreInventory();
-					serverPortClient.close(peerServerInfoFromConnection);
+					serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 					if( killOnFail ) killPlayer(playerName);
 					return;
 				} 
@@ -249,7 +249,7 @@ public class TeleportCommand implements Runnable {
 					if( okSplit.length != 2 ) {
 						MiscUtils.safeMessage(playerName, "[ServerPort] Reply from server did not have the correct number of parts");
 						restoreInventory();
-						serverPortClient.close(peerServerInfoFromConnection);
+						serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 						if( killOnFail ) killPlayer(playerName);
 						return;
 					}
@@ -273,7 +273,7 @@ public class TeleportCommand implements Runnable {
 
 		}
 
-		if( (error = serverPortClient.close(peerServerInfoFromConnection) ) != null ) {
+		if( (error = serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose) ) != null ) {
 			MiscUtils.safeMessage(playerName, "[ServerPort] " + error);
 		}
 

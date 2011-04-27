@@ -149,11 +149,11 @@ public class OpenGateCommand implements Runnable {
 					y + "," + 
 					z + "," +
 					thisServerName, 
-					peerServerInfoFromDatabase );
+					peerServerInfoFromDatabase , communicationManager.verbose);
 
 			if( MiscUtils.errorCheck(reply) != null ) {
 				MiscUtils.safeMessage(playerName, MiscUtils.errorCheck(reply) );
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				return;
 			} 
 			
@@ -197,7 +197,7 @@ public class OpenGateCommand implements Runnable {
 							y + "," + 
 							z + "," +
 							thisServerName, 
-							peerServerInfoFromDatabase );
+							peerServerInfoFromDatabase , communicationManager.verbose);
 					
 					if( reply2.indexOf("GATEBUILT") == 0) {
 						
@@ -219,20 +219,20 @@ public class OpenGateCommand implements Runnable {
 						MiscUtils.safeMessage(playerName, "[ServerPort] Second attempt failed, please try again manually");
 					}
 					
-					serverPortClient.close(peerServerInfoFromConnection);
+					serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 					return;
 				} else if ( reply.equals("CHUNKGENBAN" ) ) {
 					MiscUtils.safeMessage(playerName, "[ServerPort] Admin on target server has banned automatic portal creation outside of already created chunks");
 					MiscUtils.safeMessage(playerName, "[ServerPort] Try building nearer the spawn point");
-					serverPortClient.close(peerServerInfoFromConnection);
+					serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 					return;
 				} else if ( reply.equals("BUILDBANNED" ) ) {
 					MiscUtils.safeMessage(playerName, "[ServerPort] Admin on target server has banned automatic portal creation");
-					serverPortClient.close(peerServerInfoFromConnection);
+					serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 					return;
 				} else {
 					MiscUtils.safeMessage(playerName, "Reply was: " + reply);
-					serverPortClient.close(peerServerInfoFromConnection);
+					serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 					return;
 				} 
 				
@@ -241,7 +241,7 @@ public class OpenGateCommand implements Runnable {
 
 		}
 
-		if( (error = serverPortClient.close(peerServerInfoFromConnection) ) != null ) {
+		if( (error = serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose) ) != null ) {
 			MiscUtils.safeMessage(playerName, "[ServerPort] " + error);
 		}
 

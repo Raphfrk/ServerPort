@@ -112,9 +112,9 @@ public class ChatCommand implements Runnable {
 		} else {
 				
 			if(targetPlayer == null) {
-				serverPortClient.sendRequest( "MESSAGE" , message , peerServerInfoFromDatabase);
+				serverPortClient.sendRequest( "MESSAGE" , message , peerServerInfoFromDatabase, communicationManager.verbose);
 			} else {
-				String reply = serverPortClient.sendRequest( "TELL" , targetPlayer + "," + message , peerServerInfoFromDatabase);
+				String reply = serverPortClient.sendRequest( "TELL" , targetPlayer + "," + message , peerServerInfoFromDatabase, communicationManager.verbose);
 				if(!reply.equals("UNKNOWN")) {
 					MiscUtils.safeMessage(playerName, reply);
 				}
@@ -122,7 +122,7 @@ public class ChatCommand implements Runnable {
 
 		}
 
-		if( (error = serverPortClient.close(peerServerInfoFromConnection) ) != null ) {
+		if( (error = serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose) ) != null ) {
 			MiscUtils.safeMessage(playerName , "[ServerPort] " + error + " for connection to " + targetServer );
 		} 
 	}

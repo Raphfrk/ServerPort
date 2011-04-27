@@ -159,7 +159,7 @@ public class ForwardCommand implements Runnable {
 		if( peerServerInfoFromDatabase == null ) {
 
 			MiscUtils.safeMessage(playerName, "[ServerPort] Server " + targetServer + " is not known" );
-			serverPortClient.close(peerServerInfoFromConnection);
+			serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 			return null;
 			
 		} else {
@@ -167,21 +167,21 @@ public class ForwardCommand implements Runnable {
 			String forwardTarget = serverPortClient.sendRequest( 
 					"FORWARD" , 
 					playerName + "," + timeToLive ,
-					peerServerInfoFromDatabase);
+					peerServerInfoFromDatabase, communicationManager.verbose);
 			
 			String[] split = forwardTarget.split(":");
 			
 			if( forwardTarget.indexOf("FORWARD") == 0 && split.length == 2 ) {
 				lastGoodServerHostname = peerServerInfoFromDatabase.hostname;
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				return forwardTarget;
 				
 			} else if( forwardTarget.indexOf("HERE") == 0 && split.length == 2 ) {
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				lastGoodServerHostname = peerServerInfoFromDatabase.hostname;
 				return forwardTarget;
 			} else if( forwardTarget.indexOf("UNKNOWN") == 0 && split.length == 2 ) {
-				serverPortClient.close(peerServerInfoFromConnection);
+				serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose);
 				return forwardTarget;
 			} 
 			
@@ -189,7 +189,7 @@ public class ForwardCommand implements Runnable {
 
 		}
 
-		if( (error = serverPortClient.close(peerServerInfoFromConnection) ) != null ) {
+		if( (error = serverPortClient.close(peerServerInfoFromConnection, communicationManager.verbose) ) != null ) {
 			MiscUtils.safeLogging( "[ServerPort] " + error);
 		}
 		

@@ -59,7 +59,9 @@ public class ServerPortServerRequestHandler implements Runnable {
 			
 			String[] vars = (split.length>1)?split[1].split(","):(new String[] {""});
 			
-			MiscUtils.safeLogging( "[ServerPort] Command received: " + command);
+			if(communicationManager.verbose) {
+				MiscUtils.safeLogging( "[ServerPort] Command received: " + command);
+			}
 			
 			if( command.indexOf(slash)!=-1 || command.indexOf("/") !=-1 || command.indexOf("\\") != -1) {
 				MiscUtils.safeLogging("[ServerPort] WARNING connection from " + peerServerInfoFromConnection.hostname + " used file/dir separator character");
@@ -295,7 +297,9 @@ public class ServerPortServerRequestHandler implements Runnable {
 
 	boolean sendReply( String reply ) {
 
-		MiscUtils.safeLogging( "[ServerPort] Sending reply: " + reply);
+		if(communicationManager.verbose) {
+			MiscUtils.safeLogging( "[ServerPort] Sending reply: " + reply);
+		}
 		
 		try {
 
