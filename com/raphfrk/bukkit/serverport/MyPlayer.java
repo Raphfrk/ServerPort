@@ -113,10 +113,10 @@ public class MyPlayer {
 	}
 
 	static String[][] comments = new String[][] {
-		new String[] {"Allows sign activated gates of type <gate type> to be created from <from> to <to>" , "create_gate_type" , "<gate type>, <from>, <to>"},
-		new String[] {"Allows flint activated gates of type <gate type> to be created from <from> to <to>" , "create_fire_gate_type" , "<gate type>, <from>, <to>"},
-		new String[] {"Allows gates of type <gate type> connecting <from> to <to> to be used" , "use_gate_type" , "<gate type>, <from>, <to>"},
-		new String[] {"Allows gates of type <gate type> connecting <from> to <to> to be destroyed" , "destroy_gate" , "<gate type>, <from>, <to>"},
+		new String[] {"Allows sign activated gates of type <gate type> to be created from <from> to <to>" , "create_gate_type" , "<gate type>, <from-world>, <to-world/server>"},
+		new String[] {"Allows flint activated gates of type <gate type> to be created from <from> to <to>" , "create_fire_gate_type" , "<gate type>, <from-world>, <to-world/server>"},
+		new String[] {"Allows gates of type <gate type> connecting <from> to <to> to be used" , "use_gate_type" ,"<gate type>, <from-world>, <to-world/server>"},
+		new String[] {"Allows gates of type <gate type> connecting <from> to <to> to be destroyed" , "destroy_gate" , "<gate type>, <from-world>, <to-world/server>"},
 		new String[] {"Allows use of /cancelredirect command",  "cancel_redirect" , "allow"},
 		new String[] {"Allows use of /release command",  "release" , "allow"},
 		new String[] {"Allows use of /regengates command",  "regen_gates" , "allow"},
