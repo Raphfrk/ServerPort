@@ -85,6 +85,10 @@ public class ServerPortClient {
 			}
 		}
 		
+		if(portnum <= 0) {
+			return "Port number for " + peerServerName + " not set correctly";
+		}
+		
 		try {
 			connection = new Socket( hostname , portnum );
 			connection.setSoTimeout( timeout );
