@@ -427,10 +427,22 @@ public class ServerPortListenerCommon {
 			
 		}
 		
+		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("listinv")) {
+			ItemStack[] contents = ((Player)sender).getInventory().getContents();
+			
+			for(int cnt = 0;cnt<9;cnt++) {
+				if(contents[cnt] != null)
+				sender.sendMessage(cnt + ") " + contents[cnt].getTypeId() + " " + contents[cnt].getAmount() + " " + contents[cnt].getDurability());
+			}
+			return true;
+		}
+			
 		if( sender instanceof Player && player.isAdmin() && commandLabel.equals("itemgen") && split.length > 0) {
 
 			int typeId = 1;
 			int amount = 1;
+			short damage = 0;
+			byte data = 0;
 
 			if( split.length > 0 ) {
 				try {
@@ -447,8 +459,26 @@ public class ServerPortListenerCommon {
 					sender.sendMessage("Unable to parse amount, using 1");
 				}
 			}
+			
+			if( split.length > 2 ) {
+				try {
+					damage = Short.parseShort(split[2]);
+				} catch (NumberFormatException nfe) {
+					sender.sendMessage("Unable to parse damage, using 0");
+				}
+			}
+			
+			if( split.length > 3 ) {
+				try {
+					data = Byte.parseByte(split[3]);
+				} catch (NumberFormatException nfe) {
+					sender.sendMessage("Unable to parse damage, using 0");
+				}
+			}
+			
+			sender.sendMessage("Creating: " + typeId + " " + "Amount: " + amount + " Damage: " + damage + " Data: " + data);
 
-			((Player)sender).getInventory().addItem(new ItemStack(typeId, amount));
+			((Player)sender).getInventory().addItem(new ItemStack(typeId, amount, damage, data==0?null:data));
 
 			return true;
 
