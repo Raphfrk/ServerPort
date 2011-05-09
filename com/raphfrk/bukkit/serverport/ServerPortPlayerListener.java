@@ -56,6 +56,10 @@ public class ServerPortPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerChat(PlayerChatEvent event) {
+		
+		if(event.isCancelled()) {
+			return;
+		}
 
 		MyPlayer player = new MyPlayer( event.getPlayer() );
 
