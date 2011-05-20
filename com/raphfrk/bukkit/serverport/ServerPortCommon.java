@@ -66,13 +66,8 @@ public class ServerPortCommon {
 		
 		autoPermissionReload(300);
 		
-		startCPUMeasure();
 	}
 
-	void startCPUMeasure() {
-		MyServer.bukkitServer.getScheduler().scheduleSyncRepeatingTask(MyServer.plugin, new CPUMeasure(), 200L, 10L);
-	}
-	
 	void autoPermissionReload(long delay) {
 		final CommunicationManager finalCM = communicationManager;
 
