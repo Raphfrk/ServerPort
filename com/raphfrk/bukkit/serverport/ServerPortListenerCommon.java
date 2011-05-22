@@ -312,8 +312,13 @@ public class ServerPortListenerCommon {
 
 			PortalInfo origin = portalManager.getPortalByBlock(block);
 			String destination = portalManager.getDestination(origin);
+			
+			if(destination == null) {
+				destination = origin.portalWorld;
+			}
 
 			if( !player.permissionCheck("destroy_gate", new String[] {origin.portalType, origin.portalWorld, destination} ) ) {
+				player.sendMessage("You do not have permission to destroy this gate");
 				return true; 
 			} else {
 				if( block.getStatus() == ServerPortBlockListener.BLOCK_BROKEN ) {

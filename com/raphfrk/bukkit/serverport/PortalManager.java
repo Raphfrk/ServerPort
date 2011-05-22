@@ -380,7 +380,7 @@ public class PortalManager {
 
 		boolean signBlock = testSignBlock(block);
 		boolean protectedBlock = testProtectedBlock(block); 
-
+		
 		int idNum=-1;
 		if( signBlock ) {
 			IntLocation loc = new IntLocation( block );
@@ -389,7 +389,7 @@ public class PortalManager {
 			IntLocation loc = new IntLocation( block );
 			idNum = blockBlocks.get(loc);
 		}
-
+		
 		if( idNum == -1 ) {
 			return false;
 		} else {
