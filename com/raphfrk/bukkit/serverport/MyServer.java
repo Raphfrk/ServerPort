@@ -2,7 +2,6 @@ package com.raphfrk.bukkit.serverport;
 
 import java.io.File;
 
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;

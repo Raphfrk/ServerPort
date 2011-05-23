@@ -1,11 +1,6 @@
 package com.raphfrk.bukkit.serverport;
-import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.logging.Logger;
-
-import org.bukkit.World.Environment;
 
 
 public class ServerPortCommon {

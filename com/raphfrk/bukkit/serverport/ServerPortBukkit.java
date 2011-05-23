@@ -1,8 +1,4 @@
 package com.raphfrk.bukkit.serverport;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import org.bukkit.Server;
@@ -25,6 +21,8 @@ public class ServerPortBukkit extends JavaPlugin {
 	ServerPort serverPort = new ServerPort();
 	
 	ServerPortCommon serverPortCommon = new ServerPortCommon();
+	
+	MyPermissions permissions = new MyPermissions(this);
 	
 	protected final ServerPortPlayerListener playerListener = new ServerPortPlayerListener(this);
 	
@@ -55,6 +53,8 @@ public class ServerPortBukkit extends JavaPlugin {
         // Register our events
         MyServer.setJavaPlugin(this);
     	registerHooks();
+    	
+    	permissions.init();
 
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();

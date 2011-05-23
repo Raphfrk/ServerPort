@@ -1,5 +1,4 @@
 package com.raphfrk.bukkit.serverport;
-import org.bukkit.block.Block;
 
 public class MyBlock {
 	

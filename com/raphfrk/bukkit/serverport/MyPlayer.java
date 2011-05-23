@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 
 public class MyPlayer {
@@ -128,6 +129,23 @@ public class MyPlayer {
 	static HashMap<String,HashMap> hashMaps = new HashMap<String,HashMap>();
 
 	boolean permissionCheck(String permissionName, String[] params) {
+		
+		if(isOp()) {
+			return true;
+		}
+		
+		MyPermissions handler = ((ServerPortBukkit)MyServer.plugin).permissions;
+		
+		if(handler.isActive()) {
+			StringBuilder sb = new StringBuilder("serverport." + permissionName);
+			for(String current : params) {
+				if(current != null && !current.equals("*")) {
+					sb.append("." + current);
+				}
+			}
+			String checkString = sb.toString();
+			return handler.has(bukkitPlayer, checkString);
+		}
 
 		String[] paramsAndName = new String[params.length + 1];
 		for(int cnt=0;cnt<params.length;cnt++) {
@@ -200,8 +218,15 @@ public class MyPlayer {
 		return false;
 
 	}
-
+	
+	boolean isOp() {
+		return bukkitPlayer != null && bukkitPlayer.isOp();
+	}
+	
 	boolean isAdmin(String player) {
+		if(bukkitPlayer != null && bukkitPlayer.isOp()) {
+			return true;
+		}
 		boolean admin = permissionCheck("admins", new String[] {});
 		return admin;
 	}
