@@ -144,7 +144,8 @@ public class MyPlayer {
 				}
 			}
 			String checkString = sb.toString();
-			return handler.has(bukkitPlayer, checkString);
+			boolean adminCheck = !permissionName.equals("admins") && isAdmin();
+			return adminCheck || handler.has(bukkitPlayer, checkString);
 		}
 
 		String[] paramsAndName = new String[params.length + 1];
