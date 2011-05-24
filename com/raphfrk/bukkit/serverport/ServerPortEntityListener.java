@@ -1,5 +1,10 @@
 package com.raphfrk.bukkit.serverport;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.block.Block;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,6 +18,27 @@ public class ServerPortEntityListener extends EntityListener implements Listener
 	ServerPortEntityListener( ServerPortBukkit serverPort ) {
 		this.serverPort = serverPort;
 		this.serverPortListenerCommon = serverPort.serverPortListenerCommon;
+	}
+	
+	@Override 
+	public void onEntityExplode(EntityExplodeEvent event) {
+		
+		List<Block> blocks = event.blockList();
+		
+		List<Block> oldBlocks = new ArrayList<Block>();
+		oldBlocks.addAll(blocks);
+		blocks.clear();
+		
+		PortalManager pm = serverPortListenerCommon.portalManager;
+		
+		for(Block b : oldBlocks) {
+			MyBlock block = new MyBlock(b, 0);
+			if(pm.testProtectedBlock(block)) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+		
 	}
 
 /*	@Override

@@ -88,7 +88,7 @@ public class ServerPortBukkit extends JavaPlugin {
         
         pm.registerEvent(Event.Type.VEHICLE_MOVE, vehicleListener, Priority.Normal, this);
         
-        //pm.registerEvent(Event.Type.ENTITY_DAMAGED, entityListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.CHUNK_UNLOAD, worldListener, Priority.Normal, this);
         
         
