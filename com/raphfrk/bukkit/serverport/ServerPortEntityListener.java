@@ -25,13 +25,9 @@ public class ServerPortEntityListener extends EntityListener implements Listener
 		
 		List<Block> blocks = event.blockList();
 		
-		List<Block> oldBlocks = new ArrayList<Block>();
-		oldBlocks.addAll(blocks);
-		blocks.clear();
-		
 		PortalManager pm = serverPortListenerCommon.portalManager;
 		
-		for(Block b : oldBlocks) {
+		for(Block b : blocks) {
 			MyBlock block = new MyBlock(b, 0);
 			if(pm.testProtectedBlock(block)) {
 				event.setCancelled(true);
