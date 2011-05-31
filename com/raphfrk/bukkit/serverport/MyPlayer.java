@@ -134,7 +134,7 @@ public class MyPlayer {
 			return true;
 		}
 		
-		MyPermissions handler = ((ServerPortBukkit)MyServer.plugin).permissions;
+		/*MyPermissions handler = ((ServerPortBukkit)MyServer.plugin).permissions;
 		
 		if(handler.isActive()) {
 			StringBuilder sb = new StringBuilder("serverport." + permissionName);
@@ -146,7 +146,7 @@ public class MyPlayer {
 			String checkString = sb.toString();
 			boolean adminCheck = !permissionName.equals("admins") && isAdmin();
 			return adminCheck || handler.has(bukkitPlayer, checkString);
-		}
+		}*/
 
 		String[] paramsAndName = new String[params.length + 1];
 		for(int cnt=0;cnt<params.length;cnt++) {

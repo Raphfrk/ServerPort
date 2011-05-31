@@ -22,7 +22,7 @@ public class ServerPortBukkit extends JavaPlugin {
 	
 	ServerPortCommon serverPortCommon = new ServerPortCommon();
 	
-	MyPermissions permissions = new MyPermissions(this);
+	//MyPermissions permissions = new MyPermissions(this);
 	
 	protected final ServerPortPlayerListener playerListener = new ServerPortPlayerListener(this);
 	
@@ -54,7 +54,7 @@ public class ServerPortBukkit extends JavaPlugin {
         MyServer.setJavaPlugin(this);
     	registerHooks();
     	
-    	permissions.init();
+    	//permissions.init();
 
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();
