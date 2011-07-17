@@ -184,7 +184,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 	//HashSet<String> deadPlayers = new HashSet<String>();
 	HashMap<String, Long> spamShield = new HashMap<String, Long>();
 	
-	//public HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
+	public HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
 
 	public void onPlayerMove(PlayerMoveEvent event) {
 
@@ -221,15 +221,20 @@ public class ServerPortPlayerListener extends PlayerListener {
 		}
 		*/
 		MyPlayer player = new MyPlayer(event.getPlayer());
+		
+		int entityId = player.getBukkitPlayer().getEntityId();
 
 		org.bukkit.Location from = event.getFrom().clone();
+		
 		org.bukkit.Location to = event.getTo().clone();
 		
-		IntLocation oldLocation = new IntLocation(from.getBlockX(), from.getBlockY(), from.getBlockZ(), from.getWorld().getName());
+		//IntLocation oldLocation = new IntLocation(from.getBlockX(), from.getBlockY(), from.getBlockZ(), from.getWorld().getName());
+		
+		IntLocation oldLocation = oldPositions.get(entityId);
 		
 		IntLocation newLocation = new IntLocation(to.getBlockX(), to.getBlockY(), to.getBlockZ(), to.getWorld().getName());
 		
-		//oldPositions.put(entityId, newLocation);
+		oldPositions.put(entityId, newLocation);
 		
 		if(oldLocation==null || !oldLocation.getWorld().getName().equals(newLocation.getWorld().getName())) {
 			return;
