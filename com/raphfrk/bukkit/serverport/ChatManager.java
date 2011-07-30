@@ -94,17 +94,15 @@ public class ChatManager {
 
 	void sendChat( String targetPlayer, MyPlayer player , String message ) {
 	
-		String colour = player.getColor();
-		
 		String fullMessage;
 		if(targetPlayer == null) {
-			fullMessage = "<" + colour + player.getName() + server.getColor("White") + "> " + message;
+			fullMessage = "<" + player.getBukkitPlayer().getDisplayName() + server.getColor("White") + "> " + message;
 		} else {
-			fullMessage = colour + player.getName() + server.getColor("White") + " sends "+ message;
+			fullMessage = player.getBukkitPlayer().getDisplayName() + server.getColor("White") + " sends "+ message;
 		}
 		
 		List<Player> targetPlayerPlayer;
-
+		
 		if(targetPlayer != null && (targetPlayerPlayer = MyServer.bukkitServer.matchPlayer(targetPlayer)) != null) {
 			if(targetPlayerPlayer.size() > 0) {
 				String reply = "Message sent to ";
