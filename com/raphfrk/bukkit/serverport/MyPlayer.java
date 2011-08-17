@@ -109,7 +109,7 @@ public class MyPlayer {
 	}
 
 	void teleportTo(MyLocation loc) {
-		bukkitPlayer.teleportTo(loc.getBukkitLocation());
+		bukkitPlayer.teleport(loc.getBukkitLocation());
 		teleportTo = loc.getBukkitLocation();
 	}
 
