@@ -78,6 +78,7 @@ public class ServerPortBukkit extends JavaPlugin {
         pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, Priority.Normal, this);
         
         pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.Monitor, this);
         pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);

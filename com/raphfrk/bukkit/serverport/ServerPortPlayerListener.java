@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -186,6 +187,16 @@ public class ServerPortPlayerListener extends PlayerListener {
 	
 	public HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
 
+	public void onPlayerTeleport(PlayerTeleportEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		
+		Integer id = event.getPlayer().getEntityId();
+
+		oldPositions.remove(id);
+	}
+
 	public void onPlayerMove(PlayerMoveEvent event) {
 
 		/*if(!deadPlayers.isEmpty()) {
@@ -241,7 +252,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 		}
 		
 		if(oldLocation.equals(newLocation)) return;
-
+		
 		from.setX(oldLocation.getX());
 		from.setY(oldLocation.getY());
 		from.setZ(oldLocation.getZ());
@@ -255,9 +266,6 @@ public class ServerPortPlayerListener extends PlayerListener {
 		MyLocation myTo= new MyLocation(to);
 
 		serverPortListenerCommon.onPlayerMove(player, myFrom, myTo);   	
-		if( player.getTeleportTo() != null ) {
-			event.setTo(player.getTeleportTo());
-		}
 
 	}
 	
