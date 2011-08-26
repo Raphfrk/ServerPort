@@ -145,7 +145,6 @@ public class CommandFIFO {
 			return limboStore.processForward( command );
 			
 		} else if( split[0].equals("MESSAGE")) {
-		
 			return communicationManager.chatManager.processMessage(command);
 		} else if( split[0].equals("TELL")) {
 		

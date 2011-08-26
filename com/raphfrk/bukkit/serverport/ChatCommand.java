@@ -178,7 +178,7 @@ public class ChatCommand implements Runnable {
 			
 			int length = string.length();
 			
-			if( pos < length - 7 ) {
+			if( pos <= length - 7 ) {
 				
 				String num = string.substring(pos + 3 , pos + 7 );
 				
