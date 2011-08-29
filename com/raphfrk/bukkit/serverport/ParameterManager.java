@@ -1,4 +1,5 @@
 package com.raphfrk.bukkit.serverport;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -203,8 +204,16 @@ public class ParameterManager {
 	}
 	
 	synchronized void loadParameters() {
+	
+		File correctLocation= new File(MyServer.plugin.getDataFolder(), propertiesFilename);
+		File oldLocation = new File(propertiesFilename);
 		
-		MyPropertiesFile pf = new MyPropertiesFile( propertiesFilename );
+		if (!correctLocation.exists() && oldLocation.exists()) {
+			MiscUtils.safeLogging(log, "Moving " + oldLocation + " to " + correctLocation);
+			oldLocation.renameTo(correctLocation);
+		}
+		
+		MyPropertiesFile pf = new MyPropertiesFile( correctLocation.getPath() );
 		
 		pf.load();
 		

@@ -101,7 +101,7 @@ public class LimboStore {
 						new String[] {
 							"Unless this is set to allow, new players will be redirected to this server.  "
 						},
-						"sets the limbo directory"
+						"sets where to send new players"
 				)
 		);
 
