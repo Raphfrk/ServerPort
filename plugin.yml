@@ -1,6 +1,6 @@
 name: Server Port
 main: com.raphfrk.bukkit.serverport.ServerPortBukkit
-version: 359
+version: 382
 commands:
   worldlist:
     description:
@@ -53,3 +53,5 @@ commands:
   circleload:
     description:
     usage:
+softdepend:
+  - Permissions
