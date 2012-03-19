@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
 
 public class WorldManager {
 	
@@ -39,17 +40,20 @@ public class WorldManager {
 			MiscUtils.safeLogging("[ServerPort] loading: " + world);
 			String[] params = world.split(";");
 			if(params.length==1) {
-				MyServer.bukkitServer.createWorld(world, Environment.NORMAL);
+				MyServer.bukkitServer.createWorld(new WorldCreator(params[0]));
 				continue;
 			} else if(params.length==2) {
 				if(params[1].equalsIgnoreCase("nether")) {
-					MyServer.bukkitServer.createWorld(params[0], Environment.NETHER);
+					MyServer.bukkitServer.createWorld(new WorldCreator(params[0]).environment(Environment.NETHER));
 					netherWorlds.add(params[0]);
 					continue;
 				} else if(params[1].equalsIgnoreCase("normal")) {
-					MyServer.bukkitServer.createWorld(params[0], Environment.NETHER);
+					MyServer.bukkitServer.createWorld(new WorldCreator(params[0]).environment(Environment.NORMAL));
 					continue;
-				} 
+				} else if(params[1].equals("end") || params[1].equals("theend") || params[1].equals("the_end")) {
+					MyServer.bukkitServer.createWorld(new WorldCreator(params[0]).environment(Environment.THE_END));
+					continue;
+				}
 			}
 			MiscUtils.safeLogging("[ServerPort] Unable to load: " + world);
 		}

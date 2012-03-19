@@ -20,17 +20,17 @@
  * SOFTWARE.
  ******************************************************************************/
 package com.raphfrk.bukkit.serverport;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-public class ServerPortEntityListener extends EntityListener implements Listener {
+public class ServerPortEntityListener implements Listener {
 	
 	JavaPlugin serverPort = null;
 	
@@ -41,7 +41,7 @@ public class ServerPortEntityListener extends EntityListener implements Listener
 		this.serverPortListenerCommon = serverPort.serverPortListenerCommon;
 	}
 	
-	@Override 
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		
 		List<Block> blocks = event.blockList();

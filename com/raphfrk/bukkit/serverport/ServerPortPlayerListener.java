@@ -25,20 +25,21 @@ import java.util.HashMap;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
-public class ServerPortPlayerListener extends PlayerListener {
+public class ServerPortPlayerListener implements Listener {
 
 	JavaPlugin serverPort = null;
 
@@ -49,23 +50,14 @@ public class ServerPortPlayerListener extends PlayerListener {
 		this.serverPortListenerCommon = serverPort.serverPortListenerCommon;
 	}
 
-	public boolean onBlockPlace(Player player, Block blockPlaced, Block blockClicked, ItemStack itemInHand) {
-
-		MyItem newItem = new MyItem();
-		newItem.setBukkitItem(itemInHand, 0);
-
-		return serverPortListenerCommon.onBlockPlace(new MyPlayer(player), new MyBlock(blockPlaced, 0), new MyBlock(blockClicked, 0), newItem );
-
-	}
-	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerKick(PlayerKickEvent event) {
 		if(TeleportCommand.playerKicked(event.getPlayer().getName())) {
 			event.setLeaveMessage(null);
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 
 		org.bukkit.entity.Player player = event.getPlayer();
@@ -77,6 +69,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerChat(PlayerChatEvent event) {
 		
 		if(event.isCancelled()) {
@@ -115,6 +108,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 	}*/
 
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerRespawn(PlayerRespawnEvent e) {
 
 		Player player = e.getPlayer();
@@ -153,7 +147,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
 		
 		Action action = event.getAction();
@@ -186,7 +180,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 
 				//Block blockFace = target.getFace(event.getBlockFace());
 
-				MyBlock myBlock = new MyBlock(event.getClickedBlock().getFace(event.getBlockFace()),0);
+				MyBlock myBlock = new MyBlock(event.getClickedBlock().getRelative(event.getBlockFace()),0);
 
 				MyPlayer player = new MyPlayer(event.getPlayer());
 
@@ -218,6 +212,7 @@ public class ServerPortPlayerListener extends PlayerListener {
 		oldPositions.remove(id);
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMove(PlayerMoveEvent event) {
 
 		/*if(!deadPlayers.isEmpty()) {

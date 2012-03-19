@@ -25,11 +25,13 @@ import java.util.HashMap;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.vehicle.VehicleListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ServerPortVehicleListener extends VehicleListener {
+public class ServerPortVehicleListener implements Listener {
 
 	JavaPlugin serverPort = null;
 
@@ -43,7 +45,7 @@ public class ServerPortVehicleListener extends VehicleListener {
 	
 	HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
 	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
     public void onVehicleMove(VehicleMoveEvent event) {
 		
 		Entity passenger = event.getVehicle().getPassenger();

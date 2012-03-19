@@ -20,18 +20,21 @@
  * SOFTWARE.
  ******************************************************************************/
 package com.raphfrk.bukkit.serverport;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.event.world.WorldListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-public class ServerPortWorldListener extends WorldListener {
+public class ServerPortWorldListener implements Listener {
 	JavaPlugin serverPort = null;
 	
 	ServerPortWorldListener( ServerPortBukkit serverPort ) {
 		this.serverPort = serverPort;
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
     public void onChunkUnloaded(ChunkUnloadEvent event) {
     }
 	

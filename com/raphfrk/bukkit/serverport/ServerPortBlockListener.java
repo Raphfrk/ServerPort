@@ -21,17 +21,22 @@
  ******************************************************************************/
 package com.raphfrk.bukkit.serverport;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ServerPortBlockListener extends BlockListener {
+public class ServerPortBlockListener implements Listener {
 
 	public static int START_DIGGING = 1;
 	public static int BLOCK_BROKEN = 3;
@@ -48,10 +53,19 @@ public class ServerPortBlockListener extends BlockListener {
 	public void onSignChange(SignChangeEvent event) {
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent event) {
+
+		MyItem newItem = new MyItem();
+		newItem.setBukkitItem(event.getItemInHand(), 0);
+		Player player = event.getPlayer();
+		Block blockPlaced = event.getBlockPlaced();
+		Block blockClicked = event.getBlockAgainst();
+
+		serverPortListenerCommon.onBlockPlace(new MyPlayer(player), new MyBlock(blockPlaced, 0), new MyBlock(blockClicked, 0), newItem );
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
 		MyBlock block = new MyBlock();
 		block.setBukkitBlock(event.getBlock(), BLOCK_BROKEN);
@@ -64,6 +78,7 @@ public class ServerPortBlockListener extends BlockListener {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockDamage(BlockDamageEvent event) {
 
 		MyBlock block = new MyBlock();
@@ -88,6 +103,7 @@ public class ServerPortBlockListener extends BlockListener {
 
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockFromTo(BlockFromToEvent event) {
 
 		MyBlock blockFrom = new MyBlock(event.getBlock(), 0);
@@ -99,7 +115,7 @@ public class ServerPortBlockListener extends BlockListener {
 
 	}
 
-
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 
 		MyBlock block = new MyBlock(event.getBlock(), 0);

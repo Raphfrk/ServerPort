@@ -26,8 +26,6 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,8 +47,6 @@ public class ServerPortBukkit extends JavaPlugin {
 	
 	private final ServerPortBlockListener blockListener = new ServerPortBlockListener(this);
 	
-	private final ServerPortCustomListener customListener = new ServerPortCustomListener(this);
-
 	private final ServerPortEntityListener entityListener = new ServerPortEntityListener(this);
 
 	private final ServerPortVehicleListener vehicleListener = new ServerPortVehicleListener(this);
@@ -90,31 +86,13 @@ public class ServerPortBukkit extends JavaPlugin {
 	synchronized void registerHooks() {
 		
 		PluginManager pm = getServer().getPluginManager();
-        
-        pm.registerEvent(Event.Type.BLOCK_PHYSICS, blockListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_CANBUILD, blockListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_DAMAGE, blockListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, Priority.Normal, this);
-        
-        pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.Monitor, this);
-        pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_KICK, playerListener, Priority.Normal, this);
-        
-        pm.registerEvent(Event.Type.CUSTOM_EVENT, customListener, Priority.Normal, this);
-        
-        pm.registerEvent(Event.Type.VEHICLE_MOVE, vehicleListener, Priority.Normal, this);
-        
-        pm.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.CHUNK_UNLOAD, worldListener, Priority.Normal, this);
-        
-        
-       		
+		
+		pm.registerEvents(blockListener, this);
+		pm.registerEvents(playerListener, this);
+		pm.registerEvents(vehicleListener, this);
+		pm.registerEvents(entityListener, this);
+		pm.registerEvents(worldListener, this);
+        	
 	}
 	
 

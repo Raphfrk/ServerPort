@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Vehicle;
 
 public class MyPlayer {
@@ -75,7 +75,12 @@ public class MyPlayer {
 		if(bukkitPlayer == null || !bukkitPlayer.isInsideVehicle()) {
 			return null;
 		} else {
-			return bukkitPlayer.getVehicle();
+			Entity v = bukkitPlayer.getVehicle();
+			if (v instanceof Vehicle) {
+				return (Vehicle)bukkitPlayer.getVehicle();
+			} else {
+				return null;
+			}
 		}
 		
 	}
