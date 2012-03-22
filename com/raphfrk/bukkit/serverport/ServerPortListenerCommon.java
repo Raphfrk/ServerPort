@@ -190,6 +190,7 @@ public class ServerPortListenerCommon {
 
 				loc.setRotX( (float)limboInfo.getRotX() + 180);
 				loc.setRotY( (float)limboInfo.getRotY() );
+				loc.setY(loc.getY() + 0.49);
 
 				player.teleportTo(loc);
 				player.setHealth(playerHealth);

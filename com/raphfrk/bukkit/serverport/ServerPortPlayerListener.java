@@ -268,7 +268,7 @@ public class ServerPortPlayerListener implements Listener {
 		}
 		
 		if(oldLocation.equals(newLocation)) return;
-		
+
 		from.setX(oldLocation.getX());
 		from.setY(oldLocation.getY());
 		from.setZ(oldLocation.getZ());

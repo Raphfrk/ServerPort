@@ -721,7 +721,7 @@ public class PortalManager {
 				MyLocation newLoc = new MyLocation();
 
 				newLoc.setX( target.x + 0.5 );
-				newLoc.setY( target.y + 0.0 );
+				newLoc.setY( target.y + 0.5 );
 				newLoc.setZ( target.z + 0.5 );
 
 				newLoc.setRotX( (float)(loc.getRotX() + 180 + targetPortal.getDir() - portalInfo.getDir()) % 360 );
