@@ -67,6 +67,8 @@ public class PortalManager {
 	
 	public Long teleportCooldown = 30000L;
 
+	public Long worldChangeCooldown = 30000L;
+	
 	public Boolean newChunks = false;
 
 	public String worldName = "world";
@@ -191,6 +193,20 @@ public class PortalManager {
 							"This sets the cooldown before the server will accept another inbound teleport from a player"
 						},
 						"Sets the inbound teleport cooldown"
+				)
+		);
+				
+		parameterManager.registerParameter( 
+				new ParameterInfo( 
+						this, 
+						"worldChangeCooldown",
+						"worldchange",
+						Long.class,
+						new Long(10000),
+						new String[] {
+							"This sets the cooldown when a player changes teleports, or logs on, before the player can teleport"
+						},
+						"Sets the world change teleport cooldown"
 				)
 		);
 

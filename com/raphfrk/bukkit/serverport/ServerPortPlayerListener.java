@@ -201,6 +201,8 @@ public class ServerPortPlayerListener implements Listener {
 	HashMap<String, Long> spamShield = new HashMap<String, Long>();
 	
 	public HashMap<Integer,IntLocation> oldPositions = new HashMap<Integer,IntLocation>();
+	
+	public HashMap<Integer,Long> worldChanges = new HashMap<Integer,Long>();
 
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		if (event.isCancelled()) {
@@ -263,18 +265,26 @@ public class ServerPortPlayerListener implements Listener {
 		
 		oldPositions.put(entityId, newLocation);
 		
+		long currentTime = System.currentTimeMillis();
+		
 		if(oldLocation==null || !oldLocation.getWorld().getName().equals(newLocation.getWorld().getName())) {
 			newLocation.setX(Integer.MAX_VALUE);
 			newLocation.setY(Integer.MAX_VALUE);
 			newLocation.setZ(Integer.MAX_VALUE);
+			worldChanges.put(entityId, currentTime);
+			return;
+		}
+		
+		Long lastWorldChange = worldChanges.get(entityId);
+		
+		if (lastWorldChange == null) {
+			worldChanges.put(entityId, currentTime);
+			return;
+		} else if (lastWorldChange + serverPortListenerCommon.portalManager.worldChangeCooldown > currentTime) {
 			return;
 		}
 		
 		if(oldLocation.equals(newLocation)) return;
-		
-		if(oldLocation.getX() == Integer.MAX_VALUE && oldLocation.getY() == Integer.MAX_VALUE && oldLocation.getZ() == Integer.MAX_VALUE) {
-			return;
-		}
 
 		from.setX(oldLocation.getX());
 		from.setY(oldLocation.getY());
