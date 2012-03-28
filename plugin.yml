@@ -1,6 +1,6 @@
 name: Server Port
 main: com.raphfrk.bukkit.serverport.ServerPortBukkit
-version: 382
+version: 388
 commands:
   worldlist:
     description:
