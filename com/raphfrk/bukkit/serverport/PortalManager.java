@@ -67,7 +67,7 @@ public class PortalManager {
 	
 	public Long teleportCooldown = 30000L;
 
-	public Long worldChangeCooldown = 30000L;
+	public Long worldChangeCooldown = 1000L;
 	
 	public Boolean newChunks = false;
 
@@ -202,9 +202,9 @@ public class PortalManager {
 						"worldChangeCooldown",
 						"worldchange",
 						Long.class,
-						new Long(10000),
+						new Long(1000),
 						new String[] {
-							"This sets the cooldown when a player changes teleports, or logs on, before the player can teleport"
+							"This sets the cooldown when a player changes world, or logs on, before the player can teleport"
 						},
 						"Sets the world change teleport cooldown"
 				)
