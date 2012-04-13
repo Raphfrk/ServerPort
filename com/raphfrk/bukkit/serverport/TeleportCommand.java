@@ -283,7 +283,7 @@ public class TeleportCommand implements Runnable {
 					limboInfo.setCurrentGate(targetGate);
 					communicationManager.limboStore.updateDatabase(limboInfo);
 
-					teleport( playerName , playerIP , vars , peerServerInfoFromDatabase.hostname );
+					teleport( playerName , playerIP , vars , peerServerInfoFromDatabase.hostname, communicationManager.replaceLocal );
 
 				}
 			}
@@ -332,7 +332,7 @@ public class TeleportCommand implements Runnable {
 
 	}
 	
-	static void teleport( String playerName , String playerIP , String[] params , String hostname ) {
+	static void teleport( String playerName , String playerIP , String[] params , String hostname, boolean replaceLocal ) {
 
 
 		int gameport;
@@ -381,6 +381,7 @@ public class TeleportCommand implements Runnable {
 		}
 
 		if( 	!directOverride &&
+				replaceLocal &&
 				MiscUtils.isAddressLocal(hostname) &&
 				MiscUtils.isAddressLocal(playerIP) &&
 				singleHost

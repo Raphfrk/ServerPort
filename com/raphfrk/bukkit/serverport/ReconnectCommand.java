@@ -103,7 +103,7 @@ public class ReconnectCommand implements Runnable {
 			String[] params = split[1].split(",",-1);
 			//MiscUtils.safeMessage(playerName, "[ServerPort] Forwarding complete : " + command );
 			MiscUtils.safeLogging("[ServerPort] Teleporting due to new player redirect" );
-			TeleportCommand.teleport(playerName, playerIP, params, lastGoodServerHostname );
+			TeleportCommand.teleport(playerName, playerIP, params, lastGoodServerHostname, communicationManager.replaceLocal );
 			
 		}
 		

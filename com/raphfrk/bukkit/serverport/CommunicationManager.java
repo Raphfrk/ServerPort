@@ -49,6 +49,8 @@ public class CommunicationManager {
 	
 	public Boolean verbose = false;
 	
+	public Boolean replaceLocal = true;
+	
 	ParameterManager parameterManager = null;
 	
 	void setPortalManager(PortalManager portalManager) {
@@ -150,6 +152,19 @@ public class CommunicationManager {
 					"If this parameter is set to true, the server name is show for inter server comms"
 				},
 				"show server name in the chat link"
+		)
+		);
+		
+		parameterManager.registerParameter(new ParameterInfo( 
+				this, 
+				"replaceLocal",
+				"replacelocal",
+				Boolean.class,
+				new Boolean(true),
+				new String[] {
+					"If this parameter is set to true, the server will replace ips with localhost if the client is local"
+				},
+				"replace local connections with localhost"
 		)
 		);
 		
